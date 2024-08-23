@@ -1,0 +1,203 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class InfoScreen extends StatefulWidget {
+  static const String routeName = '/info';
+
+  static Route route() {
+    return MaterialPageRoute(
+      settings: const RouteSettings(name: routeName),
+      builder: (context) => InfoScreen(),
+    );
+  }
+
+  @override
+  State<InfoScreen> createState() => _InfoScreenState();
+}
+
+class _InfoScreenState extends State<InfoScreen> {
+  int _selectedButtonIndex = 0;
+
+  void _onButtonPressed(int index) {
+    setState(() {
+      _selectedButtonIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String text;
+
+    if (_selectedButtonIndex == 0) {
+      text =
+          "This is a 'roguelike' game in which you will fight with your opponent for the sum of points in poker combinations. With each victory you will get chips, for which you can upgrade your deck of cards, and after defeat you lose all the upgrades, start the game again, but save chips.\n To pass a level, you need to score more points than your opponent.\n Each level consists of 5 rounds, where you will need to make a combination of 5 cards in the center of the game table, which you choose from those that you have in your hand. You are obliged to put on the table at least 5 cards that will leave the deck after the current round.\n Your opponent will only have 5 cards, which he gets from a separate 52-card deck. Unlike you, your opponent always gets points for each card in his combo + bonuses for combinations. You will only see your opponent's combination after you have made your own.\n  You will have 7 cards in your hand, among which you have to choose 5 cards for the combination, but you will get points only for those cards that were directly involved in the combination + combination bonus. For example, if you have a 'Pair' combination, you will get a bonus for the pair and for each card in the pair. Each round, you will get new cards from the remaining cards in your deck. During each level, you may exchange any number of cards from your hand for new cards from the deck up to 3 times. But discarded cards will not return to the deck until the next level. If you want to use a joker, do so before laying down a combination. Each card in the combination brings a certain number of points, in addition to the bonuses of the combination. Points on cards with numbers correspond to values. And here are the points for cards with letters: J=11; Q=12; K=13, A=14. For winning a level, you'll get chips that you can upgrade your deck with: add double cards and joker cards.  Double cards increase the number of cards in your deck and increase the probability of combinations. You can only add each doublet card 1 time. Jokers can give you new possibilities in the game. But purchased jokers will go from round to round until they are spent or until you lose. Each joker can only be added in one copy. You can only add the same joker again after you have spent it. You can have as few as 5 jokers in a game.";
+    } else if (_selectedButtonIndex == 1) {
+      text = "kkk";
+    } else if (_selectedButtonIndex == 2) {
+      text = "lll";
+    } else {
+      text = "null";
+    }
+    return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 0, 207, 149),
+        body: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: const AssetImage('assets/images/background.png'),
+                  fit: BoxFit.cover)),
+          child: Column(
+            children: [
+              Row(children: [
+                // // Expanded(
+                //   child:
+
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: SvgPicture.asset(
+                    'assets/images/backbutton.svg',
+                    fit: BoxFit.cover,
+                    // width: 49,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(6, 30),
+                    backgroundColor: Color(0xFF838796),
+                    foregroundColor: Colors.white,
+                    // elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    // padding:
+                    //   EdgeInsets.symmetric(horizontal:1,vertical: 1),
+                  ),
+                  // ),
+                ),
+
+                const SizedBox(width: 36),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle button 1 press
+                    _onButtonPressed(0);
+                  },
+                  child: const Text('Rules',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 16,
+                          color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedButtonIndex == 0
+                        ? Color(0xFF9B9DAD)
+                        : Color.fromARGB(255, 210, 220, 255),
+                    foregroundColor: Colors.white,
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  ),
+                ),
+                SizedBox(width: 7),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigator.pushNamed(context, '/');
+                    _onButtonPressed(1);
+                  },
+                  child: const Text('Combo',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 16,
+                          color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedButtonIndex == 1
+                        ? Color(0xFF9B9DAD)
+                        : Color.fromARGB(255, 210, 220, 255),
+                    foregroundColor: Colors.white,
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    _onButtonPressed(2);
+                    // Navigator.pushNamed(context, '/');
+                  },
+                  child: const Text('Play',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 16,
+                          color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedButtonIndex == 2
+                        ? Color(0xFF9B9DAD)
+                        : Color.fromARGB(255, 210, 220, 255),
+                    foregroundColor: Colors.white,
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  ),
+                ),
+                SizedBox(width: 3),
+              ]),
+              const SizedBox(height: 30),
+
+              Expanded(
+                child:
+
+//                     Container(
+//                   decoration: BoxDecoration(
+//                     image: DecorationImage(
+//                       image: AssetImage(
+//                           'assets/images/Vector.png'), // Use a PNG version of your SVG
+//                       fit: BoxFit.fill,
+//                     ),
+//                     // border: Border.all(
+//                     //   color: const Color.fromARGB(
+//                     //       255, 62, 62, 62), // Set the border color
+//                     //   width: 4,
+//                     //   // Set the border width
+//                     // ),
+//                     // borderRadius: BorderRadius.circular(20),
+//                     // shape: BoxShape.rectangle,
+//                   ),
+//                   // color:  Color(0xFF838796),
+                    // child:
+                    Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF5C5E68),
+                          border: Border.all(
+                            color: Color(0xFF616374), // Set the border color
+                            width: 4,
+                            // Set the border width
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(
+                                'assets/images/Vector.png'), // Use a PNG version of your SVG
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Text(
+                            //
+                            text,
+                            style: TextStyle(
+                                fontFamily: "BreatheFire",
+                                fontSize: 15,
+                                color: Colors.white))),
+              ),
+              // ),
+              // )
+            ],
+          ),
+        ));
+  }
+}
