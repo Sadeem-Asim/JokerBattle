@@ -26,18 +26,24 @@ class _InfoScreenState extends State<InfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String text;
+    var content;
+
+
 
     if (_selectedButtonIndex == 0) {
-      text =
-          "This is a 'roguelike' game in which you will fight with your opponent for the sum of points in poker combinations. With each victory you will get chips, for which you can upgrade your deck of cards, and after defeat you lose all the upgrades, start the game again, but save chips.\n To pass a level, you need to score more points than your opponent.\n Each level consists of 5 rounds, where you will need to make a combination of 5 cards in the center of the game table, which you choose from those that you have in your hand. You are obliged to put on the table at least 5 cards that will leave the deck after the current round.\n Your opponent will only have 5 cards, which he gets from a separate 52-card deck. Unlike you, your opponent always gets points for each card in his combo + bonuses for combinations. You will only see your opponent's combination after you have made your own.\n  You will have 7 cards in your hand, among which you have to choose 5 cards for the combination, but you will get points only for those cards that were directly involved in the combination + combination bonus. For example, if you have a 'Pair' combination, you will get a bonus for the pair and for each card in the pair. Each round, you will get new cards from the remaining cards in your deck. During each level, you may exchange any number of cards from your hand for new cards from the deck up to 3 times. But discarded cards will not return to the deck until the next level. If you want to use a joker, do so before laying down a combination. Each card in the combination brings a certain number of points, in addition to the bonuses of the combination. Points on cards with numbers correspond to values. And here are the points for cards with letters: J=11; Q=12; K=13, A=14. For winning a level, you'll get chips that you can upgrade your deck with: add double cards and joker cards.  Double cards increase the number of cards in your deck and increase the probability of combinations. You can only add each doublet card 1 time. Jokers can give you new possibilities in the game. But purchased jokers will go from round to round until they are spent or until you lose. Each joker can only be added in one copy. You can only add the same joker again after you have spent it. You can have as few as 5 jokers in a game.";
+       content=const RulesContent();
     } else if (_selectedButtonIndex == 1) {
-      text = "kkk";
+      
+       content=const ComboContent();
     } else if (_selectedButtonIndex == 2) {
-      text = "lll";
+      
+       content=const PlayContent();
     } else {
-      text = "null";
+      content= "null";
     }
+
+
+
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
         body: Container(
@@ -70,8 +76,8 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(2),
                     ),
-                    // padding:
-                    //   EdgeInsets.symmetric(horizontal:1,vertical: 1),
+                    padding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   // ),
                 ),
@@ -85,7 +91,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   child: const Text('Rules',
                       style: TextStyle(
                           fontFamily: "BreatheFire",
-                          fontSize: 16,
+                          fontSize: 25,
                           color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 0
@@ -96,7 +102,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
                 ),
                 SizedBox(width: 7),
@@ -108,7 +114,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   child: const Text('Combo',
                       style: TextStyle(
                           fontFamily: "BreatheFire",
-                          fontSize: 16,
+                          fontSize: 25,
                           color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 1
@@ -119,7 +125,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: EdgeInsets.symmetric( horizontal: 8,vertical: 14),
                   ),
                 ),
                 SizedBox(width: 8),
@@ -131,7 +137,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   child: const Text('Play',
                       style: TextStyle(
                           fontFamily: "BreatheFire",
-                          fontSize: 16,
+                          fontSize: 25,
                           color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 2
@@ -142,7 +148,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
                 ),
                 SizedBox(width: 3),
@@ -152,24 +158,6 @@ class _InfoScreenState extends State<InfoScreen> {
               Expanded(
                 child:
 
-//                     Container(
-//                   decoration: BoxDecoration(
-//                     image: DecorationImage(
-//                       image: AssetImage(
-//                           'assets/images/Vector.png'), // Use a PNG version of your SVG
-//                       fit: BoxFit.fill,
-//                     ),
-//                     // border: Border.all(
-//                     //   color: const Color.fromARGB(
-//                     //       255, 62, 62, 62), // Set the border color
-//                     //   width: 4,
-//                     //   // Set the border width
-//                     // ),
-//                     // borderRadius: BorderRadius.circular(20),
-//                     // shape: BoxShape.rectangle,
-//                   ),
-//                   // color:  Color(0xFF838796),
-                    // child:
                     Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -186,18 +174,68 @@ class _InfoScreenState extends State<InfoScreen> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: Text(
-                            //
-                            text,
-                            style: TextStyle(
-                                fontFamily: "BreatheFire",
-                                fontSize: 15,
-                                color: Colors.white))),
+                        child:content,
               ),
-              // ),
+              ),
               // )
             ],
           ),
         ));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class PlayContent extends StatelessWidget {
+   const PlayContent({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: (){},
+      child: Text("harami"),
+
+    );
+  }
+}
+
+
+
+
+class ComboContent extends StatelessWidget {
+   const ComboContent({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {},
+      child: Text("chikna"),
+    );
+  }
+}
+
+
+
+
+class RulesContent extends StatelessWidget {
+   const RulesContent({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return  const Text(
+                    
+                             "This is a 'roguelike' game in which you will fight with your opponent for the sum of points in poker combinations. With each victory you will get chips, for which you can upgrade your deck of cards, and after defeat you lose all the upgrades, start the game again, but save chips.\n To pass a level, you need to score more points than your opponent.\n Each level consists of 5 rounds, where you will need to make a combination of 5 cards in the center of the game table, which you choose from those that in your hand. You are obliged to put on the table at least 5 cards that will leave the deck after the current round.\n Your opponent will only have 5 cards, which he gets from a separate 52-card deck. Unlike you, your opponent always gets points for each card in his combo + bonuses for combinations. You will only see your opponent's combination after you have made your own.\n  You will have 7 cards in your hand, among which you have to choose 5 cards for the combination, but you will get points only for those cards that were directly involved in the combination + combination bonus. For example, if you have a 'Pair' combination, you will get a bonus for the pair and for each card in the pair. Each round, you will get new cards from the remaining cards in your deck. During each level, you may exchange any number of cards from your hand for new cards from the deck up to 3 times. But discarded cards will not return to the deck until the next level. If you want to use a joker, do so before laying down a combination. Each card in the combination brings a certain number of points, in addition to the bonuses of the combination. Points on cards with numbers correspond to values. And here are the points for cards with letters: J=11; Q=12; K=13, A=14. For winning a level, you'll get chips that you can upgrade your deck with: add double cards and joker cards.  Double cards increase the number of cards in your deck and increase the probability of combinations. You can only add each doublet card 1 time. Jokers can give you new possibilities in the game. But purchased jokers will go from round to round until they are spent or until you lose. Each joker can only be added in one copy. You can only add the same joker again after you have spent it. You can have as few as 5 jokers in a game.",
+                            style: TextStyle(
+                                fontFamily: "BreatheFire",
+                                fontSize: 15,
+                                color: Colors.white));
   }
 }
