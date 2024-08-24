@@ -44,7 +44,7 @@ class _InfoScreenState extends State<InfoScreen> {
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
         body: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: const AssetImage('assets/images/background.png'),
@@ -52,42 +52,34 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Column(
             children: [
               Row(children: [
-                // // Expanded(
-                //   child:
-
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: SvgPicture.asset(
-                    'assets/images/backbutton.svg',
-                    fit: BoxFit.cover,
-                    // width: 49,
-                  ),
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(6, 30),
+                    minimumSize: const Size(6, 30),
                     backgroundColor: Color(0xFF838796),
                     foregroundColor: Colors.white,
                     // elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(2),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/images/backbutton.svg',
+                    fit: BoxFit.cover,
+                    // width: 49,
                   ),
                   // ),
                 ),
-
                 const SizedBox(width: 36),
                 ElevatedButton(
                   onPressed: () {
                     // Handle button 1 press
                     _onButtonPressed(0);
                   },
-                  child: const Text('Rules',
-                      style: TextStyle(
-                          fontFamily: "BreatheFire",
-                          fontSize: 25,
-                          color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 0
                         ? Color(0xFF9B9DAD)
@@ -97,8 +89,14 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                   ),
+                  child: const Text('Rules',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 25,
+                          color: Colors.white)),
                 ),
                 SizedBox(width: 7),
                 ElevatedButton(
@@ -106,11 +104,6 @@ class _InfoScreenState extends State<InfoScreen> {
                     // Navigator.pushNamed(context, '/');
                     _onButtonPressed(1);
                   },
-                  child: const Text('Combo',
-                      style: TextStyle(
-                          fontFamily: "BreatheFire",
-                          fontSize: 25,
-                          color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 1
                         ? Color(0xFF9B9DAD)
@@ -120,20 +113,21 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                   ),
+                  child: const Text('Combo',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 25,
+                          color: Colors.white)),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
                     _onButtonPressed(2);
                     // Navigator.pushNamed(context, '/');
                   },
-                  child: const Text('Play',
-                      style: TextStyle(
-                          fontFamily: "BreatheFire",
-                          fontSize: 25,
-                          color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedButtonIndex == 2
                         ? Color(0xFF9B9DAD)
@@ -143,16 +137,22 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                   ),
+                  child: const Text('Play',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 25,
+                          color: Colors.white)),
                 ),
-                SizedBox(width: 3),
+                const SizedBox(width: 3),
               ]),
               const SizedBox(height: 30),
 
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: Color(0xFF5C5E68),
                     border: Border.all(
@@ -161,9 +161,8 @@ class _InfoScreenState extends State<InfoScreen> {
                       // Set the border width
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/Vector.png'), // Use a PNG version of your SVG
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/Vector.png'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -201,12 +200,12 @@ class PlayContent extends StatelessWidget {
         Expanded(
             child: Container(
           child: Text(
-              "1.Opponent's cards. They will be visible to you after you lay out the combination.\n2. The field where you will lay out your combination.\n3. Your cards. You can choose 1 or more of them to perform an action with.\n4. The sum of the players' scores. \n5. Info button. \n6. This is information about your deck, where the first number shows the discarded cards and the second number shows the remaining cards in the deck.\n7. A button that opens a menu with your jokers.\n8. Place the selected cards on the field.\n9. Reset and replace the selected cards.\n10. Current level.\n11. Current round."
-              ,
+              "1.Opponent's cards. They will be visible to you after you lay out the combination.\n2. The field where you will lay out your combination.\n3. Your cards. You can choose 1 or more of them to perform an action with.\n4. The sum of the players' scores. \n5. Info button. \n6. This is information about your deck, where the first number shows the discarded cards and the second number shows the remaining cards in the deck.\n7. A button that opens a menu with your jokers.\n8. Place the selected cards on the field.\n9. Reset and replace the selected cards.\n10. Current level.\n11. Current round.",
               style: TextStyle(
                   fontFamily: "BreatheFire",
                   fontSize: 10.2,
-                  color: Colors.white)),))
+                  color: Colors.white)),
+        ))
       ],
       // mainAxisAlignment: MainAxisAlignment.spaceAround,
     );
@@ -215,12 +214,197 @@ class PlayContent extends StatelessWidget {
 
 class ComboContent extends StatelessWidget {
   const ComboContent({super.key});
+
+  // Assuming this is the data structure you'll pass to the widget
+  final List<Map<String, dynamic>> data = const [
+    {
+      "images": [
+        "assets/images/card_hearts_10.png",
+        "assets/images/card_spades_02.png",
+        "assets/images/card_spades_03.png",
+      ],
+      "text": "High Card X1"
+    },
+    {
+      "images": [
+        "assets/images/card_diamonds_K.png",
+        "assets/images/card_spades_K.png"
+      ],
+      "text": "Pair +S scores"
+    },
+    {
+      "images": [
+        "assets/images/card_joker_black.png",
+        "assets/images/card_joker_red.png",
+        "assets/images/card_diamonds_Q.png",
+        "assets/images/card_hearts_Q.png",
+      ],
+      "text": "Two Pair +10 scores"
+    },
+    {
+      "images": [
+        "assets/images/card_spades_10.png",
+        "assets/images/card_hearts_10.png",
+        "assets/images/card_diamonds_10.png",
+      ],
+      "text": "Three of a kind x2"
+    },
+    {
+      "images": [
+        "assets/images/card_spades_02.png",
+        "assets/images/card_spades_03.png",
+        "assets/images/card_spades_04.png",
+        "assets/images/card_spades_05.png",
+        "assets/images/card_spades_06.png",
+      ],
+      "text": "Straight x2"
+    },
+    {
+      "images": [
+        "assets/images/card_spades_07.png",
+        "assets/images/card_spades_10.png",
+        "assets/images/card_hearts_Q.png",
+        "assets/images/card_spades_04.png",
+        "assets/images/card_spades_K.png",
+      ],
+      "text": "Flush x3"
+    },
+    {
+      "images": [
+        "assets/images/card_spades_A.png",
+        "assets/images/card_hearts_A.png",
+        "assets/images/card_diamonds_K.png",
+        "assets/images/card_hearts_K.png",
+        "assets/images/card_spades_K.png",
+      ],
+      "text": "Full house x4"
+    },
+    {
+      "images": [
+        "assets/images/card_clubs_A.png",
+        "assets/images/card_spades_A.png",
+        "assets/images/card_hearts_A.png",
+        "assets/images/card_diamonds_A.png",
+      ],
+      "text": "Four of a kind xS"
+    },
+    {
+      "images": [
+        "assets/images/card_spades_10.png",
+        "assets/images/card_spades_J.png",
+        "assets/images/card_spades_K.png",
+        "assets/images/card_spades_Q.png",
+        "assets/images/card_clubs_A.png",
+      ],
+      "text": "Straight flush x7"
+    },
+    // Add more entries if needed
+  ];
+
+  final List<Map<String, String>> data2 = const [
+    {
+      "image": "assets/images/card_spades_10.png",
+      "text": "Suit- changes the suit of\nany card in your hand",
+    },
+    {
+      "image": "assets/images/card_spades_10.png",
+      "text":
+          "Fake- make any card in your hand a\ncopy of another card in your hand",
+    },
+    {
+      "image": "assets/images/card_spades_10.png",
+      "text":
+          "Extra change-gives you an extra attempt\nto change the cards in your hand",
+    },
+    {
+      "image": "assets/images/card_spades_10.png",
+      "text":
+          "Trump- changes a card from your hand to\na specific card in the rest of the deck",
+    },
+    {
+      "image": "assets/images/card_spades_10.png",
+      "text":
+          "Empty bonus- adds to the result of your\ncombo the amount of points for cards\nthat were not in your combo.",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      child: Text("chikna"),
-    );
+    return Column(children: [
+      // First part: 50/50 layout with multiple images
+      Expanded(
+          child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return Row(
+            children: [
+              Expanded(
+                flex: 9,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: data[index]['images'].map<Widget>((image) {
+                    return Image.asset(
+                      image,
+                      width: 42,
+                      height: 42,
+                    );
+                  }).toList(),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    data[index]['text'],
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "BreatheFire",
+                        color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      )),
+
+      Column(
+        children: data2.map<Widget>((item) {
+          return Padding(
+            padding: EdgeInsets.zero,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Image.asset(
+                    item['image']!,
+                    width: 42,
+                    height: 46,
+                  ),
+                ),
+                Expanded(
+                  flex: 8,
+                  child: Text(
+                    item['text']!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "BreatheFire",
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      )
+    ]);
   }
 }
 
