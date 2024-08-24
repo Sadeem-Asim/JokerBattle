@@ -67,6 +67,9 @@ flutter:
     - assets/images/Vector.svg
     - assets/images/BreatheFire.otf
     - assets/images/Vector.png
+    - assets/images/Game1.png
+    - assets/images/Game5.png
+    - assets/images/Game4.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

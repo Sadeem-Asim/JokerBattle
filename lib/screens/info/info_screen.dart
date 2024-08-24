@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class InfoScreen extends StatefulWidget {
@@ -28,21 +30,15 @@ class _InfoScreenState extends State<InfoScreen> {
   Widget build(BuildContext context) {
     var content;
 
-
-
     if (_selectedButtonIndex == 0) {
-       content=const RulesContent();
+      content = const RulesContent();
     } else if (_selectedButtonIndex == 1) {
-      
-       content=const ComboContent();
+      content = const ComboContent();
     } else if (_selectedButtonIndex == 2) {
-      
-       content=const PlayContent();
+      content = const PlayContent();
     } else {
-      content= "null";
+      content = "null";
     }
-
-
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
@@ -76,8 +72,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(2),
                     ),
-                    padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   // ),
                 ),
@@ -125,7 +120,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
-                    padding: EdgeInsets.symmetric( horizontal: 8,vertical: 14),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   ),
                 ),
                 SizedBox(width: 8),
@@ -156,26 +151,24 @@ class _InfoScreenState extends State<InfoScreen> {
               const SizedBox(height: 30),
 
               Expanded(
-                child:
-
-                    Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Color(0xFF5C5E68),
-                          border: Border.all(
-                            color: Color(0xFF616374), // Set the border color
-                            width: 4,
-                            // Set the border width
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/Vector.png'), // Use a PNG version of your SVG
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child:content,
-              ),
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF5C5E68),
+                    border: Border.all(
+                      color: Color(0xFF616374), // Set the border color
+                      width: 4,
+                      // Set the border width
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/Vector.png'), // Use a PNG version of your SVG
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  child: content,
+                ),
               ),
               // )
             ],
@@ -184,36 +177,44 @@ class _InfoScreenState extends State<InfoScreen> {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class PlayContent extends StatelessWidget {
-   const PlayContent({super.key});
+  const PlayContent({super.key});
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: (){},
-      child: Text("harami"),
-
+    return Column(
+      children: [
+        Image.asset('assets/images/Game4.png'),
+        const SizedBox(
+          height: 5,
+        ),
+        Image.asset('assets/images/Game5.png'),
+        const SizedBox(
+          height: 5,
+        ),
+        Image.asset('assets/images/Game1.png'),
+        const SizedBox(
+          height: 5,
+        ),
+        const SizedBox(
+          height: 2,
+        ),
+        Expanded(
+            child: Container(
+          child: Text(
+              "1.Opponent's cards. They will be visible to you after you lay out the combination.\n2. The field where you will lay out your combination.\n3. Your cards. You can choose 1 or more of them to perform an action with.\n4. The sum of the players' scores. \n5. Info button. \n6. This is information about your deck, where the first number shows the discarded cards and the second number shows the remaining cards in the deck.\n7. A button that opens a menu with your jokers.\n8. Place the selected cards on the field.\n9. Reset and replace the selected cards.\n10. Current level.\n11. Current round."
+              ,
+              style: TextStyle(
+                  fontFamily: "BreatheFire",
+                  fontSize: 10.2,
+                  color: Colors.white)),))
+      ],
+      // mainAxisAlignment: MainAxisAlignment.spaceAround,
     );
   }
 }
 
-
-
-
 class ComboContent extends StatelessWidget {
-   const ComboContent({super.key});
+  const ComboContent({super.key});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -223,19 +224,13 @@ class ComboContent extends StatelessWidget {
   }
 }
 
-
-
-
 class RulesContent extends StatelessWidget {
-   const RulesContent({super.key});
+  const RulesContent({super.key});
   @override
   Widget build(BuildContext context) {
-    return  const Text(
-                    
-                             "This is a 'roguelike' game in which you will fight with your opponent for the sum of points in poker combinations. With each victory you will get chips, for which you can upgrade your deck of cards, and after defeat you lose all the upgrades, start the game again, but save chips.\n To pass a level, you need to score more points than your opponent.\n Each level consists of 5 rounds, where you will need to make a combination of 5 cards in the center of the game table, which you choose from those that in your hand. You are obliged to put on the table at least 5 cards that will leave the deck after the current round.\n Your opponent will only have 5 cards, which he gets from a separate 52-card deck. Unlike you, your opponent always gets points for each card in his combo + bonuses for combinations. You will only see your opponent's combination after you have made your own.\n  You will have 7 cards in your hand, among which you have to choose 5 cards for the combination, but you will get points only for those cards that were directly involved in the combination + combination bonus. For example, if you have a 'Pair' combination, you will get a bonus for the pair and for each card in the pair. Each round, you will get new cards from the remaining cards in your deck. During each level, you may exchange any number of cards from your hand for new cards from the deck up to 3 times. But discarded cards will not return to the deck until the next level. If you want to use a joker, do so before laying down a combination. Each card in the combination brings a certain number of points, in addition to the bonuses of the combination. Points on cards with numbers correspond to values. And here are the points for cards with letters: J=11; Q=12; K=13, A=14. For winning a level, you'll get chips that you can upgrade your deck with: add double cards and joker cards.  Double cards increase the number of cards in your deck and increase the probability of combinations. You can only add each doublet card 1 time. Jokers can give you new possibilities in the game. But purchased jokers will go from round to round until they are spent or until you lose. Each joker can only be added in one copy. You can only add the same joker again after you have spent it. You can have as few as 5 jokers in a game.",
-                            style: TextStyle(
-                                fontFamily: "BreatheFire",
-                                fontSize: 15,
-                                color: Colors.white));
+    return const Text(
+        "This is a 'roguelike' game in which you will fight with your opponent for the sum of points in poker combinations. With each victory you will get chips, for which you can upgrade your deck of cards, and after defeat you lose all the upgrades, start the game again, but save chips.\n To pass a level, you need to score more points than your opponent.\n Each level consists of 5 rounds, where you will need to make a combination of 5 cards in the center of the game table, which you choose from those that in your hand. You are obliged to put on the table at least 5 cards that will leave the deck after the current round.\n Your opponent will only have 5 cards, which he gets from a separate 52-card deck. Unlike you, your opponent always gets points for each card in his combo + bonuses for combinations. You will only see your opponent's combination after you have made your own.\n  You will have 7 cards in your hand, among which you have to choose 5 cards for the combination, but you will get points only for those cards that were directly involved in the combination + combination bonus. For example, if you have a 'Pair' combination, you will get a bonus for the pair and for each card in the pair. Each round, you will get new cards from the remaining cards in your deck. During each level, you may exchange any number of cards from your hand for new cards from the deck up to 3 times. But discarded cards will not return to the deck until the next level. If you want to use a joker, do so before laying down a combination. Each card in the combination brings a certain number of points, in addition to the bonuses of the combination. Points on cards with numbers correspond to values. And here are the points for cards with letters: J=11; Q=12; K=13, A=14. For winning a level, you'll get chips that you can upgrade your deck with: add double cards and joker cards.  Double cards increase the number of cards in your deck and increase the probability of combinations. You can only add each doublet card 1 time. Jokers can give you new possibilities in the game. But purchased jokers will go from round to round until they are spent or until you lose. Each joker can only be added in one copy. You can only add the same joker again after you have spent it. You can have as few as 5 jokers in a game.",
+        style: TextStyle(
+            fontFamily: "BreatheFire", fontSize: 15, color: Colors.white));
   }
 }
