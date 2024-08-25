@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                       ElevatedButton(
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/info');
+                        Navigator.pushNamed(context, '/game');
                       },
                       child: const Text('Game',style: TextStyle(fontFamily: "BreatheFire",fontSize: 32),),
                       style: ElevatedButton.styleFrom(

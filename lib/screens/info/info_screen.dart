@@ -203,7 +203,7 @@ class PlayContent extends StatelessWidget {
               "1.Opponent's cards. They will be visible to you after you lay out the combination.\n2. The field where you will lay out your combination.\n3. Your cards. You can choose 1 or more of them to perform an action with.\n4. The sum of the players' scores. \n5. Info button. \n6. This is information about your deck, where the first number shows the discarded cards and the second number shows the remaining cards in the deck.\n7. A button that opens a menu with your jokers.\n8. Place the selected cards on the field.\n9. Reset and replace the selected cards.\n10. Current level.\n11. Current round.",
               style: TextStyle(
                   fontFamily: "BreatheFire",
-                  fontSize: 10.2,
+                  fontSize: 11.3,
                   color: Colors.white)),
         ))
       ],

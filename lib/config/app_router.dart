@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import '/models/models.dart';
 import '../screens/screens.dart';
+// import "package:joker_battle/screens/Game/game_screen.dart";
 
 class AppRouter {
   static Route onGenerateRoute(RouteSettings settings) {
@@ -13,8 +14,8 @@ class AppRouter {
         return HomeScreen.route();
       case InfoScreen.routeName: //The getter 'routeName' isn't
         return InfoScreen.route(); //The method 'route' isn't
-      // case CartScreen.routeName: //The getter 'routeName' isn't
-      //   return CartScreen.route();
+      case GameScreen.routeName: //The getter 'routeName' isn't
+        return GameScreen.route();
       // case ProductScreen.routeName: //The getter 'routeName' isn't
       //   return ProductScreen.route(product: settings.arguments as Product);
       // case CatalogScreen.routeName: //The getter 'routeName' isn't
