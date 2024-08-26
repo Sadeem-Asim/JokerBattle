@@ -113,7 +113,7 @@ flutter:
     - assets/images/card_back.png
     - assets/images/transparent.png
     - assets/images/you.svg
-    - assets/images/3Round.svg
+    - assets/images/threeRound.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -90,6 +90,13 @@ class _GameScreenState extends State<GameScreen> {
                     fit: BoxFit.cover)),
             child: 
             Column(
+
+
+
+
+
+
+
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Row(
@@ -177,6 +184,11 @@ class _GameScreenState extends State<GameScreen> {
 
 
 
+
+
+
+
+
                 
                 Stack(
                   children: [
@@ -199,8 +211,14 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ), 
                  
+
+
+
+
+
+
                     Container(
-                      height: 450,
+                      height: 400,
                       width: 400,
                       // padding: EdgeInsets.all(170),
                       decoration: BoxDecoration(
@@ -254,7 +272,7 @@ class _GameScreenState extends State<GameScreen> {
                       
                       child: Column( 
                       children: [
-                        SizedBox(height: 30,),
+                        SizedBox(height: 15,),
                           SvgPicture.asset(
                             'assets/images/AI.svg',
 
@@ -263,7 +281,7 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                         
                         SizedBox(height: 10,width:10),
-                          SizedBox(height: 100,
+                          SizedBox(height: 70,
                             child: ListView.builder(
                                 shrinkWrap:true,
                                 scrollDirection: Axis.horizontal,
@@ -293,7 +311,9 @@ class _GameScreenState extends State<GameScreen> {
                   
                   
                     ElevatedButton(
-                      child: Text("random"),
+                      child: Text("random",
+                                style: TextStyle(color: Colors.white,
+                                    fontFamily: "BreatheFire", fontSize: 5)),
                           onPressed: () {
                             // Handle button 1 press
                           },
@@ -313,15 +333,17 @@ class _GameScreenState extends State<GameScreen> {
                               ,
 
 Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
   children: [
-    SvgPicture.asset(
-                              'assets/images/3Round.svg',
-
-                              // fit: BoxFit.cover,
-                              // width: 49,
-                            ),
-   
+    Container(
+      child: SvgPicture.asset(
+                                'assets/images/threeRound.svg',
+      
+                                fit: BoxFit.cover,
+                                width: 49,
+                              ),
+    ),
+   SizedBox(width: 16,),
     SizedBox(
                               height: 70,
                               child: ListView.builder(
@@ -354,7 +376,9 @@ Row(
 ),
 
                          ElevatedButton(
-                            child: Text("random"),
+                            child: Text("random",
+                                style: TextStyle(
+                                  color: Colors.white,  fontFamily: "BreatheFire", fontSize: 5)),
                             onPressed: () {
                               // Handle button 1 press
                             },
