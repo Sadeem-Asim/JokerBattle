@@ -105,6 +105,16 @@ flutter:
     - assets/images/card_clubs_A.png
     - assets/images/card_diamonds_Q.png
     - assets/images/card_hearts_Q.png
+    - assets/images/rewind.svg
+    - assets/images/button_border.png
+    - assets/images/kadoo-head.svg
+    - assets/images/kadoo-tail.svg
+    - assets/images/AI.svg
+    - assets/images/card_back.png
+    - assets/images/transparent.png
+    - assets/images/you.svg
+    - assets/images/3Round.svg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
