@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -28,8 +29,8 @@ class _GameScreenState extends State<GameScreen> {
 
   void _addToSelectedCards(String index) {
     setState(() {
-      selectedCardsList.add(
-          index); // Assuming ThirdCardData has an 'id' property
+      selectedCardsList
+          .add(index); // Assuming ThirdCardData has an 'id' property
     });
   }
 
@@ -254,40 +255,41 @@ class _GameScreenState extends State<GameScreen> {
                                   width: 30,
                                 ),
 
-
-
-
-
                                 //first-card-row
-                                SizedBox(
-                                  height: 40,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: cardData.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Row(
-                                        children: [
-                                          Container(
-                                            width: 28,
-                                            height: 39,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/images/${cardData[index]}'),
-                                                fit: BoxFit.cover,
+                                Consumer<CardsProvider>(
+                                  builder: (context, counter, child) {
+                                    return SizedBox(
+                                      height: 40,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: counter.selectedCards.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Row(
+                                            children: [
+                                              Container(
+                                                width: 28,
+                                                height: 39,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage(
+                                                        'assets/images/${counter.selectedCards[index]}'),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 8,
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                              const SizedBox(
+                                                width: 8,
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
                                 ),
+
                                 SizedBox(
                                   height: 18,
                                   child: ElevatedButton(
@@ -328,13 +330,6 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 7,
                                     ),
 
-
-
-
-
-
-
-
                                     //second-card-row
                                     SizedBox(
                                       height: 70,
@@ -367,7 +362,7 @@ class _GameScreenState extends State<GameScreen> {
                                     ),
                                   ],
                                 ),
-                              
+
                                 SizedBox(
                                     height: 18,
                                     child: ElevatedButton(
@@ -389,12 +384,7 @@ class _GameScreenState extends State<GameScreen> {
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 0, horizontal: 23)))),
 
-
-
-
-
-
-                                 //third-row-cards               
+                                //third-row-cards
                                 SizedBox(
                                   height: 50,
                                   child: ListView.builder(
@@ -522,8 +512,6 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
 
-
-
                       Container(
                         decoration: BoxDecoration(
                             border: Border.all(
@@ -557,14 +545,6 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
 
-
-
-
-
-
-
-
-
                       //cards-grid
                       Column(
                         children: [
@@ -573,6 +553,7 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              Provider.of<CardsProvider>(context, listen: false).removeCards("");
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -608,10 +589,6 @@ class _GameScreenState extends State<GameScreen> {
                                 },
                               );
                             },
-
-
-
-                            
                             child: Container(
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -619,8 +596,7 @@ class _GameScreenState extends State<GameScreen> {
                                     ),
                                     image: const DecorationImage(
                                         image: const AssetImage(
-                                            'assets/images/card_hearts_10.png'
-                                            ),
+                                            'assets/images/card_hearts_10.png'),
                                         fit: BoxFit.fill)),
                                 child: Text(""),
                                 width: 45,
@@ -654,9 +630,6 @@ class SelectableCard extends StatefulWidget {
   _SelectableCardState createState() => _SelectableCardState();
 }
 
-
-
-
 class _SelectableCardState extends State<SelectableCard> {
   bool _isSelected = false;
 
@@ -675,7 +648,7 @@ class _SelectableCardState extends State<SelectableCard> {
           setState(() {
             _isSelected = !_isSelected;
           });
-          
+          context.read<CardsProvider>().selectCards(widget.imageUrl);
         },
         child: Column(
           children: [
@@ -685,5 +658,21 @@ class _SelectableCardState extends State<SelectableCard> {
         ),
       ),
     );
+  }
+}
+
+class CardsProvider with ChangeNotifier {
+  List<String> selectedCards = [];
+
+  // List<String> get selectedCards;
+
+  void selectCards(String path) {
+    selectedCards.add(path);
+    notifyListeners();
+  }
+
+  void removeCards(String path) {
+    selectedCards=[];
+    notifyListeners();
   }
 }

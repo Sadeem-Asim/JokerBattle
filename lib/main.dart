@@ -128,7 +128,9 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:mission/screens/home/home.dart';
 import 'package:joker_battle/config/app_router.dart';
+import 'package:joker_battle/screens/Game/game_screen.dart';
 import 'package:joker_battle/screens/Home/home_screen.dart';
+import 'package:provider/provider.dart';
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
@@ -136,7 +138,12 @@ Future<void> main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   // Bloc.observer = SimpleBlocObserver();
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CardsProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 // Ensures Binding Initialization: This method guarantees that an instance of the WidgetsBinding class, specifically a WidgetsFlutterBinding instance for Flutter apps, is created and initialized. This binding acts as a bridge between your Flutter widgets and the underlying Flutter engine.
