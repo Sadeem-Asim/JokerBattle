@@ -392,7 +392,10 @@ class _GameScreenState extends State<GameScreen> {
                                     child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: counter.selectedCards.length,
+                                      itemCount:
+                                          counter.selectedCards.length > 1
+                                              ? counter.selectedCards.length
+                                              : cardData.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
@@ -403,13 +406,13 @@ class _GameScreenState extends State<GameScreen> {
                                               decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                      '${counter.selectedCards[index]}'),
+                                                      '${counter.selectedCards.length > 1 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
                                             ),
                                             const SizedBox(
-                                              width: 15,
+                                              width: 10,
                                             )
                                           ],
                                         );
@@ -656,8 +659,8 @@ class _SelectableCardState extends State<SelectableCard> {
           return GestureDetector(
             onTap: () {
               setState(() {
-                if(counter.selectedCards.length < 5)
-                _isSelected = !_isSelected;
+                if (counter.selectedCards.length < 5)
+                  _isSelected = !_isSelected;
               });
 
               context.read<CardsProvider>().selectCards(widget.imageUrl);
