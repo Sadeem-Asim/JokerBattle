@@ -60,63 +60,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/background.png
-    - assets/images/third.png
-    - assets/images/backbutton.svg
-    - assets/images/Vector.svg
-    - assets/images/BreatheFire.otf
-    - assets/images/Vector.png
-    - assets/images/Game1.png
-    - assets/images/Game5.png
-    - assets/images/Game4.png
-    - assets/images/card_back.png
-    - assets/images/card_hearts_10.png
-    - assets/images/card_spades_02.png
-    - assets/images/card_spades_03.png
-    - assets/images/card_diamonds_K.png
-    - assets/images/card_spades_K.png
-    - assets/images/card_joker_black.png
-    - assets/images/card_joker_red.png
-    - assets/images/card_spades_10.png
-    - assets/images/card_hearts_10.png
-    - assets/images/card_diamonds_10.png
-    - assets/images/card_spades_02.png
-    - assets/images/card_spades_03.png
-    - assets/images/card_spades_04.png
-    - assets/images/card_spades_05.png
-    - assets/images/card_spades_06.png
-    - assets/images/card_spades_07.png
-    - assets/images/card_spades_10.png
-    - assets/images/card_hearts_Q.png
-    - assets/images/card_spades_04.png
-    - assets/images/card_spades_K.png
-    - assets/images/card_spades_A.png
-    - assets/images/card_hearts_A.png
-    - assets/images/card_diamonds_K.png
-    - assets/images/card_hearts_K.png
-    - assets/images/card_spades_K.png
-    - assets/images/card_clubs_A.png
-    - assets/images/card_spades_A.png
-    - assets/images/card_hearts_A.png
-    - assets/images/card_diamonds_A.png
-    - assets/images/card_spades_10.png
-    - assets/images/card_spades_J.png
-    - assets/images/card_spades_K.png
-    - assets/images/card_spades_Q.png
-    - assets/images/card_clubs_A.png
-    - assets/images/card_diamonds_Q.png
-    - assets/images/card_hearts_Q.png
-    - assets/images/rewind.svg
-    - assets/images/button_border.png
-    - assets/images/kadoo-head.svg
-    - assets/images/kadoo-tail.svg
-    - assets/images/AI.svg
-    - assets/images/card_back.png
-    - assets/images/transparent.png
-    - assets/images/you.svg
-    - assets/images/threeRound.svg
-    - assets/images/info.svg
-    - assets/images/texture.png
+   - assets/images/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

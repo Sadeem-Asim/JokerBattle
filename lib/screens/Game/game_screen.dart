@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:joker_battle/utils/game.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -47,6 +48,8 @@ class _GameScreenState extends State<GameScreen> {
     } else {
       content = "null";
     }
+
+    List<String> deck = generateDeck();
 
     final List<String> cardData = [
       'card_back.png',
@@ -256,38 +259,35 @@ class _GameScreenState extends State<GameScreen> {
                                 ),
 
                                 //first-card-row
-                                Consumer<CardsProvider>(
-                                  builder: (context, counter, child) {
-                                    return SizedBox(
-                                      height: 40,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: counter.selectedCards.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Row(
-                                            children: [
-                                              Container(
-                                                width: 28,
-                                                height: 39,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                        'assets/images/${counter.selectedCards[index]}'),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
+
+                                SizedBox(
+                                  height: 40,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: cardData.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Row(
+                                        children: [
+                                          Container(
+                                            width: 28,
+                                            height: 39,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/${cardData[index]}'),
+                                                fit: BoxFit.cover,
                                               ),
-                                              const SizedBox(
-                                                width: 8,
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 ),
 
                                 SizedBox(
@@ -385,35 +385,38 @@ class _GameScreenState extends State<GameScreen> {
                                                 vertical: 0, horizontal: 23)))),
 
                                 //third-row-cards
-                                SizedBox(
-                                  height: 50,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: ThirdCardData.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Row(
-                                        children: [
-                                          Container(
-                                            width: 28,
-                                            height: 39,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/images/${ThirdCardData[index]}'),
-                                                fit: BoxFit.cover,
+                                Consumer<CardsProvider>(
+                                    builder: (context, counter, child) {
+                                  return SizedBox(
+                                    height: 50,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: counter.selectedCards.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Row(
+                                          children: [
+                                            Container(
+                                              width: 28,
+                                              height: 39,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      '${counter.selectedCards[index]}'),
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
+                                            const SizedBox(
+                                              width: 15,
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
                                 SvgPicture.asset(
                                   'assets/images/you.svg',
                                   fit: BoxFit.cover,
@@ -553,7 +556,8 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Provider.of<CardsProvider>(context, listen: false).removeCards("");
+                              Provider.of<CardsProvider>(context, listen: false)
+                                  .removeCards("");
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -572,14 +576,18 @@ class _GameScreenState extends State<GameScreen> {
                                                 mainAxisSpacing: 1,
                                                 crossAxisSpacing: 1,
                                               ),
-                                              itemCount: ThirdCardData.length,
+                                              itemCount:
+                                                  shuffleDeck(deck).length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
                                                 return SelectableCard(
                                                   imageUrl:
-                                                      ThirdCardData[index],
-                                                  title: ThirdCardData[index],
+                                                      shuffleDeck(deck)[index],
+                                                  // ThirdCardData[index]
+
+                                                  title:
+                                                      shuffleDeck(deck)[index],
                                                 );
                                               },
                                             )),
@@ -643,19 +651,25 @@ class _SelectableCardState extends State<SelectableCard> {
             ? BorderSide(color: Color.fromARGB(255, 255, 10, 79), width: 5)
             : BorderSide.none,
       ),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _isSelected = !_isSelected;
-          });
-          context.read<CardsProvider>().selectCards(widget.imageUrl);
+      child: Consumer<CardsProvider>(
+        builder: (context, counter, child) {
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                if(counter.selectedCards.length < 5)
+                _isSelected = !_isSelected;
+              });
+
+              context.read<CardsProvider>().selectCards(widget.imageUrl);
+            },
+            child: Column(
+              children: [
+                Image.asset("${widget.imageUrl}"),
+                // Text(widget.title),
+              ],
+            ),
+          );
         },
-        child: Column(
-          children: [
-            Image.asset("assets/images/${widget.imageUrl}"),
-            // Text(widget.title),
-          ],
-        ),
       ),
     );
   }
@@ -667,12 +681,14 @@ class CardsProvider with ChangeNotifier {
   // List<String> get selectedCards;
 
   void selectCards(String path) {
-    selectedCards.add(path);
+    if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
+      selectedCards.add(path);
+    }
     notifyListeners();
   }
 
   void removeCards(String path) {
-    selectedCards=[];
+    selectedCards = [];
     notifyListeners();
   }
 }
