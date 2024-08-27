@@ -114,6 +114,8 @@ flutter:
     - assets/images/transparent.png
     - assets/images/you.svg
     - assets/images/threeRound.svg
+    - assets/images/info.svg
+    - assets/images/texture.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
