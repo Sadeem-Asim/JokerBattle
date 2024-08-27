@@ -16,6 +16,8 @@ class AppRouter {
         return InfoScreen.route(); //The method 'route' isn't
       case GameScreen.routeName: //The getter 'routeName' isn't
         return GameScreen.route();
+      case SelectCardsScreen.routeName: //The getter 'routeName' isn't
+        return SelectCardsScreen.route();  
       // case ProductScreen.routeName: //The getter 'routeName' isn't
       //   return ProductScreen.route(product: settings.arguments as Product);
       // case CatalogScreen.routeName: //The getter 'routeName' isn't
