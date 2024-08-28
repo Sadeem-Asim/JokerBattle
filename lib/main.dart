@@ -138,10 +138,12 @@ Future<void> main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   // Bloc.observer = SimpleBlocObserver();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => CardsProvider(),
-      child: MyApp(),
+  return runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CardsProvider()),
+        ChangeNotifierProvider(create: (_) => AICardsProvider()),
+      ], child: MyApp(),
     ),
   );
 }

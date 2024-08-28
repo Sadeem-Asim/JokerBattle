@@ -50,6 +50,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     List<String> deck = generateDeck();
+    List<String> AIDeck = generateDeckForAI();
 
     final List<String> cardData = [
       'card_back.png',
@@ -259,36 +260,42 @@ class _GameScreenState extends State<GameScreen> {
                                 ),
 
                                 //first-card-row
-
-                                SizedBox(
-                                  height: 40,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: cardData.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Row(
-                                        children: [
-                                          Container(
-                                            width: 28,
-                                            height: 39,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/images/${cardData[index]}'),
-                                                fit: BoxFit.cover,
+                                Consumer<AICardsProvider>(
+                                    builder: (context, counter, child) {
+                                  return SizedBox(
+                                    height: 40,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          counter.selectedAICards.length > 1
+                                              ? counter.selectedAICards.length
+                                              : cardData.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Row(
+                                          children: [
+                                            Container(
+                                              width: 28,
+                                              height: 39,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    '${counter.selectedAICards.length > 1 ? counter.selectedAICards[index] : "assets/images/${cardData[index]}"}',
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            width: 8,
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
+                                            const SizedBox(
+                                              width: 8,
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
 
                                 SizedBox(
                                   height: 18,
@@ -331,35 +338,46 @@ class _GameScreenState extends State<GameScreen> {
                                     ),
 
                                     //second-card-row
-                                    SizedBox(
-                                      height: 70,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: secondCardData.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Row(
-                                            children: [
-                                              Container(
-                                                width: 28,
-                                                height: 39,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                        'assets/images/${secondCardData[index]}'),
-                                                    fit: BoxFit.cover,
+                                    Consumer<CardsProvider>(
+                                        builder: (context, counter, child) {
+                                      return SizedBox(
+                                        height: 70,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: counter
+                                                      .selectedCardsFromThirdRow
+                                                      .length >
+                                                  0
+                                              ? counter
+                                                  .selectedCardsFromThirdRow
+                                                  .length
+                                              : secondCardData.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Row(
+                                              children: [
+                                                Container(
+                                                  width: 28,
+                                                  height: 39,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 9,
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                                const SizedBox(
+                                                  width: 9,
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }),
                                   ],
                                 ),
 
@@ -393,21 +411,36 @@ class _GameScreenState extends State<GameScreen> {
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemCount:
-                                          counter.selectedCards.length > 1
+                                          counter.selectedCards.length > 0
                                               ? counter.selectedCards.length
                                               : cardData.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
                                           children: [
-                                            Container(
-                                              width: 28,
-                                              height: 39,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                      '${counter.selectedCards.length > 1 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
-                                                  fit: BoxFit.cover,
+                                            InkWell(
+                                              onTap: () {
+                                                // context.read<CardsProvider>().selectedCardsFromThirdRow(counter.selectedCards[index]);
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectCardFromThirdRow(
+                                                        counter.selectedCards[
+                                                            index]);
+                                              },
+                                              splashColor: const Color.fromARGB(
+                                                  255, 7, 176, 255),
+                                              highlightColor: Colors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Container(
+                                                width: 28,
+                                                height: 39,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage(
+                                                        '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -462,28 +495,40 @@ class _GameScreenState extends State<GameScreen> {
                                 image: const AssetImage(
                                     'assets/images/button_border.png'),
                                 fit: BoxFit.fill)),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(6, 30),
-                              backgroundColor: Color(0xFFD3BF8F),
-                              foregroundColor: Colors.white,
-                              // elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
+                        child: Consumer<CardsProvider>(
+                            builder: (context, counter, child) {
+                          return ElevatedButton(
+                              onPressed: () {
+                                context
+                                    .read<AICardsProvider>()
+                                    .selectAICards(shuffleAIDeck(AIDeck));
+                                context
+                                    .read<CardsProvider>()
+                                    .selectCardsForSecondRow(
+                                        counter.selectedCards);
+
+                                // Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(6, 30),
+                                backgroundColor: const Color(0xFFD3BF8F),
+                                foregroundColor: Colors.white,
+                                // elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 11),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 11),
-                            ),
-                            child: Text("Play",
-                                style: TextStyle(
-                                    fontFamily: "BreatheFire",
-                                    fontSize: 20,
-                                    color: Color.fromARGB(255, 228, 231, 239)))
-                            // ),
-                            ),
+                              child: const Text("Play",
+                                  style: TextStyle(
+                                      fontFamily: "BreatheFire",
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 228, 231, 239)))
+                              // ),
+                              );
+                        }),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -529,7 +574,8 @@ class _GameScreenState extends State<GameScreen> {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            context.read<AICardsProvider>().removeCards();
+                            context.read<CardsProvider>().removeCards();
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
@@ -560,7 +606,7 @@ class _GameScreenState extends State<GameScreen> {
                           GestureDetector(
                             onTap: () {
                               Provider.of<CardsProvider>(context, listen: false)
-                                  .removeCards("");
+                                  .removeCards();
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -651,7 +697,7 @@ class _SelectableCardState extends State<SelectableCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: _isSelected
-            ? BorderSide(color: Color.fromARGB(255, 255, 10, 79), width: 5)
+            ? BorderSide(color: Color.fromARGB(255, 2, 178, 34), width: 5)
             : BorderSide.none,
       ),
       child: Consumer<CardsProvider>(
@@ -659,11 +705,19 @@ class _SelectableCardState extends State<SelectableCard> {
           return GestureDetector(
             onTap: () {
               setState(() {
-                if (counter.selectedCards.length < 5)
-                  _isSelected = !_isSelected;
-              });
+                _isSelected = !_isSelected;
 
-              context.read<CardsProvider>().selectCards(widget.imageUrl);
+                // if (counter.selectedCards.length <= 5)
+                // _isSelected = !_isSelected;
+
+                if (_isSelected == false) {
+                  context
+                      .read<CardsProvider>()
+                      .removeSingleCard(widget.imageUrl);
+                } else {
+                  context.read<CardsProvider>().selectCards(widget.imageUrl);
+                }
+              });
             },
             child: Column(
               children: [
@@ -680,18 +734,59 @@ class _SelectableCardState extends State<SelectableCard> {
 
 class CardsProvider with ChangeNotifier {
   List<String> selectedCards = [];
+  List<String> selectedCardsForSecondRow = [];
+  List<String> selectedCardsFromThirdRow = [];
 
   // List<String> get selectedCards;
 
   void selectCards(String path) {
-    if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
+    if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
       selectedCards.add(path);
     }
     notifyListeners();
   }
 
-  void removeCards(String path) {
+  void selectCardsForSecondRow(List<String> selectedCards) {
+    // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
+    //   selectedCards.add(path);
+    // }
+    selectedCardsForSecondRow = selectedCards;
+    notifyListeners();
+  }
+
+  void selectCardFromThirdRow(String path) {
+    if (selectedCardsFromThirdRow.length <= 4 && !selectedCardsFromThirdRow.contains(path)) {
+      selectedCardsFromThirdRow.add(path);
+    }
+    notifyListeners();
+  }
+
+  void removeSingleCard(String path) {
+    selectedCards.remove(path);
+    selectedCardsForSecondRow.remove(path);
+    notifyListeners();
+  }
+
+  void removeCards() {
     selectedCards = [];
+    selectedCardsForSecondRow = [];
+    selectedCardsFromThirdRow = [];
+    notifyListeners();
+  }
+}
+
+class AICardsProvider with ChangeNotifier {
+  List<String> selectedAICards = [];
+
+  // List<String> get selectedCards;
+
+  void selectAICards(List<String> AICards) {
+    selectedAICards = AICards;
+    notifyListeners();
+  }
+
+  void removeCards() {
+    selectedAICards = [];
     notifyListeners();
   }
 }
