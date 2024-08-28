@@ -345,14 +345,15 @@ class _GameScreenState extends State<GameScreen> {
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: counter
-                                                      .selectedCardsFromThirdRow
-                                                      .length >
-                                                  0
-                                              ? counter
-                                                  .selectedCardsFromThirdRow
-                                                  .length
-                                              : secondCardData.length,
+                                          itemCount:5,
+                                          // counter
+                                          //             .selectedCardsFromThirdRow
+                                          //             .length >
+                                          //         0
+                                          //     ? counter
+                                          //         .selectedCardsFromThirdRow
+                                          //         .length
+                                          //     : secondCardData.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return Row(
@@ -363,7 +364,8 @@ class _GameScreenState extends State<GameScreen> {
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
-                                                        '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
+                                                        '${index < counter.selectedCardsFromThirdRow.length ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}'
+                                                        // '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
                                                       ),
                                                       fit: BoxFit.cover,
                                                     ),
