@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 // import '../../blocs/blocs.dart';
+import 'package:provider/provider.dart';
+import 'package:joker_battle/utils/game.dart';
+import 'package:joker_battle/provider/card_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/home';
+  List<String> deck=generateDeck();
 
   static Route route() {
     return MaterialPageRoute(
@@ -33,32 +37,31 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                      ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/game');
-                      },
-                      child: const Text('Game',style: TextStyle(fontFamily: "BreatheFire",fontSize: 32),),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF838796),
-                        foregroundColor: Colors.white,
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    Consumer<CardsProvider>(builder: (context, counter, child) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          context
+                              .read<CardsProvider>()
+                              .shuffleDeckElement(deck);
+                          Navigator.pushNamed(context, '/game');
+                        },
+                        child: const Text(
+                          'Game',
+                          style: TextStyle(
+                              fontFamily: "BreatheFire", fontSize: 32),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 110, vertical: 8),
-                      ),
-                    ),
-
-
-
-
-
-
-
-
-
-
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF838796),
+                          foregroundColor: Colors.white,
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 110, vertical: 8),
+                        ),
+                      );
+                    }),
 
                     // // ElevatedButton(
                     //   onPressed: () {
@@ -75,10 +78,6 @@ class HomeScreen extends StatelessWidget {
                     //       padding: EdgeInsets.all(
                     //           32),
 
-
-
-
-
                     //       // shape: RoundedRectangleBorder(
                     //       //   side: BorderSide(
                     //       //     color: Color.fromARGB(255, 153, 144, 144),
@@ -89,16 +88,12 @@ class HomeScreen extends StatelessWidget {
                     //       //   // visualDensity: ,
                     //       //   // backgroundColor: Colors.grey
                     //       // )
-                          
-                          
+
                     //       ),
-
-
-
 
                     //   child:
                     //   // //  Container(
-                        
+
                     //   // //   width: 220,
                     //   // //   height: 45,
                     //   // //   child: Stack(
@@ -122,32 +117,6 @@ class HomeScreen extends StatelessWidget {
                     // //     ),
                     // //   ),
                     // ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     SizedBox(height: 18),
                     ElevatedButton(

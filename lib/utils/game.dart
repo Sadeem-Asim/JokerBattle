@@ -24,9 +24,9 @@ List<String> generateDeck() {
     }
   }
   deck.add("assets/images/card_joker_red.png");
-  print({
-    "hijra:":deck,
-  });
+  // print({
+  //   "hijra:":deck,
+  // });
   return deck;
 }
 
@@ -59,9 +59,9 @@ List<String> generateDeckForAI() {
     }
   }
   deck.add("assets/images/card_joker_red.png");
-  print({
-    "hijra:": deck,
-  });
+  // print({
+  //   "hijra:": deck,
+  // });
   return deck;
 }
 
@@ -73,9 +73,9 @@ List<String> shuffleDeck(List<String> deck) {
     deck[i] = deck[j];
     deck[j] = temp;
   }
-  print({
-    "hijra-sshuffle:": deck,
-  });
+  // print({
+  //   "hijra-sshuffle:": deck,
+  // });
   return deck.sublist(0, 7);
 }
 
@@ -86,8 +86,8 @@ List<String> shuffleAIDeck(List<String> deck) {
     deck[i] = deck[j];
     deck[j] = temp;
   }
-  print({
-    "hijra-shuffle:": deck,
-  });
+  // print({
+  //   "hijra-shuffle:": deck,
+  // });
   return deck.sublist(0, 5);
 }

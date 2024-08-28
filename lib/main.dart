@@ -131,6 +131,8 @@ import 'package:joker_battle/config/app_router.dart';
 import 'package:joker_battle/screens/Game/game_screen.dart';
 import 'package:joker_battle/screens/Home/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:joker_battle/provider/card_provider.dart';
+
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
 

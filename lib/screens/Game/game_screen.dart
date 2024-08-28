@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
+import 'package:joker_battle/provider/card_provider.dart';
+
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -50,9 +52,19 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     List<String> deck = generateDeck();
+
     List<String> AIDeck = generateDeckForAI();
 
     final List<String> cardData = [
+      'card_back.png',
+      'card_back.png',
+      'card_back.png',
+      'card_back.png',
+      'card_back.png',
+      'card_back.png',
+      'card_back.png',
+    ];
+    final List<String> cardDataAI = [
       'card_back.png',
       'card_back.png',
       'card_back.png',
@@ -270,7 +282,7 @@ class _GameScreenState extends State<GameScreen> {
                                       itemCount:
                                           counter.selectedAICards.length > 1
                                               ? counter.selectedAICards.length
-                                              : cardData.length,
+                                              : cardDataAI.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
@@ -281,7 +293,7 @@ class _GameScreenState extends State<GameScreen> {
                                               decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                    '${counter.selectedAICards.length > 1 ? counter.selectedAICards[index] : "assets/images/${cardData[index]}"}',
+                                                    '${counter.selectedAICards.length > 1 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
                                                   ),
                                                   fit: BoxFit.cover,
                                                 ),
@@ -345,7 +357,7 @@ class _GameScreenState extends State<GameScreen> {
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           scrollDirection: Axis.horizontal,
-                                          itemCount:5,
+                                          itemCount: 5,
                                           // counter
                                           //             .selectedCardsFromThirdRow
                                           //             .length >
@@ -364,9 +376,9 @@ class _GameScreenState extends State<GameScreen> {
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
-                                                        '${index < counter.selectedCardsFromThirdRow.length ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}'
-                                                        // '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
-                                                      ),
+                                                          '${index < counter.selectedCardsFromThirdRow.length ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}'
+                                                          // '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
+                                                          ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -412,10 +424,10 @@ class _GameScreenState extends State<GameScreen> {
                                     child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          counter.selectedCards.length > 0
-                                              ? counter.selectedCards.length
-                                              : cardData.length,
+                                      itemCount: 7,
+                                      // counter.selectedCards.length > 0
+                                      //     ? counter.selectedCards.length
+                                      //     : cardData.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
@@ -440,7 +452,11 @@ class _GameScreenState extends State<GameScreen> {
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
                                                     image: AssetImage(
-                                                        '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
+                                                        //if index<
+                                                    
+//  '${(index)>=counter.selectedCards.length ? "assets/images/${cardData[index]}" : counter.selectedCards[index] }'),
+                                                        '${"${counter.shuffleDeckElements[index]}"}'),
+                                                    // '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -608,7 +624,7 @@ class _GameScreenState extends State<GameScreen> {
                           GestureDetector(
                             onTap: () {
                               Provider.of<CardsProvider>(context, listen: false)
-                                  .removeCards();
+                                  .remainingDeck(deck);
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -618,30 +634,37 @@ class _GameScreenState extends State<GameScreen> {
                                     children: [
                                       SizedBox(
                                         height: 400,
-                                        child: Container(
-                                            alignment: Alignment.center,
-                                            child: GridView.builder(
-                                              gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4,
-                                                mainAxisSpacing: 1,
-                                                crossAxisSpacing: 1,
-                                              ),
-                                              itemCount:
-                                                  shuffleDeck(deck).length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return SelectableCard(
-                                                  imageUrl:
-                                                      shuffleDeck(deck)[index],
-                                                  // ThirdCardData[index]
+                                        child: Consumer<CardsProvider>(
+                                            builder: (context, counter, child) {
+                                          return Container(
+                                              alignment: Alignment.center,
+                                              child: GridView.builder(
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 4,
+                                                  mainAxisSpacing: 1,
+                                                  crossAxisSpacing: 1,
+                                                ),
+                                                itemCount: counter
+                                                    .remainingDeckElements
+                                                    .length,
+                                                // shuffleDeck(deck).length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return SelectableCard(
+                                                      imageUrl: counter
+                                                              .remainingDeckElements[
+                                                          index],
 
-                                                  title:
-                                                      shuffleDeck(deck)[index],
-                                                );
-                                              },
-                                            )),
+                                                      //  shuffleDeck(
+                                                      //     deck)[index],
+                                                      // ThirdCardData[index]
+
+                                                      title: "");
+                                                },
+                                              ));
+                                        }),
                                       ),
                                     ],
                                   );
@@ -661,7 +684,10 @@ class _GameScreenState extends State<GameScreen> {
                                 width: 45,
                                 height: 50),
                           ),
-                          const Text("0/4s")
+                          Consumer<CardsProvider>(
+                              builder: (context, counter, child) {
+                            return Text("${counter.selectedCards.length}/52");
+                          })
                         ],
                       ),
                     ],
@@ -734,48 +760,66 @@ class _SelectableCardState extends State<SelectableCard> {
   }
 }
 
-class CardsProvider with ChangeNotifier {
-  List<String> selectedCards = [];
-  List<String> selectedCardsForSecondRow = [];
-  List<String> selectedCardsFromThirdRow = [];
+// class CardsProvider with ChangeNotifier {
+//   List<String> selectedCards = [];
+//   List<String> selectedCardsForSecondRow = [];
+//   List<String> selectedCardsFromThirdRow = [];
+//   List<String> remainingDeckElements = [];
+//   List<String> shuffleDeckElements = [];
 
-  // List<String> get selectedCards;
+//   void remainingDeck(deck) {
+//     remainingDeckElements =
+//         deck.where((element) => !selectedCards.contains(element)).toList();
+//     print({"murgha": remainingDeckElements.length});
+//     notifyListeners();
+//   }
 
-  void selectCards(String path) {
-    if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
-      selectedCards.add(path);
-    }
-    notifyListeners();
-  }
+//   void shuffleDeckElement(deck) {
+//     shuffleDeckElements = shuffleDeck(deck);
+//     selectedCards = [];
 
-  void selectCardsForSecondRow(List<String> selectedCards) {
-    // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
-    //   selectedCards.add(path);
-    // }
-    selectedCardsForSecondRow = selectedCards;
-    notifyListeners();
-  }
+//     print({"murgha": shuffleDeckElements.length});
+//     notifyListeners();
+//   }
 
-  void selectCardFromThirdRow(String path) {
-    if (selectedCardsFromThirdRow.length <= 4 && !selectedCardsFromThirdRow.contains(path)) {
-      selectedCardsFromThirdRow.add(path);
-    }
-    notifyListeners();
-  }
+//   // List<String> get selectedCards;
 
-  void removeSingleCard(String path) {
-    selectedCards.remove(path);
-    selectedCardsForSecondRow.remove(path);
-    notifyListeners();
-  }
+//   void selectCards(String path) {
+//     if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
+//       selectedCards.add(path);
+//     }
+//     notifyListeners();
+//   }
 
-  void removeCards() {
-    selectedCards = [];
-    selectedCardsForSecondRow = [];
-    selectedCardsFromThirdRow = [];
-    notifyListeners();
-  }
-}
+//   void selectCardsForSecondRow(List<String> selectedCards) {
+//     // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
+//     //   selectedCards.add(path);
+//     // }
+//     selectedCardsForSecondRow = selectedCards;
+//     notifyListeners();
+//   }
+
+//   void selectCardFromThirdRow(String path) {
+//     if (selectedCardsFromThirdRow.length <= 4 &&
+//         !selectedCardsFromThirdRow.contains(path)) {
+//       selectedCardsFromThirdRow.add(path);
+//     }
+//     notifyListeners();
+//   }
+
+//   void removeSingleCard(String path) {
+//     selectedCards.remove(path);
+//     selectedCardsForSecondRow.remove(path);
+//     notifyListeners();
+//   }
+
+//   void removeCards() {
+//     selectedCards = [];
+//     selectedCardsForSecondRow = [];
+//     selectedCardsFromThirdRow = [];
+//     notifyListeners();
+//   }
+// }
 
 class AICardsProvider with ChangeNotifier {
   List<String> selectedAICards = [];
