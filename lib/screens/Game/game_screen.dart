@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 
-
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
 
@@ -24,6 +23,110 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   int _selectedButtonIndex = 0;
   List<String> selectedCardsList = [];
+  int playerScore = 0;
+  int aiScore = 0;
+
+  int getCardPoints(String rank) {
+    switch (rank) {
+      case 'J':
+        return 11;
+      case 'Q':
+        return 12;
+      case 'K':
+        return 13;
+      case 'A':
+        return 14;
+      default:
+        return int.tryParse(rank) ?? 0;
+    }
+  }
+
+  bool isStraightHand(List<int> rankValues) {
+    rankValues.sort();
+    for (int i = 0; i < rankValues.length - 1; i++) {
+      if (rankValues[i + 1] != rankValues[i] + 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  int calculateScore(List<String> combo) {
+    int score = 0;
+    Map<String, int> rankCounts = {};
+    Map<String, int> suitCounts = {};
+    List<int> rankValues = [];
+
+    for (var card in combo) {
+      String rank = card
+          .split('_')[2]
+          .substring(0, 1); // Assuming card format is "card_spades_A.png"
+      String suit = card.split('_')[1];
+      int points = getCardPoints(rank);
+      score += points;
+      rankValues.add(points);
+
+      rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
+      suitCounts[suit] = (suitCounts[suit] ?? 0) + 1;
+    }
+
+    bool isFlush = suitCounts.containsValue(5);
+    bool isStraight = isStraightHand(rankValues);
+
+    // Apply scoring based on hand type
+    if (isFlush && isStraight) {
+      score *= 7; // Straight Flush
+    } else if (rankCounts.containsValue(4)) {
+      score *= 5; // Four of a Kind
+    } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
+      score *= 4; // Full House
+    } else if (isFlush) {
+      score *= 3; // Flush
+    } else if (isStraight) {
+      score *= 2; // Straight
+    } else if (rankCounts.containsValue(3)) {
+      score *= 2; // Three of a Kind
+    } else if (rankCounts.values.where((v) => v == 2).length == 2) {
+      score += 10; // Two Pair
+    } else if (rankCounts.containsValue(2)) {
+      score += 5; // One Pair
+    } else {
+      score *= 1; // High Card
+    }
+
+    return score;
+  }
+
+  void _calculateScores() {
+    List<String> userSelectedCards =
+        context.read<CardsProvider>().selectedCardsFromThirdRow;
+
+    playerScore = calculateScore(userSelectedCards);
+
+    List<String> aiSelectedCards =
+        context.read<AICardsProvider>().selectedAICards;
+    aiScore = calculateScore(aiSelectedCards);
+
+    // Display the result
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Game Result"),
+          content: Text("Your Score: $playerScore\nAI Score: $aiScore"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _onButtonPressed(int index) {
     setState(() {
       _selectedButtonIndex = index;
@@ -453,7 +556,7 @@ class _GameScreenState extends State<GameScreen> {
                                                   image: DecorationImage(
                                                     image: AssetImage(
                                                         //if index<
-                                                    
+
 //  '${(index)>=counter.selectedCards.length ? "assets/images/${cardData[index]}" : counter.selectedCards[index] }'),
                                                         '${"${counter.shuffleDeckElements[index]}"}'),
                                                     // '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
@@ -520,10 +623,12 @@ class _GameScreenState extends State<GameScreen> {
                                 context
                                     .read<AICardsProvider>()
                                     .selectAICards(shuffleAIDeck(AIDeck));
-                                context
-                                    .read<CardsProvider>()
-                                    .selectCardsForSecondRow(
-                                        counter.selectedCards);
+
+                                _calculateScores();
+                                // context
+                                //     .read<CardsProvider>()
+                                //     .selectCardsForSecondRow(
+                                //         counter.selectedCards);
 
                                 // Navigator.pop(context);
                               },
@@ -640,7 +745,7 @@ class _GameScreenState extends State<GameScreen> {
                                               alignment: Alignment.center,
                                               child: GridView.builder(
                                                 gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: 4,
                                                   mainAxisSpacing: 1,
                                                   crossAxisSpacing: 1,
