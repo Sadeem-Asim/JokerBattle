@@ -43,6 +43,9 @@ class HomeScreen extends StatelessWidget {
                           context
                               .read<CardsProvider>()
                               .shuffleDeckElement(deck);
+                              // context
+                              // .read<CardsProvider>()
+                              // .addMultipleCards(selectedCards);
                           Navigator.pushNamed(context, '/game');
                         },
                         child: const Text(

@@ -23,14 +23,11 @@ class CardsProvider with ChangeNotifier {
 
   void shuffleDeckElement(deck) {
     shuffleDeckElements = shuffleDeck(deck);
-    selectedCards =shuffleDeckElements;
+    selectedCards = shuffleDeckElements;
 
     print({"murgha": shuffleDeckElements.length});
     notifyListeners();
   }
-
-
-
 
   // List<String> get selectedCards;
 
@@ -41,9 +38,10 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
+  void addMultipleCards(List<String> deck) {
+    selectedCards = deck;
+    notifyListeners();
+  }
 
   void selectCardsForSecondRow(List<String> selectedCards) {
     // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
@@ -53,8 +51,6 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
   void selectCardFromThirdRow(String path) {
     if (selectedCardsFromThirdRow.length <= 4 &&
         !selectedCardsFromThirdRow.contains(path)) {
@@ -62,8 +58,6 @@ class CardsProvider with ChangeNotifier {
     }
     notifyListeners();
   }
-
-
 
   void removeSingleCard(String path) {
     selectedCards.remove(path);
@@ -78,4 +72,3 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-
