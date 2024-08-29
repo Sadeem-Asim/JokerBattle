@@ -53,6 +53,8 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+
   void selectCardFromThirdRow(String path) {
     if (selectedCardsFromThirdRow.length <= 4 &&
         !selectedCardsFromThirdRow.contains(path)) {
@@ -60,6 +62,8 @@ class CardsProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+
 
   void removeSingleCard(String path) {
     selectedCards.remove(path);
