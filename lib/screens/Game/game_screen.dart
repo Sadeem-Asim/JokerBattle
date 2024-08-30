@@ -108,7 +108,8 @@ class _GameScreenState extends State<GameScreen> {
     aiScore = calculateScore(aiSelectedCards);
 
     bool winStatus = playerScore > aiScore ? true : false;
-
+    if(!winStatus){
+     Provider.of<CardsProvider>(context, listen: false).setCurrentRound(0);   }
     // Display the result
     showDialog(
         context: context,
@@ -226,7 +227,8 @@ class _GameScreenState extends State<GameScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
                                     Row(
                                         mainAxisAlignment:
@@ -282,16 +284,18 @@ class _GameScreenState extends State<GameScreen> {
                                                       horizontal: 20,
                                                       vertical: 10),
                                             ),
-                                            child:  Row(mainAxisAlignment: MainAxisAlignment.center,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               // crossAxisAlignment:
                                               //     CrossAxisAlignment.start,
                                               children: [
-                                                 SvgPicture.asset(
+                                                SvgPicture.asset(
                                                   'assets/images/upgrade-card-2.svg',
                                                   fit: BoxFit.cover,
                                                   // width: 49,
                                                 ),
-                                                SizedBox(width:7),
+                                                SizedBox(width: 7),
                                                 Text('10',
                                                     style: TextStyle(
                                                         fontFamily:
@@ -365,6 +369,38 @@ class _GameScreenState extends State<GameScreen> {
                                             ));
                                       }),
                                     ),
+
+                                    //hook
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // context
+                                        //     .read<CardsProvider>()
+                                        //     .shuffleDeckElement(deck);
+                                        //     // context
+                                        //     // .read<CardsProvider>()
+                                        //     // .addMultipleCards(selectedCards);
+                                         context.read<CardsProvider>().incrementCurrentRound();
+                                             
+                                        Navigator.pushNamed(context, '/game');
+                                      },
+                                      child: const Text(
+                                        'NEXT ROUND',
+                                        style: TextStyle(
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 32),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF838796),
+                                        foregroundColor: Colors.white,
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 85, vertical: 8),
+                                      ),
+                                    )
                                   ],
                                 );
                               },
@@ -392,6 +428,8 @@ class _GameScreenState extends State<GameScreen> {
 
             // );
           } else {
+            //  context.read<CardsProvider>().setCurrentRound();
+                                         
             return Scaffold(
               backgroundColor: Colors.black.withOpacity(0.8),
               body: Container(
@@ -618,7 +656,7 @@ class _GameScreenState extends State<GameScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/home');
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(6, 30),
@@ -836,20 +874,24 @@ class _GameScreenState extends State<GameScreen> {
                                     SizedBox(
                                       width: 25,
                                     ),
-                                    Container(
-                                        margin: EdgeInsets.symmetric(
-                                            vertical: 0, horizontal: 10),
-                                        child: Text("  3\nRound",
-                                            style: TextStyle(
-                                                color: Color(0xFFF7A74F),
-                                                fontFamily: "BreatheFire",
-                                                fontSize: 23))
-                                        //  SvgPicture.asset(
-                                        //   'assets/images/threeRound.svg',
-                                        //   fit: BoxFit.cover,
-                                        //   width: 49,
-                                        // ),
-                                        ),
+                                    Consumer<CardsProvider>(
+                                        builder: (context, counter, child) {
+                                      return Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 0, horizontal: 10),
+                                          child: Text(
+                                              "  ${counter.currentRound}\nRound",
+                                              style: TextStyle(
+                                                  color: Color(0xFFF7A74F),
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 23))
+                                          //  SvgPicture.asset(
+                                          //   'assets/images/threeRound.svg',
+                                          //   fit: BoxFit.cover,
+                                          //   width: 49,
+                                          // ),
+                                          );
+                                    }),
                                     const SizedBox(
                                       width: 10,
                                     ),
@@ -1287,7 +1329,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:  Color(0xFF838796),
+      color: Color(0xFF838796),
       elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),

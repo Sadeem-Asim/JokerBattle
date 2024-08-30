@@ -13,11 +13,37 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardsFromThirdRow = [];
   List<String> remainingDeckElements = [];
   List<String> shuffleDeckElements = [];
+  bool? winStatus;
+  int currentRound = 1;
 
   void remainingDeck(deck) {
     remainingDeckElements =
         deck.where((element) => !selectedCards.contains(element)).toList();
     print({"murgha": remainingDeckElements.length});
+    notifyListeners();
+  }
+
+  void incrementCurrentRound() {
+    if (currentRound < 6) {
+      currentRound++;
+    }
+    // print({"murgha": remainingDeckElements.length});
+    notifyListeners();
+  }
+
+  void setCurrentRound(int value) {
+    currentRound = value;
+    if (value == 0) {
+      selectedCardsFromThirdRow = [];
+    }
+    ;
+    // print({"murgha": remainingDeckElements.length});
+    notifyListeners();
+  }
+
+  void setWindStatus(bool status) {
+    winStatus = status;
+    // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
 

@@ -38,7 +38,8 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Consumer<CardsProvider>(builder: (context, counter, child) {
-                      return ElevatedButton(
+                      return 
+                      ElevatedButton(
                         onPressed: () {
                           context
                               .read<CardsProvider>()
