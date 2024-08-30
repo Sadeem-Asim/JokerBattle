@@ -25,6 +25,11 @@ class _GameScreenState extends State<GameScreen> {
   List<String> selectedCardsList = [];
   int playerScore = 0;
   int aiScore = 0;
+  int remainingDeckView = 3;
+
+  void swapButtonPress() {
+    remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
+  }
 
   int getCardPoints(String rank) {
     switch (rank) {
@@ -1146,9 +1151,12 @@ class _GameScreenState extends State<GameScreen> {
                           onPressed: () {
                             context.read<AICardsProvider>().removeCards();
                             context.read<CardsProvider>().removeCards();
-                            context.read<CardsProvider>().shuffleDeckElement(deck);
+                            context
+                                .read<CardsProvider>()
+                                .shuffleDeckElement(deck);
                             //  Provider.of<CardsProvider>(context, listen: false)
-                            //     .shuffleDeckElement(deck);   
+                            //     .shuffleDeckElement(deck);
+                            swapButtonPress();
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
@@ -1158,13 +1166,21 @@ class _GameScreenState extends State<GameScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(2),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 14.5),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
                           ),
-                          child: SvgPicture.asset(
-                            'assets/images/rewind.svg',
-                            fit: BoxFit.cover,
-                            // width: 49,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: SvgPicture.asset(
+                                  'assets/images/rewind.svg',
+                                  // fit: BoxFit.cover,
+                                  width: 20,
+                                ),
+                              ),
+                              Text("      $remainingDeckView")
+                            ],
                           ),
                           // ),
                         ),
