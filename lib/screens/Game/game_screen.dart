@@ -1116,7 +1116,47 @@ class _GameScreenState extends State<GameScreen> {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            showDialog(
+
+
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  backgroundColor:
+                                      Colors.black.withOpacity(0.8),
+                                  body: Container(
+                                    height:double.infinity,
+                                    width:double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/background.png'),
+                                            fit: BoxFit.fill,
+                                            colorFilter: ColorFilter.mode(
+                                                Colors.black.withOpacity(0.8),
+                                                BlendMode.darken)),
+                                      ),
+                                      child: Column(
+                                        
+                                        // MainAxisAlignment.spaceAround,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(height: 250),
+                                          SizedBox(
+                                            height: 400,
+                                            child: Text(
+                                              "Jokers max",
+                                              style: TextStyle(
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 40,
+                                                  color: Color(0xFFF7A74F)),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                );
+                              },
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
