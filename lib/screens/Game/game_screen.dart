@@ -108,8 +108,9 @@ class _GameScreenState extends State<GameScreen> {
     aiScore = calculateScore(aiSelectedCards);
 
     bool winStatus = playerScore > aiScore ? true : false;
-    if(!winStatus){
-     Provider.of<CardsProvider>(context, listen: false).setCurrentRound(0);   }
+    if (!winStatus) {
+      Provider.of<CardsProvider>(context, listen: false).setCurrentRound(0);
+    }
     // Display the result
     showDialog(
         context: context,
@@ -379,8 +380,10 @@ class _GameScreenState extends State<GameScreen> {
                                         //     // context
                                         //     // .read<CardsProvider>()
                                         //     // .addMultipleCards(selectedCards);
-                                         context.read<CardsProvider>().incrementCurrentRound();
-                                             
+                                        context
+                                            .read<CardsProvider>()
+                                            .incrementCurrentRound();
+
                                         Navigator.pushNamed(context, '/game');
                                       },
                                       child: const Text(
@@ -429,7 +432,7 @@ class _GameScreenState extends State<GameScreen> {
             // );
           } else {
             //  context.read<CardsProvider>().setCurrentRound();
-                                         
+
             return Scaffold(
               backgroundColor: Colors.black.withOpacity(0.8),
               body: Container(
@@ -1143,6 +1146,9 @@ class _GameScreenState extends State<GameScreen> {
                           onPressed: () {
                             context.read<AICardsProvider>().removeCards();
                             context.read<CardsProvider>().removeCards();
+                            context.read<CardsProvider>().shuffleDeckElement(deck);
+                            //  Provider.of<CardsProvider>(context, listen: false)
+                            //     .shuffleDeckElement(deck);   
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
