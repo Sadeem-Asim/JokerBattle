@@ -5,16 +5,42 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
-  List<String> deck=generateDeck();
-
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
       builder: (context) => HomeScreen(),
     );
+  }
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<HomeScreen> {
+  List<String> deck = generateDeck();
+  final player = AudioPlayer();
+
+  // Set the release mode to keep the source after playback has completed.
+  // player.setReleaseMode();
+  @override
+  void initState() {
+    super.initState();
+    _playBackgroundMusic();
+  }
+
+  void _playBackgroundMusic() async {
+    player.play(AssetSource('Music/BG.mp3'));
+  }
+
+  @override
+  void dispose() {
+    print("harami-d");
+    AudioPlayer().dispose(); // Clean up the audio player
+    super.dispose(); // Call the parent class's dispose method
   }
 
   @override
@@ -38,15 +64,15 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Consumer<CardsProvider>(builder: (context, counter, child) {
-                      return 
-                      ElevatedButton(
-                        onPressed: () {
+                      return ElevatedButton(
+                        onPressed: () async {
+                          player.stop();
                           context
                               .read<CardsProvider>()
                               .shuffleDeckElement(deck);
-                              // context
-                              // .read<CardsProvider>()
-                              // .addMultipleCards(selectedCards);
+                          // context
+                          // .read<CardsProvider>()
+                          // .addMultipleCards(selectedCards);
                           Navigator.pushNamed(context, '/game');
                         },
                         child: const Text(

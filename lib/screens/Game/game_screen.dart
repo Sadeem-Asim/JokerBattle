@@ -5,9 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
-
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
+
 
   static Route route() {
     return MaterialPageRoute(
@@ -26,6 +28,7 @@ class _GameScreenState extends State<GameScreen> {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
+  final player = AudioPlayer();
 
   void swapButtonPress() {
     remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
@@ -215,7 +218,7 @@ class _GameScreenState extends State<GameScreen> {
                       ]),
                       SizedBox(height: 7),
                       Text(
-                        "You Win",
+                        "You Win!",
                         style: TextStyle(
                             fontFamily: "BreatheFire",
                             fontSize: 40,
@@ -228,7 +231,9 @@ class _GameScreenState extends State<GameScreen> {
                                   color: Colors.white,
                                   fontFamily: "BreatheFire",
                                   fontSize: 35)),
-                          onPressed: () {
+                          onPressed: ()async {
+                            
+                                 await player.play(AssetSource('Music/Upgrade.mp3'));
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -378,7 +383,7 @@ class _GameScreenState extends State<GameScreen> {
 
                                     //hook
                                     ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: ()async {
                                         // context
                                         //     .read<CardsProvider>()
                                         //     .shuffleDeckElement(deck);
@@ -388,7 +393,7 @@ class _GameScreenState extends State<GameScreen> {
                                         context
                                             .read<CardsProvider>()
                                             .incrementCurrentRound();
-
+                                        await player.play(AssetSource('Music/Round-start.mp3'));
                                         Navigator.pushNamed(context, '/game');
                                       },
                                       child: const Text(
@@ -437,7 +442,7 @@ class _GameScreenState extends State<GameScreen> {
             // );
           } else {
             //  context.read<CardsProvider>().setCurrentRound();
-
+           player.play(AssetSource('Music/Round-over.mp3'));
             return Scaffold(
               backgroundColor: Colors.black.withOpacity(0.8),
               body: Container(
@@ -1071,7 +1076,11 @@ class _GameScreenState extends State<GameScreen> {
                         child: Consumer<CardsProvider>(
                             builder: (context, counter, child) {
                           return ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                 await player.play(AssetSource('Music/Play.mp3'));
+                                //  await Future.delayed(
+                                //     const Duration(seconds: 1));
+                                
                                 context
                                     .read<AICardsProvider>()
                                     .selectAICards(shuffleAIDeck(AIDeck));
@@ -1145,7 +1154,7 @@ class _GameScreenState extends State<GameScreen> {
                                           SizedBox(
                                             height: 400,
                                             child: Text(
-                                              "Jokers max",
+                                              "5 Jokers max",
                                               style: TextStyle(
                                                   fontFamily: "BreatheFire",
                                                   fontSize: 40,

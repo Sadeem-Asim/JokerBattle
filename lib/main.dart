@@ -132,20 +132,25 @@ import 'package:joker_battle/screens/Game/game_screen.dart';
 import 'package:joker_battle/screens/Home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/provider/card_provider.dart';
-
+import 'package:audioplayers/audioplayers.dart';
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
+  // final player = AudioCache().load("Music/BG.mp3");
+  // await AudioPlayer().audioCache.load("Music/BG.mp3");
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   // Bloc.observer = SimpleBlocObserver();
+   
   return runApp(
+    
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CardsProvider()),
         ChangeNotifierProvider(create: (_) => AICardsProvider()),
-      ], child: MyApp(),
+      ],
+      child: MyApp(),
     ),
   );
 }
