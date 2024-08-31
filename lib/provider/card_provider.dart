@@ -26,6 +26,7 @@ class CardsProvider with ChangeNotifier {
     aiScore += points;
     notifyListeners();
   }
+
   void setAiScore(int points) {
     aiScore = points;
     notifyListeners();
@@ -35,11 +36,11 @@ class CardsProvider with ChangeNotifier {
     playerScore += points;
     notifyListeners();
   }
+
   void setPlayerScore(int points) {
     playerScore = points;
     notifyListeners();
   }
-
 
   void selectCardToSwap(String Path) {
     selectedCardToSwap.contains(Path)
@@ -101,6 +102,9 @@ class CardsProvider with ChangeNotifier {
     noOFChips += 10;
     await box.put('noOfChips', noOFChips);
     noOfChips = noOFChips;
+    currentRound = 1;
+    incrementCurrentLevel();
+
     notifyListeners();
   }
 
@@ -113,9 +117,9 @@ class CardsProvider with ChangeNotifier {
   }
 
   void incrementCurrentLevel() {
-    if (currentRound > 5) {
-      currentLevel++;
-    }
+    // if (currentRound > 5) {
+    currentLevel++;
+    // }
     // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
