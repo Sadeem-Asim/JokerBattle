@@ -136,7 +136,11 @@ class _GameScreenState extends State<GameScreen> {
 
       Provider.of<CardsProvider>(context, listen: false).setCurrentRound(1);
     } else {
-      await context.read<CardsProvider>().addTenChipsOnWin();
+      
+      if(Provider.of<CardsProvider>(context, listen: false).currentRound==5){
+await context.read<CardsProvider>().addTenChipsOnWin();
+      };
+      
       // var path = Directory.current.path;
       final appDocumentDirectory = await getApplicationDocumentsDirectory();
       Hive.init(appDocumentDirectory.path);
