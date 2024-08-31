@@ -437,7 +437,111 @@ class _GameScreenState extends State<GameScreen> {
                                       ),
 
                                       //hook
-                                      ElevatedButton(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    context
+                                              .read<CardsProvider>()
+                                              .currentRound==5 ?
+
+
+
+                                              ElevatedButton(
+                                              onPressed: () async {
+                                                // context
+                                                //     .read<CardsProvider>()
+                                                //     .shuffleDeckElement(deck);
+                                                //     // context
+                                                //     // .read<CardsProvider>()
+                                                //     // .addMultipleCards(selectedCards);
+                                                // context
+                                                //     .read<CardsProvider>()
+                                                //     .incrementCurrentRound();
+                                                // context
+                                                //     .read<CardsProvider>()
+                                                //     .removeCards();
+
+                                                // context
+                                                // .read<CardsProvider>()
+                                                // .setPlayerScore((context
+                                                //         .read<CardsProvider>()
+                                                //         .playerScore) +
+                                                //     playerScore);
+
+                                                //     context
+                                                // .read<CardsProvider>()
+                                                // .setPlayerScore((context
+                                                //         .read<CardsProvider>()
+                                                //         .aiScore) +
+                                                //     aiScore);
+
+                                                // await player.play(AssetSource(
+                                                //     'Music/Round-start.mp3'));
+                                                Navigator.pushNamed(
+                                                    context, '/home');
+                                              },
+                                              child: const Text(
+                                                'Menu',
+                                                style: TextStyle(
+                                                    fontFamily: "BreatheFire",
+                                                    fontSize: 32),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Color(0xFF838796),
+                                                foregroundColor: Colors.white,
+                                                elevation: 10,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 85,
+                                                    vertical: 8),
+                                              ),
+                                            )
+                                   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     : ElevatedButton(
                                         onPressed: () async {
                                           // context
                                           //     .read<CardsProvider>()
@@ -475,6 +579,12 @@ class _GameScreenState extends State<GameScreen> {
                                               'Music/Round-start.mp3'));
                                           Navigator.pushNamed(context, '/game');
                                         },
+
+
+
+
+
+
                                         child: const Text(
                                           'NEXT ROUND',
                                           style: TextStyle(
