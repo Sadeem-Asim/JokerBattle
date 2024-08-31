@@ -7,6 +7,9 @@ import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
+import 'package:hive/hive.dart';
+import "package:path_provider/path_provider.dart";
+import 'dart:io';
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -28,6 +31,7 @@ class _GameScreenState extends State<GameScreen> {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
+  var box = Hive.openBox('noOfChips');
   final player = AudioPlayer();
 
   void swapButtonPress() {
@@ -105,7 +109,7 @@ class _GameScreenState extends State<GameScreen> {
     return score;
   }
 
-  void _calculateScores() {
+  Future<void> _calculateScores(int noOfChips) async {
     List<String> userSelectedCards =
         context.read<CardsProvider>().selectedCardsFromThirdRow;
 
@@ -117,325 +121,370 @@ class _GameScreenState extends State<GameScreen> {
 
     bool winStatus = playerScore > aiScore ? true : false;
     if (!winStatus) {
-      Provider.of<CardsProvider>(context, listen: false).setCurrentRound(0);
+       
+      //     final appDocumentDirectory = await getApplicationDocumentsDirectory();
+      // Hive.init(appDocumentDirectory.path);
+      // var box =
+      //     await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
+
+      // var chipsnumber = await box.get('noOfChips');
+      // print({"lose", chipsnumber});
+
+
+
+
+
+      Provider.of<CardsProvider>(context, listen: false).setCurrentRound(1);
+    } else {
+      await context.read<CardsProvider>().addTenChipsOnWin();
+      // var path = Directory.current.path;
+      final appDocumentDirectory = await getApplicationDocumentsDirectory();
+      Hive.init(appDocumentDirectory.path);
+      print({"dalla": appDocumentDirectory.path});
+      // Hive.init(path);
+      
+      var box =
+          await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
+
+
+          
+      //     var chipsnumber = await box.get('noOfChips');
+      // print({"iram-saleem", chipsnumber});
+      await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
     }
     // Display the result
     showDialog(
         context: context,
         builder: (BuildContext context) {
           if (winStatus == true) {
-            return Scaffold(
-              backgroundColor: Colors.black.withOpacity(0.8),
-              body: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/background.png'),
-                      fit: BoxFit.fill,
-                      colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.8), BlendMode.darken)),
-                  // color: Color(0xFF5C5E68),
-                  // border: Border.all(
-                  //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
-                  //   width: 4,
+            return PopScope(
+              canPop: false,
+              child: Scaffold(
+                backgroundColor: Colors.black.withOpacity(0.8),
+                body: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/background.png'),
+                        fit: BoxFit.fill,
+                        colorFilter: ColorFilter.mode(
+                            Colors.black.withOpacity(0.8), BlendMode.darken)),
+                    // color: Color(0xFF5C5E68),
+                    // border: Border.all(
+                    //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
+                    //   width: 4,
 
-                  //   // Set the border width
-                  // ),
-                  // borderRadius: BorderRadius.circular(20),
-                ),
-                // alignment: Alignment.center,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(children: [
-                        SizedBox(width: 120),
-                        Column(
-                          children: [
-                            Text(
-                              "AI",
-                              style: TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 30,
-                                  color: Color(0xFFF7A74F)),
-                            ),
-                            SizedBox(
-                              height: 18,
-                              child: ElevatedButton(
-                                  child: Text("$aiScore",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  onPressed: () {
-                                    // Handle button 1 press
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      // elevation: 30,
+                    //   // Set the border width
+                    // ),
+                    // borderRadius: BorderRadius.circular(20),
+                  ),
+                  // alignment: Alignment.center,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(children: [
+                          SizedBox(width: 120),
+                          Column(
+                            children: [
+                              Text(
+                                "AI",
+                                style: TextStyle(
+                                    fontFamily: "BreatheFire",
+                                    fontSize: 30,
+                                    color: Color(0xFFF7A74F)),
+                              ),
+                              SizedBox(
+                                height: 18,
+                                child: ElevatedButton(
+                                    child: Text("$aiScore",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 14)),
+                                    onPressed: () {
+                                      // Handle button 1 press
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        // elevation: 30,
 
-                                      //                 horizontal: 5, vertical: 12),
-                                      backgroundColor: Color(0xFF88E060),
+                                        //                 horizontal: 5, vertical: 12),
+                                        backgroundColor: Color(0xFF88E060),
 
-                                      // padding: EdgeInsets.zero,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 23))),
-                            ),
-                          ],
+                                        // padding: EdgeInsets.zero,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 23))),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "You",
+                                style: TextStyle(
+                                    fontFamily: "BreatheFire",
+                                    color: Color(0xFFF7A74F),
+                                    fontSize: 32),
+                              ),
+                              SizedBox(
+                                height: 18,
+                                child: ElevatedButton(
+                                    child: Text("$playerScore",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 14)),
+                                    onPressed: () {
+                                      // Handle button 1 press
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        // elevation: 30,
+
+                                        //                 horizontal: 5, vertical: 12),
+                                        backgroundColor: Color(0xFF88E060),
+
+                                        // padding: EdgeInsets.zero,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 23))),
+                              ),
+                            ],
+                          )
+                        ]),
+                        SizedBox(height: 7),
+                        Text(
+                          "You Win!",
+                          style: TextStyle(
+                              fontFamily: "BreatheFire",
+                              fontSize: 40,
+                              color: Color(0xFFF7A74F)),
                         ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "You",
-                              style: TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  color: Color(0xFFF7A74F),
-                                  fontSize: 32),
-                            ),
-                            SizedBox(
-                              height: 18,
-                              child: ElevatedButton(
-                                  child: Text("$playerScore",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  onPressed: () {
-                                    // Handle button 1 press
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      // elevation: 30,
 
-                                      //                 horizontal: 5, vertical: 12),
-                                      backgroundColor: Color(0xFF88E060),
-
-                                      // padding: EdgeInsets.zero,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 23))),
-                            ),
-                          ],
-                        )
-                      ]),
-                      SizedBox(height: 7),
-                      Text(
-                        "You Win!",
-                        style: TextStyle(
-                            fontFamily: "BreatheFire",
-                            fontSize: 40,
-                            color: Color(0xFFF7A74F)),
-                      ),
-
-                      ElevatedButton(
-                          child: Text("Upgrade",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 35)),
-                          onPressed: () async {
-                            await player.play(AssetSource('Music/Upgrade.mp3'));
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              minimumSize: const Size(6, 30),
-                                              backgroundColor:
-                                                  Color(0xFF838796),
-                                              foregroundColor: Colors.white,
-                                              // elevation: 10,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(2),
+                        ElevatedButton(
+                            child: Text("Upgrade",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "BreatheFire",
+                                    fontSize: 35)),
+                            onPressed: () async {
+                              var box = await Hive.openBox('noOfChips');
+                              var noOfChips = box.get('noOfChips');
+                              await player
+                                  .play(AssetSource('Music/Upgrade.mp3'));
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize: const Size(6, 30),
+                                                backgroundColor:
+                                                    Color(0xFF838796),
+                                                foregroundColor: Colors.white,
+                                                // elevation: 10,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(2),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 8),
                                               ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 8),
-                                            ),
-                                            child: SvgPicture.asset(
-                                              'assets/images/backbutton.svg',
-                                              fit: BoxFit.cover,
-                                              // width: 49,
-                                            ),
-                                            // ),
-                                          ),
-
-                                          const SizedBox(width: 45),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              // Handle button 1 press
-                                              _onButtonPressed(0);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  _selectedButtonIndex == 0
-                                                      ? Color(0xFF9B9DAD)
-                                                      : Color.fromARGB(
-                                                          255, 210, 220, 255),
-                                              foregroundColor: Colors.white,
-                                              elevation: 10,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(3),
+                                              child: SvgPicture.asset(
+                                                'assets/images/backbutton.svg',
+                                                fit: BoxFit.cover,
+                                                // width: 49,
                                               ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
+                                              // ),
+                                            ),
+
+                                            const SizedBox(width: 45),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  // Handle button 1 press
+                                                  _onButtonPressed(0);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      _selectedButtonIndex == 0
+                                                          ? Color(0xFF9B9DAD)
+                                                          : Color.fromARGB(255,
+                                                              210, 220, 255),
+                                                  foregroundColor: Colors.white,
+                                                  elevation: 10,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                       horizontal: 20,
                                                       vertical: 10),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              // crossAxisAlignment:
-                                              //     CrossAxisAlignment.start,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  'assets/images/upgrade-card-2.svg',
-                                                  fit: BoxFit.cover,
-                                                  // width: 49,
                                                 ),
-                                                SizedBox(width: 7),
-                                                Text('10',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            "BreatheFire",
-                                                        fontSize: 25,
-                                                        color: Colors.white)),
-                                              ],
-                                            ),
-                                          ),
+                                                child: Consumer<CardsProvider>(
+                                                    builder: (context, counter,
+                                                        child) {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    // crossAxisAlignment:
+                                                    //     CrossAxisAlignment.start,
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        'assets/images/upgrade-card-2.svg',
+                                                        fit: BoxFit.cover,
+                                                        // width: 49,
+                                                      ),
+                                                      SizedBox(width: 7),
+                                                      Text('${noOfChips}',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  "BreatheFire",
+                                                              fontSize: 25,
+                                                              color: Colors
+                                                                  .white)),
+                                                    ],
+                                                  );
+                                                })),
 
-                                          const SizedBox(width: 27),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              _onButtonPressed(2);
-                                              // Navigator.pushNamed(context, '/');
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              minimumSize: const Size(6, 30),
-                                              backgroundColor:
-                                                  Color(0xFF838796),
-                                              foregroundColor: Colors.white,
-                                              // elevation: 10,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(2),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 8),
-                                            ),
-                                            child: SvgPicture.asset(
-                                              'assets/images/info.svg',
-                                              fit: BoxFit.cover,
-                                              // width: 49,
-                                            ),
-                                          ),
-                                          // const SizedBox(width: 15),
-                                        ]),
-                                    const SizedBox(height: 45),
-
-                                    //upgradex
-                                    SizedBox(
-                                      height: 400,
-                                      child: Consumer<CardsProvider>(
-                                          builder: (context, counter, child) {
-                                        return Container(
-                                            alignment: Alignment.center,
-                                            child: GridView.builder(
-                                              gridDelegate:
-                                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4,
-                                                mainAxisSpacing: 1,
-                                                crossAxisSpacing: 1,
-                                              ),
-                                              itemCount: 15,
-                                              // shuffleDeck(deck).length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return SelectableCardForUpgrade(
-                                                    imageUrl:
-                                                        "assets/images/card_hearts_02.png",
-
-                                                    //  shuffleDeck(
-                                                    //     deck)[index],
-                                                    // ThirdCardData[index]
-
-                                                    title: "");
+                                            const SizedBox(width: 27),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _onButtonPressed(2);
+                                                // Navigator.pushNamed(context, '/');
                                               },
-                                            ));
-                                      }),
-                                    ),
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize: const Size(6, 30),
+                                                backgroundColor:
+                                                    Color(0xFF838796),
+                                                foregroundColor: Colors.white,
+                                                // elevation: 10,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(2),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 8),
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/info.svg',
+                                                fit: BoxFit.cover,
+                                                // width: 49,
+                                              ),
+                                            ),
+                                            // const SizedBox(width: 15),
+                                          ]),
+                                      const SizedBox(height: 45),
 
-                                    //hook
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        // context
-                                        //     .read<CardsProvider>()
-                                        //     .shuffleDeckElement(deck);
-                                        //     // context
-                                        //     // .read<CardsProvider>()
-                                        //     // .addMultipleCards(selectedCards);
-                                        context
-                                            .read<CardsProvider>()
-                                            .incrementCurrentRound();
-                                        await player.play(AssetSource(
-                                            'Music/Round-start.mp3'));
-                                        Navigator.pushNamed(context, '/game');
-                                      },
-                                      child: const Text(
-                                        'NEXT ROUND',
-                                        style: TextStyle(
-                                            fontFamily: "BreatheFire",
-                                            fontSize: 32),
+                                      //upgradex
+                                      SizedBox(
+                                        height: 400,
+                                        child: Consumer<CardsProvider>(
+                                            builder: (context, counter, child) {
+                                          return Container(
+                                              alignment: Alignment.center,
+                                              child: GridView.builder(
+                                                gridDelegate:
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 4,
+                                                  mainAxisSpacing: 1,
+                                                  crossAxisSpacing: 1,
+                                                ),
+                                                itemCount: 15,
+                                                // shuffleDeck(deck).length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return SelectableCardForUpgrade(
+                                                      imageUrl:
+                                                          "assets/images/card_hearts_02.png",
+
+                                                      //  shuffleDeck(
+                                                      //     deck)[index],
+                                                      // ThirdCardData[index]
+
+                                                      title: "");
+                                                },
+                                              ));
+                                        }),
                                       ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF838796),
-                                        foregroundColor: Colors.white,
-                                        elevation: 10,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+
+                                      //hook
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          // context
+                                          //     .read<CardsProvider>()
+                                          //     .shuffleDeckElement(deck);
+                                          //     // context
+                                          //     // .read<CardsProvider>()
+                                          //     // .addMultipleCards(selectedCards);
+                                          context
+                                              .read<CardsProvider>()
+                                              .incrementCurrentRound();
+                                          context
+                                              .read<CardsProvider>()
+                                              .removeCards();
+
+                                          await player.play(AssetSource(
+                                              'Music/Round-start.mp3'));
+                                          Navigator.pushNamed(context, '/game');
+                                        },
+                                        child: const Text(
+                                          'NEXT ROUND',
+                                          style: TextStyle(
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 32),
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 85, vertical: 8),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              },
-                            );
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFF838796),
+                                          foregroundColor: Colors.white,
+                                          elevation: 10,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 85, vertical: 8),
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
 
-                            // Handle button 1 press
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 30,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
+                              // Handle button 1 press
+                            },
+                            style: ElevatedButton.styleFrom(
+                                elevation: 30,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
 
-                              //                 horizontal: 5, vertical: 12),
-                              backgroundColor:
-                                  Color.fromARGB(255, 168, 168, 168),
+                                //                 horizontal: 5, vertical: 12),
+                                backgroundColor:
+                                    Color.fromARGB(255, 168, 168, 168),
 
-                              // padding: EdgeInsets.zero,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 80))),
-                      // ),
-                    ]),
+                                // padding: EdgeInsets.zero,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 80))),
+                        // ),
+                      ]),
+                ),
               ),
             );
 
@@ -443,132 +492,135 @@ class _GameScreenState extends State<GameScreen> {
           } else {
             //  context.read<CardsProvider>().setCurrentRound();
             player.play(AssetSource('Music/Round-over.mp3'));
-            return Scaffold(
-              backgroundColor: Colors.black.withOpacity(0.8),
-              body: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/background.png'),
-                      fit: BoxFit.fill,
-                      colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.8), BlendMode.darken)),
-                  // color: Color(0xFF5C5E68),
-                  // border: Border.all(
-                  //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
-                  //   width: 4,
+            return PopScope(
+              canPop: false,
+              child: Scaffold(
+                backgroundColor: Colors.black.withOpacity(0.8),
+                body: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/background.png'),
+                        fit: BoxFit.fill,
+                        colorFilter: ColorFilter.mode(
+                            Colors.black.withOpacity(0.8), BlendMode.darken)),
+                    // color: Color(0xFF5C5E68),
+                    // border: Border.all(
+                    //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
+                    //   width: 4,
 
-                  //   // Set the border width
-                  // ),
-                  // borderRadius: BorderRadius.circular(20),
-                ),
-                // alignment: Alignment.center,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(children: [
-                        SizedBox(width: 120),
-                        Column(
-                          children: [
-                            Text(
-                              "AI",
-                              style: TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 30,
-                                  color: Color(0xFFF7A74F)),
-                            ),
-                            SizedBox(
-                              height: 18,
-                              child: ElevatedButton(
-                                  child: Text("$aiScore",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  onPressed: () {
-                                    // Handle button 1 press
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      // elevation: 30,
-
-                                      //                 horizontal: 5, vertical: 12),
-                                      backgroundColor: Color(0xFF88E060),
-
-                                      // padding: EdgeInsets.zero,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 23))),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "You",
-                              style: TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  color: Color(0xFFF7A74F),
-                                  fontSize: 32),
-                            ),
-                            SizedBox(
-                              height: 18,
-                              child: ElevatedButton(
-                                  child: Text("$playerScore",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  onPressed: () {
-                                    // Handle button 1 press
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      // elevation: 30,
-
-                                      //                 horizontal: 5, vertical: 12),
-                                      backgroundColor: Color(0xFF88E060),
-
-                                      // padding: EdgeInsets.zero,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 23))),
-                            ),
-                          ],
-                        )
-                      ]),
-                      SizedBox(height: 7),
-                      Text(
-                        "You Lose",
-                        style: TextStyle(
-                            fontFamily: "BreatheFire",
-                            fontSize: 40,
-                            color: Color(0xFFF7A74F)),
-                      ),
-
-                      ElevatedButton(
-                          child: Text("MENU",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 30)),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/home');
-                            // Handle button 1 press
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 30,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
+                    //   // Set the border width
+                    // ),
+                    // borderRadius: BorderRadius.circular(20),
+                  ),
+                  // alignment: Alignment.center,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(children: [
+                          SizedBox(width: 120),
+                          Column(
+                            children: [
+                              Text(
+                                "AI",
+                                style: TextStyle(
+                                    fontFamily: "BreatheFire",
+                                    fontSize: 30,
+                                    color: Color(0xFFF7A74F)),
                               ),
+                              SizedBox(
+                                height: 18,
+                                child: ElevatedButton(
+                                    child: Text("$aiScore",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 14)),
+                                    onPressed: () {
+                                      // Handle button 1 press
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        // elevation: 30,
 
-                              //                 horizontal: 5, vertical: 12),
-                              backgroundColor:
-                                  Color.fromARGB(255, 168, 168, 168),
+                                        //                 horizontal: 5, vertical: 12),
+                                        backgroundColor: Color(0xFF88E060),
 
-                              // padding: EdgeInsets.zero,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 80))),
-                      // ),
-                    ]),
+                                        // padding: EdgeInsets.zero,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 23))),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "You",
+                                style: TextStyle(
+                                    fontFamily: "BreatheFire",
+                                    color: Color(0xFFF7A74F),
+                                    fontSize: 32),
+                              ),
+                              SizedBox(
+                                height: 18,
+                                child: ElevatedButton(
+                                    child: Text("$playerScore",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 14)),
+                                    onPressed: () {
+                                      // Handle button 1 press
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        // elevation: 30,
+
+                                        //                 horizontal: 5, vertical: 12),
+                                        backgroundColor: Color(0xFF88E060),
+
+                                        // padding: EdgeInsets.zero,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 23))),
+                              ),
+                            ],
+                          )
+                        ]),
+                        SizedBox(height: 7),
+                        Text(
+                          "You Lose",
+                          style: TextStyle(
+                              fontFamily: "BreatheFire",
+                              fontSize: 40,
+                              color: Color(0xFFF7A74F)),
+                        ),
+
+                        ElevatedButton(
+                            child: Text("MENU",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "BreatheFire",
+                                    fontSize: 30)),
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/home');
+                              // Handle button 1 press
+                            },
+                            style: ElevatedButton.styleFrom(
+                                elevation: 30,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+
+                                //                 horizontal: 5, vertical: 12),
+                                backgroundColor:
+                                    Color.fromARGB(255, 168, 168, 168),
+
+                                // padding: EdgeInsets.zero,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 80))),
+                        // ),
+                      ]),
+                ),
               ),
             );
           }
@@ -1111,7 +1163,7 @@ class _GameScreenState extends State<GameScreen> {
                                     .read<AICardsProvider>()
                                     .selectAICards(shuffleAIDeck(AIDeck));
 
-                                _calculateScores();
+                                await _calculateScores(counter.noOfChips);
                                 // context
                                 //     .read<CardsProvider>()
                                 //     .selectCardsForSecondRow(
@@ -1225,7 +1277,8 @@ class _GameScreenState extends State<GameScreen> {
                             onPressed: () {
                               // context.read<AICardsProvider>().removeCards();
                               // context.read<CardsProvider>().removeCards();
-                              if (remainingDeckView > 0) {
+                              if (remainingDeckView > 0 &&
+                                  counter.selectedCardToSwap.length == 1) {
                                 context
                                     .read<CardsProvider>()
                                     .remainingDeck(deck);

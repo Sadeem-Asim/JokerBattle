@@ -133,6 +133,9 @@ import 'package:joker_battle/screens/Home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:hive/hive.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
@@ -141,6 +144,11 @@ Future<void> main() async {
   // await AudioPlayer().audioCache.load("Music/BG.mp3");
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
+  //  var path = Directory.current.path;
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  // var box = await Hive.openBox('testBox');
   // Bloc.observer = SimpleBlocObserver();
    
   return runApp(

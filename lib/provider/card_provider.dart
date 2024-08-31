@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardToSwap = [];
   bool? winStatus;
   int currentRound = 1;
+  int noOfChips = 0;
 
   void selectCardToSwap(String Path) {
     selectedCardToSwap.contains(Path)
@@ -71,6 +73,15 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addTenChipsOnWin() async {
+    var box = await Hive.openBox('noOfChips');
+    var noOFChips = await box.get('noOfChips');
+    noOFChips += 10;
+    await box.put('noOfChips',noOFChips);
+    noOfChips = noOFChips;
+    notifyListeners();
+  }
+
   void incrementCurrentRound() {
     if (currentRound < 6) {
       currentRound++;
@@ -81,7 +92,7 @@ class CardsProvider with ChangeNotifier {
 
   void setCurrentRound(int value) {
     currentRound = value;
-    if (value == 0) {
+    if (value == 1) {
       selectedCardsFromThirdRow = [];
     }
     ;
@@ -140,7 +151,7 @@ class CardsProvider with ChangeNotifier {
   }
 
   void removeCards() {
-    selectedCards = [];
+    // selectedCards = [];
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
 
@@ -153,7 +164,7 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-void removeCardsOnGameClick() {
+  void removeCardsOnGameClick() {
     // selectedCards = [];
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
