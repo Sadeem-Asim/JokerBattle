@@ -18,6 +18,28 @@ class CardsProvider with ChangeNotifier {
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
+  int currentLevel = 1;
+  int playerScore = 0;
+  int aiScore = 0;
+
+  void addAiScore(int points) {
+    aiScore += points;
+    notifyListeners();
+  }
+  void setAiScore(int points) {
+    aiScore = points;
+    notifyListeners();
+  }
+
+  void addPlayerScore(int points) {
+    playerScore += points;
+    notifyListeners();
+  }
+  void setPlayerScore(int points) {
+    playerScore = points;
+    notifyListeners();
+  }
+
 
   void selectCardToSwap(String Path) {
     selectedCardToSwap.contains(Path)
@@ -77,7 +99,7 @@ class CardsProvider with ChangeNotifier {
     var box = await Hive.openBox('noOfChips');
     var noOFChips = await box.get('noOfChips');
     noOFChips += 10;
-    await box.put('noOfChips',noOFChips);
+    await box.put('noOfChips', noOFChips);
     noOfChips = noOFChips;
     notifyListeners();
   }
@@ -85,6 +107,14 @@ class CardsProvider with ChangeNotifier {
   void incrementCurrentRound() {
     if (currentRound < 6) {
       currentRound++;
+    }
+    // print({"murgha": remainingDeckElements.length});
+    notifyListeners();
+  }
+
+  void incrementCurrentLevel() {
+    if (currentRound > 5) {
+      currentLevel++;
     }
     // print({"murgha": remainingDeckElements.length});
     notifyListeners();
@@ -175,6 +205,11 @@ class CardsProvider with ChangeNotifier {
     // List<String> remainingDeckElements = [];
     // List<String> shuffleDeckElements = [];
     selectedCardToSwap = [];
+    currentRound = 1;
+    // noOfChips = 0;
+    currentLevel = 1;
+    playerScore = 0;
+    aiScore = 0;
     notifyListeners();
   }
 }

@@ -114,14 +114,25 @@ class _GameScreenState extends State<GameScreen> {
         context.read<CardsProvider>().selectedCardsFromThirdRow;
 
     playerScore = calculateScore(userSelectedCards);
+     setState(() {
+      playerScore = playerScore;
+    });
+    context.read<CardsProvider>().setPlayerScore(
+        (context.read<CardsProvider>().playerScore) + playerScore);
 
     List<String> aiSelectedCards =
         context.read<AICardsProvider>().selectedAICards;
     aiScore = calculateScore(aiSelectedCards);
+     setState(() {
+      aiScore = aiScore;
+    });
+    context
+        .read<CardsProvider>()
+        .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
 
     bool winStatus = playerScore > aiScore ? true : false;
+
     if (!winStatus) {
-       
       //     final appDocumentDirectory = await getApplicationDocumentsDirectory();
       // Hive.init(appDocumentDirectory.path);
       // var box =
@@ -130,28 +141,23 @@ class _GameScreenState extends State<GameScreen> {
       // var chipsnumber = await box.get('noOfChips');
       // print({"lose", chipsnumber});
 
-
-
-
-
       Provider.of<CardsProvider>(context, listen: false).setCurrentRound(1);
     } else {
-      
-      if(Provider.of<CardsProvider>(context, listen: false).currentRound==5){
-await context.read<CardsProvider>().addTenChipsOnWin();
-      };
-      
+      if (Provider.of<CardsProvider>(context, listen: false).currentRound ==
+          5) {
+        await context.read<CardsProvider>().addTenChipsOnWin();
+      }
+      ;
+
       // var path = Directory.current.path;
       final appDocumentDirectory = await getApplicationDocumentsDirectory();
       Hive.init(appDocumentDirectory.path);
       print({"dalla": appDocumentDirectory.path});
       // Hive.init(path);
-      
+
       var box =
           await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
 
-
-          
       //     var chipsnumber = await box.get('noOfChips');
       // print({"iram-saleem", chipsnumber});
       await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
@@ -199,7 +205,8 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                               SizedBox(
                                 height: 18,
                                 child: ElevatedButton(
-                                    child: Text("$aiScore",
+                                    child: Text(
+                                        "${context.read<CardsProvider>().aiScore}",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontFamily: "BreatheFire",
@@ -234,7 +241,8 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                               SizedBox(
                                 height: 18,
                                 child: ElevatedButton(
-                                    child: Text("$playerScore",
+                                    child: Text(
+                                        "${context.read<CardsProvider>().playerScore}",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontFamily: "BreatheFire",
@@ -443,6 +451,25 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                                           context
                                               .read<CardsProvider>()
                                               .removeCards();
+
+                                              // context
+                                              // .read<CardsProvider>()
+                                              // .setPlayerScore((context
+                                              //         .read<CardsProvider>()
+                                              //         .playerScore) +
+                                              //     playerScore);
+
+
+                                              //     context
+                                              // .read<CardsProvider>()
+                                              // .setPlayerScore((context
+                                              //         .read<CardsProvider>()
+                                              //         .aiScore) +
+                                              //     aiScore);
+   
+
+   
+
 
                                           await player.play(AssetSource(
                                               'Music/Round-start.mp3'));
@@ -764,7 +791,8 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                         ),
-                        child: const Text('33',
+                        child: Text(
+                            '${context.read<CardsProvider>().currentLevel}',
                             style: TextStyle(
                                 fontFamily: "BreatheFire",
                                 fontSize: 25,
@@ -919,7 +947,7 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                                 SizedBox(
                                   height: 18,
                                   child: ElevatedButton(
-                                      child: Text("$aiScore",
+                                      child: Text("${context.read<CardsProvider>().aiScore}",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
@@ -1014,7 +1042,7 @@ await context.read<CardsProvider>().addTenChipsOnWin();
                                 SizedBox(
                                     height: 18,
                                     child: ElevatedButton(
-                                        child: Text("$playerScore",
+                                        child: Text("${context.read<CardsProvider>().playerScore}",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "BreatheFire",
