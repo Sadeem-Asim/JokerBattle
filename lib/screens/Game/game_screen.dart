@@ -7,9 +7,9 @@ import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
+
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
-
 
   static Route route() {
     return MaterialPageRoute(
@@ -231,9 +231,8 @@ class _GameScreenState extends State<GameScreen> {
                                   color: Colors.white,
                                   fontFamily: "BreatheFire",
                                   fontSize: 35)),
-                          onPressed: ()async {
-                            
-                                 await player.play(AssetSource('Music/Upgrade.mp3'));
+                          onPressed: () async {
+                            await player.play(AssetSource('Music/Upgrade.mp3'));
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -383,7 +382,7 @@ class _GameScreenState extends State<GameScreen> {
 
                                     //hook
                                     ElevatedButton(
-                                      onPressed: ()async {
+                                      onPressed: () async {
                                         // context
                                         //     .read<CardsProvider>()
                                         //     .shuffleDeckElement(deck);
@@ -393,7 +392,8 @@ class _GameScreenState extends State<GameScreen> {
                                         context
                                             .read<CardsProvider>()
                                             .incrementCurrentRound();
-                                        await player.play(AssetSource('Music/Round-start.mp3'));
+                                        await player.play(AssetSource(
+                                            'Music/Round-start.mp3'));
                                         Navigator.pushNamed(context, '/game');
                                       },
                                       child: const Text(
@@ -442,7 +442,7 @@ class _GameScreenState extends State<GameScreen> {
             // );
           } else {
             //  context.read<CardsProvider>().setCurrentRound();
-           player.play(AssetSource('Music/Round-over.mp3'));
+            player.play(AssetSource('Music/Round-over.mp3'));
             return Scaffold(
               backgroundColor: Colors.black.withOpacity(0.8),
               body: Container(
@@ -994,7 +994,15 @@ class _GameScreenState extends State<GameScreen> {
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                // context.read<CardsProvider>().selectedCardsFromThirdRow(counter.selectedCards[index]);
+                                                //  context
+                                                //     .read<CardsProvider>()
+                                                //     .removeCardToSwap(counter
+                                                //         .selectedCards[index]);
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectCardToSwap(counter
+                                                        .selectedCards[index]);
+
                                                 context
                                                     .read<CardsProvider>()
                                                     .selectCardFromThirdRow(
@@ -1010,6 +1018,23 @@ class _GameScreenState extends State<GameScreen> {
                                                 width: 28,
                                                 height: 39,
                                                 decoration: BoxDecoration(
+                                                  border: counter
+                                                          .selectedCardToSwap
+                                                          .contains(counter
+                                                                  .selectedCards[
+                                                              index])
+                                                      ? Border.all(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              7,
+                                                              247,
+                                                              255), // Set the border color
+                                                          width: 4,
+                                                          // Set the border width
+                                                        )
+                                                      : null,
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
                                                   image: DecorationImage(
                                                     image: AssetImage(
                                                         //if index<
@@ -1077,10 +1102,11 @@ class _GameScreenState extends State<GameScreen> {
                             builder: (context, counter, child) {
                           return ElevatedButton(
                               onPressed: () async {
-                                 await player.play(AssetSource('Music/Play.mp3'));
+                                await player
+                                    .play(AssetSource('Music/Play.mp3'));
                                 //  await Future.delayed(
                                 //     const Duration(seconds: 1));
-                                
+
                                 context
                                     .read<AICardsProvider>()
                                     .selectAICards(shuffleAIDeck(AIDeck));
@@ -1126,16 +1152,14 @@ class _GameScreenState extends State<GameScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             showDialog(
-
-
                               context: context,
                               builder: (BuildContext context) {
                                 return Scaffold(
                                   backgroundColor:
                                       Colors.black.withOpacity(0.8),
                                   body: Container(
-                                    height:double.infinity,
-                                    width:double.infinity,
+                                      height: double.infinity,
+                                      width: double.infinity,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                             image: AssetImage(
@@ -1146,9 +1170,9 @@ class _GameScreenState extends State<GameScreen> {
                                                 BlendMode.darken)),
                                       ),
                                       child: Column(
-                                        
                                         // MainAxisAlignment.spaceAround,
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const SizedBox(height: 250),
                                           SizedBox(
@@ -1186,54 +1210,62 @@ class _GameScreenState extends State<GameScreen> {
                           // ),
                         ),
                       ),
-
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.transparent,
-                            ),
-                            image: const DecorationImage(
-                                image: const AssetImage(
-                                    'assets/images/button_border.png'),
-                                fit: BoxFit.fill)),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.read<AICardsProvider>().removeCards();
-                            context.read<CardsProvider>().removeCards();
-                            context
-                                .read<CardsProvider>()
-                                .shuffleDeckElement(deck);
-                            //  Provider.of<CardsProvider>(context, listen: false)
-                            //     .shuffleDeckElement(deck);
-                            swapButtonPress();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(6, 30),
-                            backgroundColor: Color(0xFFD3BF8F),
-                            foregroundColor: Colors.white,
-                            // elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: SvgPicture.asset(
-                                  'assets/images/rewind.svg',
-                                  // fit: BoxFit.cover,
-                                  width: 20,
-                                ),
+                      Consumer<CardsProvider>(
+                          builder: (context, counter, child) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.transparent,
                               ),
-                              Text("      $remainingDeckView")
-                            ],
+                              image: const DecorationImage(
+                                  image: const AssetImage(
+                                      'assets/images/button_border.png'),
+                                  fit: BoxFit.fill)),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // context.read<AICardsProvider>().removeCards();
+                              // context.read<CardsProvider>().removeCards();
+                              if (remainingDeckView > 0) {
+                                context
+                                    .read<CardsProvider>()
+                                    .remainingDeck(deck);
+                                context
+                                    .read<CardsProvider>()
+                                    .swapFunctionality();
+                                //  Provider.of<CardsProvider>(context, listen: false)
+                                //     .shuffleDeckElement(deck);
+                                swapButtonPress();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(6, 30),
+                              backgroundColor: Color(0xFFD3BF8F),
+                              foregroundColor: Colors.white,
+                              // elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: SvgPicture.asset(
+                                    'assets/images/rewind.svg',
+                                    // fit: BoxFit.cover,
+                                    width: 20,
+                                  ),
+                                ),
+                                Text("      $remainingDeckView")
+                              ],
+                            ),
+                            // ),
                           ),
-                          // ),
-                        ),
-                      ),
+                        );
+                      }),
 
                       //cards-grid
                       Column(

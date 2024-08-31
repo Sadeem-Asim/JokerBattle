@@ -13,8 +13,56 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardsFromThirdRow = [];
   List<String> remainingDeckElements = [];
   List<String> shuffleDeckElements = [];
+  List<String> selectedCardToSwap = [];
   bool? winStatus;
   int currentRound = 1;
+
+  void selectCardToSwap(String Path) {
+    selectedCardToSwap.contains(Path)
+        ? {
+            selectedCardToSwap.remove(Path),
+            print({
+              "harami-swap-remove": {
+                "path": Path,
+                "selectedCardToSwap.length": selectedCardToSwap.length,
+                "selectedCardToSwap": selectedCardToSwap
+              }
+            })
+          }
+        : selectedCardsFromThirdRow.length == 5 && selectedCardToSwap.length < 1
+            ? {
+                selectedCardToSwap.add(Path),
+                print({
+                  "harami-swap-add": {
+                    "path": Path,
+                    "selectedCardToSwap.length": selectedCardToSwap.length,
+                    "selectedCardsFromThrdorow.length":
+                        selectedCardsFromThirdRow.length,
+                    "selectedCardToSwap": selectedCardToSwap
+                  }
+                }),
+              }
+            : null;
+
+    notifyListeners();
+  }
+
+  void removeCardToSwap(String Path) {
+    selectedCardToSwap.contains(Path) ? selectedCardToSwap.remove(Path) : null;
+    notifyListeners();
+  }
+
+  void swapFunctionality() {
+    // print({"choocha1": shuffleElements});
+    var index = selectedCards.indexOf(selectedCardToSwap[0]);
+    print({"choocha2": remainingDeckElements.length, "index": index});
+    if (index != -1) {
+      selectedCards[index] = remainingDeckElements[index];
+      selectedCardToSwap = [];
+    }
+
+    notifyListeners();
+  }
 
   void remainingDeck(deck) {
     remainingDeckElements =
@@ -95,6 +143,27 @@ class CardsProvider with ChangeNotifier {
     selectedCards = [];
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
+
+    // List<String> selectedCards = [];
+    // List<String> selectedCardsForSecondRow = [];
+    // List<String> selectedCardsFromThirdRow = [];
+    // List<String> remainingDeckElements = [];
+    // List<String> shuffleDeckElements = [];
+    selectedCardToSwap = [];
+    notifyListeners();
+  }
+
+void removeCardsOnGameClick() {
+    // selectedCards = [];
+    selectedCardsForSecondRow = [];
+    selectedCardsFromThirdRow = [];
+
+    // List<String> selectedCards = [];
+    // List<String> selectedCardsForSecondRow = [];
+    // List<String> selectedCardsFromThirdRow = [];
+    // List<String> remainingDeckElements = [];
+    // List<String> shuffleDeckElements = [];
+    selectedCardToSwap = [];
     notifyListeners();
   }
 }
