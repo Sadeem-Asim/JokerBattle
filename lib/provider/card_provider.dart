@@ -15,12 +15,25 @@ class CardsProvider with ChangeNotifier {
   List<String> remainingDeckElements = [];
   List<String> shuffleDeckElements = [];
   List<String> selectedCardToSwap = [];
+  List<String> purchaseCards = [];
+  List<String> purchaseJokers = [];
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
+
+  Future<void> addPurchasedCard(String path, int cost) async {
+    var box = await Hive.openBox('noOfChips');
+    var noOFChips = await box.get('noOfChips');
+    if (noOFChips > cost) {
+      await box.put("noOfChips", "${noOFChips - cost}");
+      noOfChips = noOFChips - cost;
+      purchaseCards.add(path);
+    }
+    notifyListeners();
+  }
 
   void addAiScore(int points) {
     aiScore += points;

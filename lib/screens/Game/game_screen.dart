@@ -33,6 +33,23 @@ class _GameScreenState extends State<GameScreen> {
   int remainingDeckView = 3;
   var box = Hive.openBox('noOfChips');
   final player = AudioPlayer();
+  final List<Map<String, dynamic>> upgradeArray = [
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+    {"imageUrl": "assets/images/card_spades_09.png", "cost": 10},
+    {"imageUrl": "assets/images/card_spades_10.png", "cost": 10},
+
+    {"imageUrl": "assets/images/card_spades_J.png", "cost": 13},
+    {"imageUrl": "assets/images/card_spades_K.png", "cost": 15},
+    {"imageUrl": "assets/images/card_spades_Q.png", "cost": 17},
+    {"imageUrl": "assets/images/card_clubs_A.png", "cost": 20},
+    // {"imageUrl": "assets/images/", "cost":5},
+    // {"imageUrl": "assets/images/", "cost":5}
+  ];
 
   void swapButtonPress() {
     remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
@@ -114,7 +131,7 @@ class _GameScreenState extends State<GameScreen> {
         context.read<CardsProvider>().selectedCardsFromThirdRow;
 
     playerScore = calculateScore(userSelectedCards);
-     setState(() {
+    setState(() {
       playerScore = playerScore;
     });
     context.read<CardsProvider>().setPlayerScore(
@@ -123,7 +140,7 @@ class _GameScreenState extends State<GameScreen> {
     List<String> aiSelectedCards =
         context.read<AICardsProvider>().selectedAICards;
     aiScore = calculateScore(aiSelectedCards);
-     setState(() {
+    setState(() {
       aiScore = aiScore;
     });
     context
@@ -417,20 +434,23 @@ class _GameScreenState extends State<GameScreen> {
                                                   mainAxisSpacing: 1,
                                                   crossAxisSpacing: 1,
                                                 ),
-                                                itemCount: 15,
+                                                itemCount: upgradeArray.length,
                                                 // shuffleDeck(deck).length,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
                                                   return SelectableCardForUpgrade(
                                                       imageUrl:
-                                                          "assets/images/card_hearts_02.png",
+                                                          upgradeArray[index]
+                                                              ["imageUrl"],
+                                                      // "assets/images/card_hearts_02.png",
 
                                                       //  shuffleDeck(
                                                       //     deck)[index],
                                                       // ThirdCardData[index]
 
-                                                      title: "");
+                                                      cost: upgradeArray[index]
+                                                          ["cost"]);
                                                 },
                                               ));
                                         }),
@@ -438,40 +458,11 @@ class _GameScreenState extends State<GameScreen> {
 
                                       //hook
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    context
-                                              .read<CardsProvider>()
-                                              .currentRound==5 ?
-
-
-
-                                              ElevatedButton(
+                                      context
+                                                  .read<CardsProvider>()
+                                                  .currentRound ==
+                                              5
+                                          ? ElevatedButton(
                                               onPressed: () async {
                                                 // context
                                                 //     .read<CardsProvider>()
@@ -525,84 +516,60 @@ class _GameScreenState extends State<GameScreen> {
                                                     vertical: 8),
                                               ),
                                             )
-                                   
+                                          : ElevatedButton(
+                                              onPressed: () async {
+                                                // context
+                                                //     .read<CardsProvider>()
+                                                //     .shuffleDeckElement(deck);
+                                                //     // context
+                                                //     // .read<CardsProvider>()
+                                                //     // .addMultipleCards(selectedCards);
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .incrementCurrentRound();
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .removeCards();
 
+                                                // context
+                                                // .read<CardsProvider>()
+                                                // .setPlayerScore((context
+                                                //         .read<CardsProvider>()
+                                                //         .playerScore) +
+                                                //     playerScore);
 
+                                                //     context
+                                                // .read<CardsProvider>()
+                                                // .setPlayerScore((context
+                                                //         .read<CardsProvider>()
+                                                //         .aiScore) +
+                                                //     aiScore);
 
-
-
-
-
-
-
-
-
-
-
-
-
-                                     : ElevatedButton(
-                                        onPressed: () async {
-                                          // context
-                                          //     .read<CardsProvider>()
-                                          //     .shuffleDeckElement(deck);
-                                          //     // context
-                                          //     // .read<CardsProvider>()
-                                          //     // .addMultipleCards(selectedCards);
-                                          context
-                                              .read<CardsProvider>()
-                                              .incrementCurrentRound();
-                                          context
-                                              .read<CardsProvider>()
-                                              .removeCards();
-
-                                              // context
-                                              // .read<CardsProvider>()
-                                              // .setPlayerScore((context
-                                              //         .read<CardsProvider>()
-                                              //         .playerScore) +
-                                              //     playerScore);
-
-
-                                              //     context
-                                              // .read<CardsProvider>()
-                                              // .setPlayerScore((context
-                                              //         .read<CardsProvider>()
-                                              //         .aiScore) +
-                                              //     aiScore);
-   
-
-   
-
-
-                                          await player.play(AssetSource(
-                                              'Music/Round-start.mp3'));
-                                          Navigator.pushNamed(context, '/game');
-                                        },
-
-
-
-
-
-
-                                        child: const Text(
-                                          'NEXT ROUND',
-                                          style: TextStyle(
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 32),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Color(0xFF838796),
-                                          foregroundColor: Colors.white,
-                                          elevation: 10,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 85, vertical: 8),
-                                        ),
-                                      )
+                                                await player.play(AssetSource(
+                                                    'Music/Round-start.mp3'));
+                                                Navigator.pushNamed(
+                                                    context, '/game');
+                                              },
+                                              child: const Text(
+                                                'NEXT ROUND',
+                                                style: TextStyle(
+                                                    fontFamily: "BreatheFire",
+                                                    fontSize: 32),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Color(0xFF838796),
+                                                foregroundColor: Colors.white,
+                                                elevation: 10,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 85,
+                                                    vertical: 8),
+                                              ),
+                                            )
                                     ],
                                   );
                                 },
@@ -1057,7 +1024,8 @@ class _GameScreenState extends State<GameScreen> {
                                 SizedBox(
                                   height: 18,
                                   child: ElevatedButton(
-                                      child: Text("${context.read<CardsProvider>().aiScore}",
+                                      child: Text(
+                                          "${context.read<CardsProvider>().aiScore}",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
@@ -1152,7 +1120,8 @@ class _GameScreenState extends State<GameScreen> {
                                 SizedBox(
                                     height: 18,
                                     child: ElevatedButton(
-                                        child: Text("${context.read<CardsProvider>().playerScore}",
+                                        child: Text(
+                                            "${context.read<CardsProvider>().playerScore}",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "BreatheFire",
@@ -1609,11 +1578,12 @@ class _SelectableCardState extends State<SelectableCard> {
 
 class SelectableCardForUpgrade extends StatefulWidget {
   final String imageUrl;
-  final String title;
+  // final String title;
+  final int cost;
 
-  const SelectableCardForUpgrade({
+  SelectableCardForUpgrade({
     required this.imageUrl,
-    required this.title,
+    required this.cost,
   });
 
   @override
@@ -1623,6 +1593,7 @@ class SelectableCardForUpgrade extends StatefulWidget {
 
 class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   bool _isSelected = false;
+  bool insufficientBalance=false;
 
   @override
   Widget build(BuildContext context) {
@@ -1639,7 +1610,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
         builder: (context, counter, child) {
           return GestureDetector(
             onTap: () {
-              setState(() {
+              setState(() async {
                 _isSelected = !_isSelected;
 
                 // if (counter.selectedCards.length <= 5)
@@ -1650,28 +1621,79 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                       .read<CardsProvider>()
                       .removeSingleCard(widget.imageUrl);
                 } else {
-                  context.read<CardsProvider>().selectCards(widget.imageUrl);
+                  var box = await Hive.openBox('noOfChips');
+                  var noOFChips = await box.get('noOfChips');
+                  // context.read<CardsProvider>().selectCards(widget.imageUrl);
+                  if (noOFChips > widget.cost) {
+                    await context
+                        .read<CardsProvider>()
+                        .addPurchasedCard(widget.imageUrl, widget.cost);
+                  }
+                  else{
+                   setState(() {
+                     insufficientBalance=true;
+                   });
+                  }
                 }
               });
+              // if()
+              insufficientBalance==true ?
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Important Message'),
+                      content: Text('You have insfficient balance'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'),
+                        )
+                      ],
+                    );
+                  })
+
+                  :
+
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Important Message'),
+                      content: Text('You have purchased a card'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'),
+                        )
+                      ],
+                    );
+                  });
+
             },
             child: Column(
               children: [
                 Image.asset("${widget.imageUrl}"),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/upgrade-card-1.svg',
-                        fit: BoxFit.cover,
-                        // width: 49,
-                      ),
-                      SvgPicture.asset(
-                        'assets/images/upgrade-card-2.svg',
-                        fit: BoxFit.cover,
-                        // width: 49,
-                      ),
-                    ])
-                // Text(widget.title),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  SvgPicture.asset(
+                    'assets/images/upgrade-card-2.svg',
+                    fit: BoxFit.cover,
+                    // width: 49,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('${widget.cost}',
+                      style: TextStyle(
+                          fontFamily: "BreatheFire",
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 252, 252, 252))),
+                ])
+                // Text(${widget.cost})
               ],
             ),
           );
