@@ -40,13 +40,104 @@ class _GameScreenState extends State<GameScreen> {
     {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
     {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
     {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-    {"imageUrl": "assets/images/card_spades_09.png", "cost": 10},
-    {"imageUrl": "assets/images/card_spades_10.png", "cost": 10},
+    // {"imageUrl": "assets/images/card_spades_09.png", "cost": 10},
+    // {"imageUrl": "assets/images/card_spades_10.png", "cost": 10},
 
-    {"imageUrl": "assets/images/card_spades_J.png", "cost": 13},
-    {"imageUrl": "assets/images/card_spades_K.png", "cost": 15},
-    {"imageUrl": "assets/images/card_spades_Q.png", "cost": 17},
-    {"imageUrl": "assets/images/card_clubs_A.png", "cost": 20},
+    // {"imageUrl": "assets/images/card_spades_J.png", "cost": 13},
+    // {"imageUrl": "assets/images/card_spades_K.png", "cost": 15},
+    // {"imageUrl": "assets/images/card_spades_Q.png", "cost": 17},
+    // {"imageUrl": "assets/images/card_clubs_A.png", "cost": 20},
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
+
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    // {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    // {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+
+
+
+
+
     // {"imageUrl": "assets/images/", "cost":5},
     // {"imageUrl": "assets/images/", "cost":5}
   ];
@@ -1502,7 +1593,7 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
-                            return Text("${counter.selectedCards.length}/52");
+                            return Text("${0}/45");
                           })
                         ],
                       ),
