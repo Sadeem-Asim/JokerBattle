@@ -33,6 +33,9 @@ class _GameScreenState extends State<GameScreen> {
   int remainingDeckView = 3;
   var box = Hive.openBox('noOfChips');
   final player = AudioPlayer();
+
+
+
   final List<Map<String, dynamic>> upgradeArray = [
     {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
     {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
@@ -107,9 +110,27 @@ class _GameScreenState extends State<GameScreen> {
     // {"imageUrl": "assets/images/", "cost":5}
   ];
 
+
+
+
+
+
+
+
+
   void swapButtonPress() {
     remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
   }
+
+
+
+
+
+
+
+
+
+
 
   int getCardPoints(String rank) {
     switch (rank) {
@@ -126,6 +147,16 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
   bool isStraightHand(List<int> rankValues) {
     rankValues.sort();
     for (int i = 0; i < rankValues.length - 1; i++) {
@@ -135,6 +166,21 @@ class _GameScreenState extends State<GameScreen> {
     }
     return true;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   int calculateScore(List<String> combo) {
     int score = 0;
@@ -182,9 +228,45 @@ class _GameScreenState extends State<GameScreen> {
     return score;
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Future<void> _calculateScores(int noOfChips) async {
     List<String> userSelectedCards =
         context.read<CardsProvider>().selectedCardsFromThirdRow;
+
+
 
     playerScore = calculateScore(userSelectedCards);
     setState(() {
@@ -196,6 +278,10 @@ class _GameScreenState extends State<GameScreen> {
     List<String> aiSelectedCards =
         context.read<AICardsProvider>().selectedAICards;
     aiScore = calculateScore(aiSelectedCards);
+
+
+
+
     setState(() {
       aiScore = aiScore;
     });
@@ -206,13 +292,6 @@ class _GameScreenState extends State<GameScreen> {
     bool winStatus = playerScore > aiScore ? true : false;
 
     if (!winStatus) {
-      //     final appDocumentDirectory = await getApplicationDocumentsDirectory();
-      // Hive.init(appDocumentDirectory.path);
-      // var box =
-      //     await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
-
-      // var chipsnumber = await box.get('noOfChips');
-      // print({"lose", chipsnumber});
 
       Provider.of<CardsProvider>(context, listen: false).setCurrentRound(1);
     } else {
@@ -225,7 +304,7 @@ class _GameScreenState extends State<GameScreen> {
       // var path = Directory.current.path;
       final appDocumentDirectory = await getApplicationDocumentsDirectory();
       Hive.init(appDocumentDirectory.path);
-      print({"dalla": appDocumentDirectory.path});
+      print({"vigo-daaala": appDocumentDirectory.path});
       // Hive.init(path);
 
       var box =
@@ -239,9 +318,30 @@ class _GameScreenState extends State<GameScreen> {
     Future.delayed(
         Duration(seconds: 0,milliseconds: 70),
         () => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
+
+
+
+
+
+
                     if (winStatus == true) {
                       return PopScope(
                         canPop: false,
@@ -282,7 +382,10 @@ class _GameScreenState extends State<GameScreen> {
                                         ),
                                         SizedBox(
                                           height: 18,
-                                          child: ElevatedButton(
+                                          child:
+                                          
+                                          
+                                           ElevatedButton(
                                               child: Text(
                                                   "${context.read<CardsProvider>().aiScore}",
                                                   style: TextStyle(
@@ -354,6 +457,11 @@ class _GameScreenState extends State<GameScreen> {
                                         color: Color(0xFFF7A74F)),
                                   ),
 
+
+
+
+
+                                  //upgrade button
                                   ElevatedButton(
                                       child: Text("Upgrade",
                                           style: TextStyle(
@@ -373,6 +481,12 @@ class _GameScreenState extends State<GameScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,
                                               children: [
+
+
+
+
+
+
                                                 Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -523,7 +637,15 @@ class _GameScreenState extends State<GameScreen> {
                                                     ]),
                                                 const SizedBox(height: 45),
 
-                                                //upgradex
+
+
+
+
+
+
+
+
+                                                //upgrade-grid
                                                 SizedBox(
                                                   height: 400,
                                                   child:
@@ -552,11 +674,7 @@ class _GameScreenState extends State<GameScreen> {
                                                                 imageUrl: upgradeArray[
                                                                         index][
                                                                     "imageUrl"],
-                                                                // "assets/images/card_hearts_02.png",
-
-                                                                //  shuffleDeck(
-                                                                //     deck)[index],
-                                                                // ThirdCardData[index]
+                                                               
 
                                                                 cost: upgradeArray[
                                                                         index]
@@ -637,12 +755,7 @@ class _GameScreenState extends State<GameScreen> {
                                                       )
                                                     : ElevatedButton(
                                                         onPressed: () async {
-                                                          // context
-                                                          //     .read<CardsProvider>()
-                                                          //     .shuffleDeckElement(deck);
-                                                          //     // context
-                                                          //     // .read<CardsProvider>()
-                                                          //     // .addMultipleCards(selectedCards);
+                                                       
                                                           context
                                                               .read<
                                                                   CardsProvider>()
@@ -656,19 +769,7 @@ class _GameScreenState extends State<GameScreen> {
                                                                   AICardsProvider>()
                                                               .removeCards();
 
-                                                          // context
-                                                          // .read<CardsProvider>()
-                                                          // .setPlayerScore((context
-                                                          //         .read<CardsProvider>()
-                                                          //         .playerScore) +
-                                                          //     playerScore);
-
-                                                          //     context
-                                                          // .read<CardsProvider>()
-                                                          // .setPlayerScore((context
-                                                          //         .read<CardsProvider>()
-                                                          //         .aiScore) +
-                                                          //     aiScore);
+                                                         
 
                                                           await player.play(
                                                               AssetSource(
@@ -878,18 +979,47 @@ class _GameScreenState extends State<GameScreen> {
             });
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //local state methods
   void _onButtonPressed(int index) {
     setState(() {
       _selectedButtonIndex = index;
     });
   }
-
   void _addToSelectedCards(String index) {
     setState(() {
       selectedCardsList
           .add(index); // Assuming ThirdCardData has an 'id' property
     });
   }
+
+
+
+
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
