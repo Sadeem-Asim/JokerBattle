@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:joker_battle/screens/Game/game_screen.dart';
 // import '../../blocs/blocs.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
@@ -71,6 +72,9 @@ class _MyHomePageState extends State<HomeScreen> {
                               .read<CardsProvider>()
                               .shuffleDeckElement(deck);
                           context.read<CardsProvider>().removeCardsOnGameClick();
+                           context
+                              .read<AICardsProvider>()
+                              .removeCards();
                           // .addMultipleCards(selectedCards);
                           Navigator.pushNamed(context, '/game');
                         },
