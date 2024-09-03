@@ -10,6 +10,8 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import "package:path_provider/path_provider.dart";
 import 'dart:io';
+import 'package:joker_battle/widgets/flip.dart';
+import 'package:flip_card/flip_card.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -1157,6 +1159,7 @@ class _GameScreenState extends State<GameScreen> {
                                 //first-card-row
                                 Consumer<AICardsProvider>(
                                     builder: (context, counter, child) {
+                                    
                                   return SizedBox(
                                     height: 40,
                                     child: ListView.builder(
@@ -1170,7 +1173,12 @@ class _GameScreenState extends State<GameScreen> {
                                           (BuildContext context, int index) {
                                         return Row(
                                           children: [
-                                            Container(
+
+                                           AnimatedSwitcher(
+        duration: const Duration(milliseconds:  
+ 500),
+        child: counter.isFlipped ?  
+        Container(
                                               width: 28,
                                               height: 39,
                                               decoration: BoxDecoration(
@@ -1181,7 +1189,44 @@ class _GameScreenState extends State<GameScreen> {
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            ),
+                                            )
+
+: 
+ Container(
+                                              width: 28,
+                                              height: 39,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    '${counter.selectedAICards.length == 5 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            )
+,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      ),
+
+
+
+                                           
+                                            // Container(
+                                            //   width: 28,
+                                            //   height: 39,
+                                            //   decoration: BoxDecoration(
+                                            //     image: DecorationImage(
+                                            //       image: AssetImage(
+                                            //         '${counter.selectedAICards.length == 5 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
+                                            //       ),
+                                            //       fit: BoxFit.cover,
+                                            //     ),
+                                            //   ),
+                                            // ),
+
                                             const SizedBox(
                                               width: 8,
                                             )
@@ -1364,9 +1409,9 @@ class _GameScreenState extends State<GameScreen> {
                                                       ? Border.all(
                                                           color: Color.fromARGB(
                                                               255,
-                                                              26,
-                                                              20,
-                                                              8), // Set the border color
+                                                              253,
+                                                              187,
+                                                              54), // Set the border color
                                                           width: 3,
                                                           // Set the border width
                                                         )
@@ -1449,6 +1494,9 @@ class _GameScreenState extends State<GameScreen> {
                                     isPlay = true;
                                     context
                                         .read<AICardsProvider>()
+                                        .removeCards();
+                                    context
+                                        .read<AICardsProvider>()
                                         .selectAICards(shuffleAIDeck(AIDeck));
 
                                     var result = await _calculateScores(
@@ -1460,9 +1508,11 @@ class _GameScreenState extends State<GameScreen> {
                                       context
                                           .read<CardsProvider>()
                                           .removeCards();
-                                      context
+
+                                           context
                                           .read<AICardsProvider>()
-                                          .removeCards();
+                                          .flip();
+
                                       Navigator.of(context).pushNamed('/game');
                                     }
                                   }
@@ -1958,6 +2008,12 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
 
 class AICardsProvider with ChangeNotifier {
   List<String> selectedAICards = [];
+  bool isFlipped = false;
+
+  void flip() {
+    isFlipped = !isFlipped;
+    notifyListeners();
+  }
 
   // List<String> get selectedCards;
 

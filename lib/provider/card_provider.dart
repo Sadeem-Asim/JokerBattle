@@ -18,6 +18,7 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
+   
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
