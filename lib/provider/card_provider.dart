@@ -13,6 +13,7 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardsForSecondRow = [];
   List<String> selectedCardsFromThirdRow = [];
   List<String> remainingDeckElements = [];
+  List<String> discardedDeckElements = [];
   List<String> shuffleDeckElements = [];
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
@@ -23,6 +24,19 @@ class CardsProvider with ChangeNotifier {
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
+
+  bool isCardSelected(String path) {
+    return selectedCardsFromThirdRow.contains(path);
+  }
+
+  // Function to unselect a card
+  void unselectCard(String path) {
+    if (selectedCardsFromThirdRow.contains(path)) {
+      selectedCardsFromThirdRow.remove(path);
+    }
+
+    notifyListeners(); // Notify listeners about the change
+  }
 
   Future<void> addPurchasedCard(String path, int cost) async {
     var box = await Hive.openBox('noOfChips');
@@ -92,11 +106,11 @@ class CardsProvider with ChangeNotifier {
 
   void swapFunctionality() {
     // print({"choocha1": shuffleElements});
-    var index = selectedCards.indexOf(selectedCardToSwap[0]);
+    var index = selectedCards.indexOf(selectedCardsFromThirdRow[0]);
     print({"choocha2": remainingDeckElements.length, "index": index});
     if (index != -1) {
       selectedCards[index] = remainingDeckElements[index];
-      selectedCardToSwap = [];
+      selectedCardsFromThirdRow = [];
     }
 
     notifyListeners();
@@ -105,7 +119,7 @@ class CardsProvider with ChangeNotifier {
   void remainingDeck(deck) {
     remainingDeckElements =
         deck.where((element) => !selectedCards.contains(element)).toList();
-    print({"murgha": remainingDeckElements.length});
+    print({"remainingDeckElements": remainingDeckElements.length});
     notifyListeners();
   }
 
@@ -184,7 +198,7 @@ class CardsProvider with ChangeNotifier {
   }
 
   void selectCardFromThirdRow(String path) {
-    if (selectedCardsFromThirdRow.length <= 4 &&
+    if (selectedCardsFromThirdRow.length <= 6 &&
         !selectedCardsFromThirdRow.contains(path)) {
       selectedCardsFromThirdRow.add(path);
     }
@@ -198,15 +212,11 @@ class CardsProvider with ChangeNotifier {
   }
 
   void removeCards() {
-    // selectedCards = [];
+    discardedDeckElements += selectedCardsFromThirdRow;
+
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
 
-    // List<String> selectedCards = [];
-    // List<String> selectedCardsForSecondRow = [];
-    // List<String> selectedCardsFromThirdRow = [];
-    // List<String> remainingDeckElements = [];
-    // List<String> shuffleDeckElements = [];
     selectedCardToSwap = [];
     notifyListeners();
   }

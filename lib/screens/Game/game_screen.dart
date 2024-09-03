@@ -766,150 +766,153 @@ class _GameScreenState extends State<GameScreen> {
     else {
       //  context.read<CardsProvider>().setCurrentRound();
       player.play(AssetSource('Music/Round-over.mp3'));
-       Future.delayed(
+      Future.delayed(
           Duration(seconds: 0, milliseconds: 70),
           () => {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return PopScope(
-              canPop: false,
-              child: Scaffold(
-                backgroundColor: Colors.black.withOpacity(0.8),
-                body: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/background.png'),
-                        fit: BoxFit.fill,
-                        colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.8), BlendMode.darken)),
-                    // color: Color(0xFF5C5E68),
-                    // border: Border.all(
-                    //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
-                    //   width: 4,
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return PopScope(
+                        canPop: false,
+                        child: Scaffold(
+                          backgroundColor: Colors.black.withOpacity(0.8),
+                          body: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/background.png'),
+                                  fit: BoxFit.fill,
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.black.withOpacity(0.8),
+                                      BlendMode.darken)),
+                              // color: Color(0xFF5C5E68),
+                              // border: Border.all(
+                              //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
+                              //   width: 4,
 
-                    //   // Set the border width
-                    // ),
-                    // borderRadius: BorderRadius.circular(20),
-                  ),
-                  // alignment: Alignment.center,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(children: [
-                          SizedBox(width: 120),
-                          Column(
-                            children: [
-                              Text(
-                                "AI",
-                                style: TextStyle(
-                                    fontFamily: "BreatheFire",
-                                    fontSize: 30,
-                                    color: Color(0xFFF7A74F)),
-                              ),
-                              SizedBox(
-                                height: 18,
-                                child: ElevatedButton(
-                                    child: Text("$aiScore",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: "BreatheFire",
-                                            fontSize: 14)),
-                                    onPressed: () {
-                                      // Handle button 1 press
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        // elevation: 30,
+                              //   // Set the border width
+                              // ),
+                              // borderRadius: BorderRadius.circular(20),
+                            ),
+                            // alignment: Alignment.center,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(children: [
+                                    SizedBox(width: 120),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          "AI",
+                                          style: TextStyle(
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 30,
+                                              color: Color(0xFFF7A74F)),
+                                        ),
+                                        SizedBox(
+                                          height: 18,
+                                          child: ElevatedButton(
+                                              child: Text("$aiScore",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "BreatheFire",
+                                                      fontSize: 14)),
+                                              onPressed: () {
+                                                // Handle button 1 press
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  // elevation: 30,
 
-                                        //                 horizontal: 5, vertical: 12),
-                                        backgroundColor: Color(0xFF88E060),
+                                                  //                 horizontal: 5, vertical: 12),
+                                                  backgroundColor:
+                                                      Color(0xFF88E060),
 
-                                        // padding: EdgeInsets.zero,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 0, horizontal: 23))),
-                              ),
-                            ],
+                                                  // padding: EdgeInsets.zero,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 23))),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          "You",
+                                          style: TextStyle(
+                                              fontFamily: "BreatheFire",
+                                              color: Color(0xFFF7A74F),
+                                              fontSize: 32),
+                                        ),
+                                        SizedBox(
+                                          height: 18,
+                                          child: ElevatedButton(
+                                              child: Text("$playerScore",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "BreatheFire",
+                                                      fontSize: 14)),
+                                              onPressed: () {
+                                                // Handle button 1 press
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  // elevation: 30,
+
+                                                  //                 horizontal: 5, vertical: 12),
+                                                  backgroundColor:
+                                                      Color(0xFF88E060),
+
+                                                  // padding: EdgeInsets.zero,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 23))),
+                                        ),
+                                      ],
+                                    )
+                                  ]),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    "You Lose",
+                                    style: TextStyle(
+                                        fontFamily: "BreatheFire",
+                                        fontSize: 40,
+                                        color: Color(0xFFF7A74F)),
+                                  ),
+
+                                  ElevatedButton(
+                                      child: Text("MENU",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 30)),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/home');
+                                        // Handle button 1 press
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          elevation: 30,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+
+                                          //                 horizontal: 5, vertical: 12),
+                                          backgroundColor: Color.fromARGB(
+                                              255, 168, 168, 168),
+
+                                          // padding: EdgeInsets.zero,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0, horizontal: 80))),
+                                  // ),
+                                ]),
                           ),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                "You",
-                                style: TextStyle(
-                                    fontFamily: "BreatheFire",
-                                    color: Color(0xFFF7A74F),
-                                    fontSize: 32),
-                              ),
-                              SizedBox(
-                                height: 18,
-                                child: ElevatedButton(
-                                    child: Text("$playerScore",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: "BreatheFire",
-                                            fontSize: 14)),
-                                    onPressed: () {
-                                      // Handle button 1 press
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        // elevation: 30,
-
-                                        //                 horizontal: 5, vertical: 12),
-                                        backgroundColor: Color(0xFF88E060),
-
-                                        // padding: EdgeInsets.zero,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 0, horizontal: 23))),
-                              ),
-                            ],
-                          )
-                        ]),
-                        SizedBox(height: 7),
-                        Text(
-                          "You Lose",
-                          style: TextStyle(
-                              fontFamily: "BreatheFire",
-                              fontSize: 40,
-                              color: Color(0xFFF7A74F)),
                         ),
+                      );
+                    })
+              });
 
-                        ElevatedButton(
-                            child: Text("MENU",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "BreatheFire",
-                                    fontSize: 30)),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/home');
-                              // Handle button 1 press
-                            },
-                            style: ElevatedButton.styleFrom(
-                                elevation: 30,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-
-                                //                 horizontal: 5, vertical: 12),
-                                backgroundColor:
-                                    Color.fromARGB(255, 168, 168, 168),
-
-                                // padding: EdgeInsets.zero,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 80))),
-                        // ),
-                      ]),
-                ),
-              ),
-            );
-          })
-          
-          });
-      
-      
-      
-      
       return false;
     }
   }
@@ -971,13 +974,7 @@ class _GameScreenState extends State<GameScreen> {
       'transparent.png'
     ];
 
-    final List<String> ThirdCardData = [
-      'card_spades_A.png',
-      'card_spades_J.png',
-      'card_spades_K.png',
-      'card_spades_Q.png',
-      'card_spades_A.png',
-    ];
+    bool isPlay = false;
 
     Widget buildCard(BuildContext context, int index) {
       return Container(
@@ -1084,12 +1081,6 @@ class _GameScreenState extends State<GameScreen> {
                 const SizedBox(height: 45),
                 Container(
                   height: 560,
-                  // decoration: BoxDecoration(
-                  //   // border: Border.all(
-                  //   //   color: const Color.fromARGB(255, 224, 221, 221), // Border color
-                  //   //   width: 0, // Border width
-                  //   // ),
-                  // ),
                   child: Stack(children: [
                     Positioned(
                       right: 145,
@@ -1260,14 +1251,6 @@ class _GameScreenState extends State<GameScreen> {
                                           shrinkWrap: true,
                                           scrollDirection: Axis.horizontal,
                                           itemCount: 5,
-                                          // counter
-                                          //             .selectedCardsFromThirdRow
-                                          //             .length >
-                                          //         0
-                                          //     ? counter
-                                          //         .selectedCardsFromThirdRow
-                                          //         .length
-                                          //     : secondCardData.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return Row(
@@ -1277,10 +1260,16 @@ class _GameScreenState extends State<GameScreen> {
                                                   height: 39,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                      image: AssetImage(
-                                                          '${index < counter.selectedCardsFromThirdRow.length ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}'
-                                                          // '${counter.selectedCardsFromThirdRow.length > 0 ? counter.selectedCardsFromThirdRow[index] : "assets/images/${secondCardData[index]}"}',
-                                                          ),
+                                                      image: AssetImage(index <
+                                                                      counter
+                                                                          .selectedCardsFromThirdRow
+                                                                          .length ==
+                                                                  5 &&
+                                                              isPlay == true
+                                                          ? counter
+                                                                  .selectedCardsFromThirdRow[
+                                                              index]
+                                                          : "assets/images/${secondCardData[index]}"),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -1337,20 +1326,21 @@ class _GameScreenState extends State<GameScreen> {
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                //  context
-                                                //     .read<CardsProvider>()
-                                                //     .removeCardToSwap(counter
-                                                //         .selectedCards[index]);
-                                                context
-                                                    .read<CardsProvider>()
-                                                    .selectCardToSwap(counter
-                                                        .selectedCards[index]);
+                                                final selectedCard = counter
+                                                    .shuffleDeckElements[index];
+                                                final cardsProvider = context
+                                                    .read<CardsProvider>();
 
-                                                context
-                                                    .read<CardsProvider>()
-                                                    .selectCardFromThirdRow(
-                                                        counter.shuffleDeckElements[
-                                                            index]);
+                                                if (cardsProvider
+                                                    .isCardSelected(
+                                                        selectedCard)) {
+                                                  cardsProvider.unselectCard(
+                                                      selectedCard);
+                                                } else {
+                                                  cardsProvider
+                                                      .selectCardFromThirdRow(
+                                                          selectedCard);
+                                                }
                                               },
                                               splashColor: const Color.fromARGB(
                                                   255, 7, 176, 255),
@@ -1374,9 +1364,9 @@ class _GameScreenState extends State<GameScreen> {
                                                       ? Border.all(
                                                           color: Color.fromARGB(
                                                               255,
-                                                              255,
-                                                              195,
-                                                              66), // Set the border color
+                                                              26,
+                                                              20,
+                                                              8), // Set the border color
                                                           width: 3,
                                                           // Set the border width
                                                         )
@@ -1417,12 +1407,12 @@ class _GameScreenState extends State<GameScreen> {
                   ]),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
+                  // padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
                   decoration: BoxDecoration(
                     color: Color(0xFFECE3CE),
                     border: Border.all(
                       color: Color(0xFFD3BF8F), // Set the border color
-                      width: 4,
+                      width: 0,
                       // Set the border width
                     ),
                     borderRadius: BorderRadius.circular(20),
@@ -1448,56 +1438,59 @@ class _GameScreenState extends State<GameScreen> {
                                 fit: BoxFit.fill)),
                         child: Consumer<CardsProvider>(
                             builder: (context, counter, child) {
+                          final bool isButtonEnabled =
+                              counter.selectedCardsFromThirdRow.length == 5;
+
                           return ElevatedButton(
-                              onPressed: () async {
-                                await player
-                                    .play(AssetSource('Music/Play.mp3'));
-                                //  await Future.delayed(
-                                //     const Duration(seconds: 1));
+                            onPressed: isButtonEnabled
+                                ? () async {
+                                    await player
+                                        .play(AssetSource('Music/Play.mp3'));
+                                    isPlay = true;
+                                    context
+                                        .read<AICardsProvider>()
+                                        .selectAICards(shuffleAIDeck(AIDeck));
 
-                                context
-                                    .read<AICardsProvider>()
-                                    .selectAICards(shuffleAIDeck(AIDeck));
-
-                                var result =
-                                    await _calculateScores(counter.noOfChips);
-                                if (result == true) {
-                                  context
-                                      .read<CardsProvider>()
-                                      .incrementCurrentRound();
-                                  context.read<CardsProvider>().removeCards();
-                                  context.read<AICardsProvider>().removeCards();
-                                  print({"sadeem": "pandu"});
-                                  Navigator.of(context).pushNamed('/game');
-                                }
-                                ;
-
-                                // context
-                                //     .read<CardsProvider>()
-                                //     .selectCardsForSecondRow(
-                                //         counter.selectedCards);
-
-                                // Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(6, 30),
-                                backgroundColor: const Color(0xFFD3BF8F),
-                                foregroundColor: Colors.white,
-                                // elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 11),
+                                    var result = await _calculateScores(
+                                        counter.noOfChips);
+                                    if (result == true) {
+                                      context
+                                          .read<CardsProvider>()
+                                          .incrementCurrentRound();
+                                      context
+                                          .read<CardsProvider>()
+                                          .removeCards();
+                                      context
+                                          .read<AICardsProvider>()
+                                          .removeCards();
+                                      Navigator.of(context).pushNamed('/game');
+                                    }
+                                  }
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(6, 30),
+                              backgroundColor: isButtonEnabled
+                                  ? const Color(0xFFD3BF8F)
+                                  : Colors.grey,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
                               ),
-                              child: const Text("Play",
-                                  style: TextStyle(
-                                      fontFamily: "BreatheFire",
-                                      fontSize: 20,
-                                      color:
-                                          Color.fromARGB(255, 228, 231, 239)))
-                              // ),
-                              );
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 11),
+                            ),
+                            child: Text(
+                              "Play",
+                              style: TextStyle(
+                                fontFamily: "BreatheFire",
+                                fontSize: 20,
+                                color: isButtonEnabled
+                                    ? const Color.fromARGB(255, 228, 231, 239)
+                                    : Colors.white.withOpacity(
+                                        0.5), // Disabled text color
+                              ),
+                            ),
+                          );
                         }),
                       ),
                       Container(
@@ -1572,60 +1565,72 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                       Consumer<CardsProvider>(
                           builder: (context, counter, child) {
+                        final bool isButtonEnabled = remainingDeckView > 0 &&
+                            counter.selectedCardsFromThirdRow.isNotEmpty;
+
                         return Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.transparent,
-                              ),
-                              image: const DecorationImage(
-                                  image: const AssetImage(
-                                      'assets/images/button_border.png'),
-                                  fit: BoxFit.fill)),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              // context.read<AICardsProvider>().removeCards();
-                              // context.read<CardsProvider>().removeCards();
-                              if (remainingDeckView > 0 &&
-                                  counter.selectedCardToSwap.length == 1) {
-                                context
-                                    .read<CardsProvider>()
-                                    .remainingDeck(deck);
-                                context
-                                    .read<CardsProvider>()
-                                    .swapFunctionality();
-                                //  Provider.of<CardsProvider>(context, listen: false)
-                                //     .shuffleDeckElement(deck);
-                                swapButtonPress();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(6, 30),
-                              backgroundColor: Color(0xFFD3BF8F),
-                              foregroundColor: Colors.white,
-                              // elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  child: SvgPicture.asset(
-                                    'assets/images/rewind.svg',
-                                    // fit: BoxFit.cover,
-                                    width: 20,
-                                  ),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.transparent,
                                 ),
-                                Text("      $remainingDeckView")
-                              ],
-                            ),
-                            // ),
-                          ),
-                        );
+                                image: const DecorationImage(
+                                    image: const AssetImage(
+                                        'assets/images/button_border.png'),
+                                    fit: BoxFit.fill)),
+                            child: ElevatedButton(
+                              onPressed: isButtonEnabled
+                                  ? () {
+                                      if (remainingDeckView > 0 &&
+                                          counter.selectedCardsFromThirdRow
+                                              .isNotEmpty) {
+                                        context
+                                            .read<CardsProvider>()
+                                            .remainingDeck(deck);
+                                        context
+                                            .read<CardsProvider>()
+                                            .swapFunctionality();
+                                        swapButtonPress();
+                                      }
+                                    }
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(6, 30),
+                                backgroundColor: isButtonEnabled
+                                    ? Color(0xFFD3BF8F)
+                                    : Colors.grey, // Disabled color
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: SvgPicture.asset(
+                                      'assets/images/rewind.svg',
+                                      width: 20,
+                                      color: isButtonEnabled
+                                          ? null
+                                          : Colors.white.withOpacity(
+                                              0.5), // Disabled icon color
+                                    ),
+                                  ),
+                                  Text(
+                                    "$remainingDeckView",
+                                    style: TextStyle(
+                                      color: isButtonEnabled
+                                          ? Colors.white
+                                          : Colors.white.withOpacity(
+                                              0.5), // Disabled text color
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ));
                       }),
 
                       //cards-grid
@@ -1661,7 +1666,6 @@ class _GameScreenState extends State<GameScreen> {
                                                 itemCount: counter
                                                     .remainingDeckElements
                                                     .length,
-                                                // shuffleDeck(deck).length,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
@@ -1669,11 +1673,6 @@ class _GameScreenState extends State<GameScreen> {
                                                       imageUrl: counter
                                                               .remainingDeckElements[
                                                           index],
-
-                                                      //  shuffleDeck(
-                                                      //     deck)[index],
-                                                      // ThirdCardData[index]
-
                                                       title: "");
                                                 },
                                               ));
@@ -1699,7 +1698,8 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
-                            return Text("${0}/45");
+                            return Text(
+                                '${counter.discardedDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length}');
                           })
                         ],
                       ),
