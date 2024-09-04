@@ -1175,7 +1175,7 @@ class _GameScreenState extends State<GameScreen> {
                                           children: [
 
                                            AnimatedSwitcher(
-        duration: const Duration(milliseconds:  
+        duration: const Duration(seconds:3,milliseconds:  
  500),
         child: counter.isFlipped ?  
         Container(
@@ -1508,12 +1508,16 @@ class _GameScreenState extends State<GameScreen> {
                                       context
                                           .read<CardsProvider>()
                                           .removeCards();
+                                           context
+                                          .read<AICardsProvider>()
+                                          .removeCards();
 
                                            context
                                           .read<AICardsProvider>()
                                           .flip();
 
                                       Navigator.of(context).pushNamed('/game');
+                                      
                                     }
                                   }
                                 : null,
