@@ -145,9 +145,9 @@ class CardsProvider with ChangeNotifier {
   }
 
   void incrementCurrentLevel() {
-    // if (currentRound > 5) {
+    if (currentRound >= 5) {
     currentLevel++;
-    // }
+    }
     // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
