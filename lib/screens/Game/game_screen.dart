@@ -36,6 +36,7 @@ class _GameScreenState extends State<GameScreen> {
   var box = Hive.openBox('noOfChips');
   final player = AudioPlayer();
   bool showWhiteText = false;
+  bool isPlay = false;
 
   final List<Map<String, dynamic>> upgradeArray = [
     {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
@@ -198,7 +199,7 @@ class _GameScreenState extends State<GameScreen> {
         (context.read<CardsProvider>().playerScore) + playerScore);
 
     List<String> aiSelectedCards =
-        context.read<AICardsProvider>().selectedAICards;
+        context.read<CardsProvider>().selectedCardsForAi;
     aiScore = calculateScore(aiSelectedCards);
 
     setState(() {
@@ -207,37 +208,20 @@ class _GameScreenState extends State<GameScreen> {
     context
         .read<CardsProvider>()
         .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
-    //TODO
     bool winStatus = playerScore > aiScore ? true : true;
 
-    if (!winStatus) {
-      Provider.of<CardsProvider>(context, listen: false).setCurrentRound(1);
-    } else {
-      if (Provider.of<CardsProvider>(context, listen: false).currentRound ==
-          5) {
-        await context.read<CardsProvider>().addTenChipsOnWin();
-      }
-      ;
-
-      // var path = Directory.current.path;
-      final appDocumentDirectory = await getApplicationDocumentsDirectory();
-      Hive.init(appDocumentDirectory.path);
-      print({"vigo-daaala": appDocumentDirectory.path});
-      // Hive.init(path);
-
-      var box =
-          await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
-
-      //     var chipsnumber = await box.get('noOfChips');
-      // print({"iram-saleem", chipsnumber});
-      await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
+    if (Provider.of<CardsProvider>(context, listen: false).currentRound == 5) {
+      await context.read<CardsProvider>().addTenChipsOnWin();
     }
 
-    // Display the result
-    //wind popup
+    final appDocumentDirectory = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDirectory.path);
+    var box = await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
+    await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
+
     if (winStatus == true) {
       Future.delayed(
-          Duration(seconds: 0, milliseconds: 70),
+          const Duration(seconds: 0, milliseconds: 70),
           () => {
                 if (winStatus == true &&
                     Provider.of<CardsProvider>(context, listen: false)
@@ -254,30 +238,22 @@ class _GameScreenState extends State<GameScreen> {
                               body: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: AssetImage(
+                                      image: const AssetImage(
                                           'assets/images/background.png'),
                                       fit: BoxFit.fill,
                                       colorFilter: ColorFilter.mode(
                                           Colors.black.withOpacity(0.8),
                                           BlendMode.darken)),
-                                  // color: Color(0xFF5C5E68),
-                                  // border: Border.all(
-                                  //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
-                                  //   width: 4,
-
-                                  //   // Set the border width
-                                  // ),
-                                  // borderRadius: BorderRadius.circular(20),
                                 ),
                                 // alignment: Alignment.center,
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Row(children: [
-                                        SizedBox(width: 120),
+                                        const SizedBox(width: 120),
                                         Column(
                                           children: [
-                                            Text(
+                                            const Text(
                                               "AI",
                                               style: TextStyle(
                                                   fontFamily: "BreatheFire",
@@ -289,7 +265,7 @@ class _GameScreenState extends State<GameScreen> {
                                               child: ElevatedButton(
                                                   child: Text(
                                                       "${context.read<CardsProvider>().aiScore}",
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           color: Colors.white,
                                                           fontFamily:
                                                               "BreatheFire",
@@ -303,23 +279,25 @@ class _GameScreenState extends State<GameScreen> {
 
                                                           //                 horizontal: 5, vertical: 12),
                                                           backgroundColor:
-                                                              Color(0xFF88E060),
+                                                              const Color(
+                                                                  0xFF88E060),
 
                                                           // padding: EdgeInsets.zero,
-                                                          padding: EdgeInsets
-                                                              .symmetric(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
                                                                   vertical: 0,
                                                                   horizontal:
                                                                       23))),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 16,
                                         ),
                                         Column(
                                           children: [
-                                            Text(
+                                            const Text(
                                               "You",
                                               style: TextStyle(
                                                   fontFamily: "BreatheFire",
@@ -331,7 +309,7 @@ class _GameScreenState extends State<GameScreen> {
                                               child: ElevatedButton(
                                                   child: Text(
                                                       "${context.read<CardsProvider>().playerScore}",
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           color: Colors.white,
                                                           fontFamily:
                                                               "BreatheFire",
@@ -345,11 +323,13 @@ class _GameScreenState extends State<GameScreen> {
 
                                                           //                 horizontal: 5, vertical: 12),
                                                           backgroundColor:
-                                                              Color(0xFF88E060),
+                                                              const Color(
+                                                                  0xFF88E060),
 
                                                           // padding: EdgeInsets.zero,
-                                                          padding: EdgeInsets
-                                                              .symmetric(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
                                                                   vertical: 0,
                                                                   horizontal:
                                                                       23))),
@@ -357,8 +337,8 @@ class _GameScreenState extends State<GameScreen> {
                                           ],
                                         )
                                       ]),
-                                      SizedBox(height: 7),
-                                      Text(
+                                      const SizedBox(height: 7),
+                                      const Text(
                                         "You Win!",
                                         style: TextStyle(
                                             fontFamily: "BreatheFire",
@@ -368,7 +348,7 @@ class _GameScreenState extends State<GameScreen> {
 
                                       //upgrade button
                                       ElevatedButton(
-                                          child: Text("Upgrade",
+                                          child: const Text("Upgrade",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontFamily: "BreatheFire",
@@ -406,7 +386,7 @@ class _GameScreenState extends State<GameScreen> {
                                                                   const Size(
                                                                       6, 30),
                                                               backgroundColor:
-                                                                  Color(
+                                                                  const Color(
                                                                       0xFF838796),
                                                               foregroundColor:
                                                                   Colors.white,
@@ -446,16 +426,16 @@ class _GameScreenState extends State<GameScreen> {
                                                               style:
                                                                   ElevatedButton
                                                                       .styleFrom(
-                                                                backgroundColor:
-                                                                    _selectedButtonIndex ==
-                                                                            0
-                                                                        ? Color(
-                                                                            0xFF9B9DAD)
-                                                                        : Color.fromARGB(
-                                                                            255,
-                                                                            210,
-                                                                            220,
-                                                                            255),
+                                                                backgroundColor: _selectedButtonIndex ==
+                                                                        0
+                                                                    ? const Color(
+                                                                        0xFF9B9DAD)
+                                                                    : const Color
+                                                                        .fromARGB(
+                                                                        255,
+                                                                        210,
+                                                                        220,
+                                                                        255),
                                                                 foregroundColor:
                                                                     Colors
                                                                         .white,
@@ -493,12 +473,12 @@ class _GameScreenState extends State<GameScreen> {
                                                                           .cover,
                                                                       // width: 49,
                                                                     ),
-                                                                    SizedBox(
+                                                                    const SizedBox(
                                                                         width:
                                                                             7),
                                                                     Text(
                                                                         '${noOfChips}',
-                                                                        style: TextStyle(
+                                                                        style: const TextStyle(
                                                                             fontFamily:
                                                                                 "BreatheFire",
                                                                             fontSize:
@@ -524,7 +504,7 @@ class _GameScreenState extends State<GameScreen> {
                                                                   const Size(
                                                                       6, 30),
                                                               backgroundColor:
-                                                                  Color(
+                                                                  const Color(
                                                                       0xFF838796),
                                                               foregroundColor:
                                                                   Colors.white,
@@ -621,10 +601,6 @@ class _GameScreenState extends State<GameScreen> {
                                                                   .read<
                                                                       CardsProvider>()
                                                                   .removeCards();
-                                                              context
-                                                                  .read<
-                                                                      AICardsProvider>()
-                                                                  .removeCards();
 
                                                               await player.play(
                                                                   AssetSource(
@@ -634,18 +610,11 @@ class _GameScreenState extends State<GameScreen> {
                                                                       context,
                                                                       '/game');
                                                             },
-                                                            child: const Text(
-                                                              'NEXT ROUND',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "BreatheFire",
-                                                                  fontSize: 32),
-                                                            ),
                                                             style:
                                                                 ElevatedButton
                                                                     .styleFrom(
                                                               backgroundColor:
-                                                                  Color(
+                                                                  const Color(
                                                                       0xFF838796),
                                                               foregroundColor:
                                                                   Colors.white,
@@ -657,12 +626,20 @@ class _GameScreenState extends State<GameScreen> {
                                                                         .circular(
                                                                             10),
                                                               ),
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
                                                                       horizontal:
                                                                           85,
                                                                       vertical:
                                                                           8),
+                                                            ),
+                                                            child: const Text(
+                                                              'NEXT LEVEL',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      "BreatheFire",
+                                                                  fontSize: 32),
                                                             ),
                                                           )
                                                         : ElevatedButton(
@@ -713,7 +690,7 @@ class _GameScreenState extends State<GameScreen> {
                                                                 ElevatedButton
                                                                     .styleFrom(
                                                               backgroundColor:
-                                                                  Color(
+                                                                  const Color(
                                                                       0xFF838796),
                                                               foregroundColor:
                                                                   Colors.white,
@@ -725,8 +702,9 @@ class _GameScreenState extends State<GameScreen> {
                                                                         .circular(
                                                                             10),
                                                               ),
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
                                                                       horizontal:
                                                                           85,
                                                                       vertical:
@@ -748,13 +726,15 @@ class _GameScreenState extends State<GameScreen> {
                                               ),
 
                                               //                 horizontal: 5, vertical: 12),
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 168, 168, 168),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 168, 168, 168),
 
                                               // padding: EdgeInsets.zero,
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 0,
-                                                  horizontal: 80))),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 80))),
                                       // ),
                                     ]),
                               ),
@@ -766,17 +746,11 @@ class _GameScreenState extends State<GameScreen> {
                   }
               });
       return true;
-    }
-
-    //  else {
-    //   print({"sadeem": "aiash"});
-    //   return true;
-    // }
-    else {
+    } else {
       //  context.read<CardsProvider>().setCurrentRound();
       player.play(AssetSource('Music/Round-over.mp3'));
       Future.delayed(
-          Duration(seconds: 0, milliseconds: 70),
+          const Duration(seconds: 0, milliseconds: 70),
           () => {
                 showDialog(
                     context: context,
@@ -788,7 +762,7 @@ class _GameScreenState extends State<GameScreen> {
                           body: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage(
+                                  image: const AssetImage(
                                       'assets/images/background.png'),
                                   fit: BoxFit.fill,
                                   colorFilter: ColorFilter.mode(
@@ -808,10 +782,10 @@ class _GameScreenState extends State<GameScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(children: [
-                                    SizedBox(width: 120),
+                                    const SizedBox(width: 120),
                                     Column(
                                       children: [
-                                        Text(
+                                        const Text(
                                           "AI",
                                           style: TextStyle(
                                               fontFamily: "BreatheFire",
@@ -822,7 +796,7 @@ class _GameScreenState extends State<GameScreen> {
                                           height: 18,
                                           child: ElevatedButton(
                                               child: Text("$aiScore",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.white,
                                                       fontFamily: "BreatheFire",
                                                       fontSize: 14)),
@@ -834,21 +808,22 @@ class _GameScreenState extends State<GameScreen> {
 
                                                   //                 horizontal: 5, vertical: 12),
                                                   backgroundColor:
-                                                      Color(0xFF88E060),
+                                                      const Color(0xFF88E060),
 
                                                   // padding: EdgeInsets.zero,
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                       vertical: 0,
                                                       horizontal: 23))),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 16,
                                     ),
                                     Column(
                                       children: [
-                                        Text(
+                                        const Text(
                                           "You",
                                           style: TextStyle(
                                               fontFamily: "BreatheFire",
@@ -859,7 +834,7 @@ class _GameScreenState extends State<GameScreen> {
                                           height: 18,
                                           child: ElevatedButton(
                                               child: Text("$playerScore",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.white,
                                                       fontFamily: "BreatheFire",
                                                       fontSize: 14)),
@@ -871,18 +846,19 @@ class _GameScreenState extends State<GameScreen> {
 
                                                   //                 horizontal: 5, vertical: 12),
                                                   backgroundColor:
-                                                      Color(0xFF88E060),
+                                                      const Color(0xFF88E060),
 
                                                   // padding: EdgeInsets.zero,
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                       vertical: 0,
                                                       horizontal: 23))),
                                         ),
                                       ],
                                     )
                                   ]),
-                                  SizedBox(height: 7),
-                                  Text(
+                                  const SizedBox(height: 7),
+                                  const Text(
                                     "You Lose",
                                     style: TextStyle(
                                         fontFamily: "BreatheFire",
@@ -891,7 +867,7 @@ class _GameScreenState extends State<GameScreen> {
                                   ),
 
                                   ElevatedButton(
-                                      child: Text("MENU",
+                                      child: const Text("MENU",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
@@ -908,11 +884,11 @@ class _GameScreenState extends State<GameScreen> {
                                           ),
 
                                           //                 horizontal: 5, vertical: 12),
-                                          backgroundColor: Color.fromARGB(
+                                          backgroundColor: const Color.fromARGB(
                                               255, 168, 168, 168),
 
                                           // padding: EdgeInsets.zero,
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 80))),
                                   // ),
                                 ]),
@@ -942,20 +918,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var content;
-
-    if (_selectedButtonIndex == 0) {
-      content = "";
-    } else if (_selectedButtonIndex == 1) {
-      content = "";
-    } else if (_selectedButtonIndex == 2) {
-      content = "";
-    } else {
-      content = "null";
-    }
-
     List<String> deck = generateDeck();
-
     List<String> AIDeck = generateDeckForAI();
 
     final List<String> cardData = [
@@ -983,8 +946,6 @@ class _GameScreenState extends State<GameScreen> {
       'transparent.png'
     ];
 
-    bool isPlay = false;
-
     Widget buildCard(BuildContext context, int index) {
       return Container(
         width: 50,
@@ -1002,10 +963,10 @@ class _GameScreenState extends State<GameScreen> {
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
         body: Container(
             alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
+            decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: const AssetImage('assets/images/background.png'),
+                    image: AssetImage('assets/images/background.png'),
                     fit: BoxFit.cover)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1019,7 +980,7 @@ class _GameScreenState extends State<GameScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(6, 30),
-                          backgroundColor: Color(0xFF838796),
+                          backgroundColor: const Color(0xFF838796),
                           foregroundColor: Colors.white,
                           // elevation: 10,
                           shape: RoundedRectangleBorder(
@@ -1044,8 +1005,8 @@ class _GameScreenState extends State<GameScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedButtonIndex == 0
-                              ? Color(0xFF9B9DAD)
-                              : Color.fromARGB(255, 210, 220, 255),
+                              ? const Color(0xFF9B9DAD)
+                              : const Color.fromARGB(255, 210, 220, 255),
                           foregroundColor: Colors.white,
                           elevation: 10,
                           shape: RoundedRectangleBorder(
@@ -1056,7 +1017,7 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                         child: Text(
                             '${context.read<CardsProvider>().currentLevel}',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: "BreatheFire",
                                 fontSize: 25,
                                 color: Colors.white)),
@@ -1070,7 +1031,7 @@ class _GameScreenState extends State<GameScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(6, 30),
-                          backgroundColor: Color(0xFF838796),
+                          backgroundColor: const Color(0xFF838796),
                           foregroundColor: Colors.white,
                           // elevation: 10,
                           shape: RoundedRectangleBorder(
@@ -1095,36 +1056,36 @@ class _GameScreenState extends State<GameScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         showWhiteText
-                            ?
-                             Row(
-                               children: [
-                                 Column(
+                            ? Row(
+                                children: [
+                                  Column(
                                     children: [
-                                      Text(
-                                          "You Base Score:${playerScore}",
-                                          style: TextStyle(
+                                      Text("You Base Score:${playerScore}",
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
-                                              fontSize: 14)),
+                                              fontSize: 17)),
+                                      const SizedBox(height: 7),
                                       Text(
                                           "Two Pair Bonus:${context.read<CardsProvider>().playerScore}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
                                               fontSize: 14)),
+                                      const SizedBox(height: 7),
                                       Text(
                                           "Total:${context.read<CardsProvider>().playerScore}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
                                               fontSize: 14)),
+                                      const SizedBox(height: 7),
                                     ],
                                   ),
-                               SizedBox(width:5)
-                               ],
-                             )
-                              
-                            : Text(""),
+                                  const SizedBox(width: 5)
+                                ],
+                              )
+                            : const Text(""),
                         Column(
                           children: [
                             Positioned(
@@ -1141,38 +1102,33 @@ class _GameScreenState extends State<GameScreen> {
                         showWhiteText
                             ? Column(
                                 children: [
-                                  Text(
-                                      "Opponent Base Score:${aiScore}",
-                                      style: TextStyle(
+                                  Text("Opponent Base Score:${aiScore}",
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontFamily: "BreatheFire",
                                           fontSize: 14)),
                                   Text(
                                       "High Card Bonus:${context.read<CardsProvider>().aiScore}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontFamily: "BreatheFire",
                                           fontSize: 14)),
                                   Text(
                                       "Total:${context.read<CardsProvider>().aiScore}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontFamily: "BreatheFire",
                                           fontSize: 14)),
                                 ],
                               )
-                            : Text(""),
+                            : const Text(""),
                       ],
                     ),
                     Positioned(
                       bottom: 22,
-                      right: 147, // Adjust top position as needed
-                      // right: 30,
+                      right: 147,
                       child: SvgPicture.asset(
                         'assets/images/kadoo-tail.svg',
-
-                        // fit: BoxFit.cover,
-                        // width: 49,
                       ),
                     ),
 
@@ -1181,10 +1137,8 @@ class _GameScreenState extends State<GameScreen> {
                       top: 70,
                       right: -4,
                       child: Container(
-                          // alignment: Alignment.center,
                           height: 390,
                           width: 390,
-                          // padding: EdgeInsets.all(170),
                           decoration: BoxDecoration(
                             image: const DecorationImage(
                                 image: const AssetImage(
@@ -1193,32 +1147,12 @@ class _GameScreenState extends State<GameScreen> {
                             border: Border.all(
                                 color: const Color.fromARGB(255, 153, 0, 0),
                                 width: 3.0),
-                            // gradient: LinearGradient(
-                            //   colors: [
-                            //     Color(0xFFF39036),
-                            //     Color(0xFFE7762A),
-                            //     Color(0xFFDD6221)
-                            //   ],
-                            //   begin: Alignment.topLeft,
-                            //   end: Alignment.bottomRight,
-                            // ),
-
-                            // color: Color(0xFFF39036),
-                            // border: Border.all(
-                            //   color: Color(0xFFF39036), // Set the border color
-                            //   width: 4,
-                            //   // Set the border width
-                            // ),
                             borderRadius: BorderRadius.circular(200),
-                            //   image: const DecorationImage(
-                            //     image: AssetImage('assets/images/Vector.png'),
-                            //     fit: BoxFit.fill,
-                            //   ),
                           ),
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 SvgPicture.asset(
@@ -1228,7 +1162,7 @@ class _GameScreenState extends State<GameScreen> {
                                 ),
 
                                 //first-card-row
-                                Consumer<AICardsProvider>(
+                                Consumer<CardsProvider>(
                                     builder: (context, counter, child) {
                                   return SizedBox(
                                     height: 40,
@@ -1236,9 +1170,6 @@ class _GameScreenState extends State<GameScreen> {
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       itemCount: 5,
-                                      // counter.selectedAICards.length > 1
-                                      //     ? counter.selectedAICards.length
-                                      //     : cardDataAI.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
@@ -1246,14 +1177,20 @@ class _GameScreenState extends State<GameScreen> {
                                             AnimatedSwitcher(
                                               duration:
                                                   const Duration(seconds: 1),
-                                              child: counter.isFlipped
+                                              child: isPlay
                                                   ? Container(
                                                       width: 28,
                                                       height: 39,
                                                       decoration: BoxDecoration(
                                                         image: DecorationImage(
                                                           image: AssetImage(
-                                                            '${counter.selectedAICards.length == 5 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
+                                                            counter.selectedCardsForAi
+                                                                        .length ==
+                                                                    5
+                                                                ? counter
+                                                                        .selectedCardsForAi[
+                                                                    index]
+                                                                : "assets/images/${cardDataAI[index]}",
                                                           ),
                                                           fit: BoxFit.cover,
                                                         ),
@@ -1265,7 +1202,7 @@ class _GameScreenState extends State<GameScreen> {
                                                       decoration: BoxDecoration(
                                                         image: DecorationImage(
                                                           image: AssetImage(
-                                                            '${counter.selectedAICards.length == 5 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
+                                                            "assets/images/${cardDataAI[index]}",
                                                           ),
                                                           fit: BoxFit.cover,
                                                         ),
@@ -1278,20 +1215,6 @@ class _GameScreenState extends State<GameScreen> {
                                                 child: child,
                                               ),
                                             ),
-
-                                            // Container(
-                                            //   width: 28,
-                                            //   height: 39,
-                                            //   decoration: BoxDecoration(
-                                            //     image: DecorationImage(
-                                            //       image: AssetImage(
-                                            //         '${counter.selectedAICards.length == 5 ? counter.selectedAICards[index] : "assets/images/${cardDataAI[index]}"}',
-                                            //       ),
-                                            //       fit: BoxFit.cover,
-                                            //     ),
-                                            //   ),
-                                            // ),
-
                                             const SizedBox(
                                               width: 8,
                                             )
@@ -1307,7 +1230,7 @@ class _GameScreenState extends State<GameScreen> {
                                   child: ElevatedButton(
                                       child: Text(
                                           "${context.read<CardsProvider>().aiScore}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
                                               fontFamily: "BreatheFire",
                                               fontSize: 14)),
@@ -1318,26 +1241,27 @@ class _GameScreenState extends State<GameScreen> {
                                           // elevation: 30,
 
                                           //                 horizontal: 5, vertical: 12),
-                                          backgroundColor: Color(0xFF88E060),
+                                          backgroundColor:
+                                              const Color(0xFF88E060),
 
                                           // padding: EdgeInsets.zero,
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 23))),
                                 ),
                                 Row(
                                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 25,
                                     ),
                                     Consumer<CardsProvider>(
                                         builder: (context, counter, child) {
                                       return Container(
-                                          margin: EdgeInsets.symmetric(
+                                          margin: const EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 10),
                                           child: Text(
                                               "  ${counter.currentRound}\nRound",
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Color(0xFFF7A74F),
                                                   fontFamily: "BreatheFire",
                                                   fontSize: 23))
@@ -1370,10 +1294,9 @@ class _GameScreenState extends State<GameScreen> {
                                                   height: 39,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                      image: AssetImage(index <
-                                                                      counter
-                                                                          .selectedCardsFromThirdRow
-                                                                          .length ==
+                                                      image: AssetImage(counter
+                                                                      .selectedCardsFromThirdRow
+                                                                      .length ==
                                                                   5 &&
                                                               isPlay == true
                                                           ? counter
@@ -1401,21 +1324,15 @@ class _GameScreenState extends State<GameScreen> {
                                     child: ElevatedButton(
                                         child: Text(
                                             "${context.read<CardsProvider>().playerScore}",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "BreatheFire",
                                                 fontSize: 14)),
-                                        onPressed: () {
-                                          // Handle button 1 press
-                                        },
+                                        onPressed: () {},
                                         style: ElevatedButton.styleFrom(
-                                            // elevation: 30,
-
-                                            //                 horizontal: 5, vertical: 12),
-                                            backgroundColor: Color(0xFF88E060),
-
-                                            // padding: EdgeInsets.zero,
-                                            padding: EdgeInsets.symmetric(
+                                            backgroundColor:
+                                                const Color(0xFF88E060),
+                                            padding: const EdgeInsets.symmetric(
                                                 vertical: 0, horizontal: 23)))),
 
                                 //third-row-cards
@@ -1472,7 +1389,8 @@ class _GameScreenState extends State<GameScreen> {
                                                                       .selectedCards[
                                                                   index])
                                                       ? Border.all(
-                                                          color: Color.fromARGB(
+                                                          color: const Color
+                                                              .fromARGB(
                                                               255,
                                                               253,
                                                               187,
@@ -1488,7 +1406,8 @@ class _GameScreenState extends State<GameScreen> {
                                                         //if index<
 
 //  '${(index)>=counter.selectedCards.length ? "assets/images/${cardData[index]}" : counter.selectedCards[index] }'),
-                                                        '${"${counter.shuffleDeckElements[index]}"}'),
+                                                        counter.shuffleDeckElements[
+                                                            index]),
                                                     // '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
                                                     fit: BoxFit.cover,
                                                   ),
@@ -1519,22 +1438,17 @@ class _GameScreenState extends State<GameScreen> {
                 Container(
                   // padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
                   decoration: BoxDecoration(
-                    color: Color(0xFFECE3CE),
+                    color: const Color(0xFFECE3CE),
                     border: Border.all(
-                      color: Color(0xFFD3BF8F), // Set the border color
+                      color: const Color(0xFFD3BF8F), // Set the border color
                       width: 0,
-                      // Set the border width
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    // image: const DecorationImage(
-                    //   image: AssetImage('assets/images/Vector.png'),
-                    //   fit: BoxFit.fill,
-                    // ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Container(
@@ -1556,19 +1470,12 @@ class _GameScreenState extends State<GameScreen> {
                                 ? () async {
                                     setState(() {
                                       showWhiteText = true;
+                                      isPlay = true;
                                     });
-                                       await Future.delayed(
+                                    await Future.delayed(
                                         const Duration(seconds: 3));
                                     await player
                                         .play(AssetSource('Music/Play.mp3'));
-                                    isPlay = true;
-                                    context
-                                        .read<AICardsProvider>()
-                                        .removeCards();
-                                    context
-                                        .read<AICardsProvider>()
-                                        .selectAICards(shuffleAIDeck(AIDeck));
-
                                     var result = await _calculateScores(
                                         counter.noOfChips);
                                     if (result == true) {
@@ -1578,14 +1485,8 @@ class _GameScreenState extends State<GameScreen> {
                                       context
                                           .read<CardsProvider>()
                                           .removeCards();
-                                      context
-                                          .read<AICardsProvider>()
-                                          .removeCards();
 
-                                      context.read<AICardsProvider>().flip();
-                                      
                                       Navigator.of(context).pushNamed('/game');
-                                    
                                     }
                                   }
                                 : null,
@@ -1637,19 +1538,19 @@ class _GameScreenState extends State<GameScreen> {
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image: AssetImage(
+                                            image: const AssetImage(
                                                 'assets/images/background.png'),
                                             fit: BoxFit.fill,
                                             colorFilter: ColorFilter.mode(
                                                 Colors.black.withOpacity(0.8),
                                                 BlendMode.darken)),
                                       ),
-                                      child: Column(
+                                      child: const Column(
                                         // MainAxisAlignment.spaceAround,
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          const SizedBox(height: 250),
+                                          SizedBox(height: 250),
                                           SizedBox(
                                             height: 400,
                                             child: Text(
@@ -1668,7 +1569,7 @@ class _GameScreenState extends State<GameScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
-                            backgroundColor: Color(0xFFD3BF8F),
+                            backgroundColor: const Color(0xFFD3BF8F),
                             foregroundColor: Colors.white,
                             // elevation: 10,
                             shape: RoundedRectangleBorder(
@@ -1707,9 +1608,6 @@ class _GameScreenState extends State<GameScreen> {
                                               .isNotEmpty) {
                                         context
                                             .read<CardsProvider>()
-                                            .remainingDeck(deck);
-                                        context
-                                            .read<CardsProvider>()
                                             .swapFunctionality();
                                         swapButtonPress();
                                       }
@@ -1718,7 +1616,7 @@ class _GameScreenState extends State<GameScreen> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(6, 30),
                                 backgroundColor: isButtonEnabled
-                                    ? Color(0xFFD3BF8F)
+                                    ? const Color(0xFFD3BF8F)
                                     : Colors.grey, // Disabled color
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -1731,7 +1629,7 @@ class _GameScreenState extends State<GameScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    margin: EdgeInsets.only(top: 10),
+                                    margin: const EdgeInsets.only(top: 10),
                                     child: SvgPicture.asset(
                                       'assets/images/rewind.svg',
                                       width: 20,
@@ -1814,14 +1712,14 @@ class _GameScreenState extends State<GameScreen> {
                                         image: const AssetImage(
                                             'assets/images/card_hearts_10.png'),
                                         fit: BoxFit.fill)),
-                                child: Text(""),
+                                child: const Text(""),
                                 width: 45,
                                 height: 50),
                           ),
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
                             return Text(
-                                '${counter.discardedDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length}');
+                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length}');
                           })
                         ],
                       ),
@@ -1860,7 +1758,7 @@ class _SelectableCardState extends State<SelectableCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: _isSelected
-            ? BorderSide(color: Color.fromARGB(255, 2, 178, 34), width: 5)
+            ? const BorderSide(color: Color.fromARGB(255, 2, 178, 34), width: 5)
             : BorderSide.none,
       ),
       child: Consumer<CardsProvider>(
@@ -1869,9 +1767,6 @@ class _SelectableCardState extends State<SelectableCard> {
             onTap: () {
               setState(() {
                 _isSelected = !_isSelected;
-
-                // if (counter.selectedCards.length <= 5)
-                // _isSelected = !_isSelected;
 
                 if (_isSelected == false) {
                   context
@@ -1884,7 +1779,7 @@ class _SelectableCardState extends State<SelectableCard> {
             },
             child: Column(
               children: [
-                Image.asset("${widget.imageUrl}"),
+                Image.asset(widget.imageUrl),
                 // Text(widget.title),
               ],
             ),
@@ -1897,7 +1792,6 @@ class _SelectableCardState extends State<SelectableCard> {
 
 class SelectableCardForUpgrade extends StatefulWidget {
   final String imageUrl;
-  // final String title;
   final int cost;
 
   SelectableCardForUpgrade({
@@ -1917,12 +1811,12 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color(0xFF838796),
+      color: const Color(0xFF838796),
       elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: _isSelected
-            ? BorderSide(color: Color.fromARGB(255, 2, 178, 34), width: 5)
+            ? const BorderSide(color: Color.fromARGB(255, 2, 178, 34), width: 5)
             : BorderSide.none,
       ),
       child: Consumer<CardsProvider>(
@@ -1961,14 +1855,14 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Important Message'),
-                          content: Text('You have insfficient balance'),
+                          title: const Text('Important Message'),
+                          content: const Text('You have insfficient balance'),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('OK'),
+                              child: const Text('OK'),
                             )
                           ],
                         );
@@ -1977,14 +1871,14 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Important Message'),
-                          content: Text('You have purchased a card'),
+                          title: const Text('Important Message'),
+                          content: const Text('You have purchased a card'),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('OK'),
+                              child: const Text('OK'),
                             )
                           ],
                         );
@@ -1992,18 +1886,18 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
             },
             child: Column(
               children: [
-                Image.asset("${widget.imageUrl}"),
+                Image.asset(widget.imageUrl),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SvgPicture.asset(
                     'assets/images/upgrade-card-2.svg',
                     fit: BoxFit.cover,
                     // width: 49,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text('${widget.cost}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: "BreatheFire",
                           fontSize: 17,
                           color: Color.fromARGB(255, 252, 252, 252))),
@@ -2015,88 +1909,5 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
         },
       ),
     );
-  }
-}
-
-// class CardsProvider with ChangeNotifier {
-//   List<String> selectedCards = [];
-//   List<String> selectedCardsForSecondRow = [];
-//   List<String> selectedCardsFromThirdRow = [];
-//   List<String> remainingDeckElements = [];
-//   List<String> shuffleDeckElements = [];
-
-//   void remainingDeck(deck) {
-//     remainingDeckElements =
-//         deck.where((element) => !selectedCards.contains(element)).toList();
-//     print({"murgha": remainingDeckElements.length});
-//     notifyListeners();
-//   }
-
-//   void shuffleDeckElement(deck) {
-//     shuffleDeckElements = shuffleDeck(deck);
-//     selectedCards = [];
-
-//     print({"murgha": shuffleDeckElements.length});
-//     notifyListeners();
-//   }
-
-//   // List<String> get selectedCards;
-
-//   void selectCards(String path) {
-//     if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
-//       selectedCards.add(path);
-//     }
-//     notifyListeners();
-//   }
-
-//   void selectCardsForSecondRow(List<String> selectedCards) {
-//     // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
-//     //   selectedCards.add(path);
-//     // }
-//     selectedCardsForSecondRow = selectedCards;
-//     notifyListeners();
-//   }
-
-//   void selectCardFromThirdRow(String path) {
-//     if (selectedCardsFromThirdRow.length <= 4 &&
-//         !selectedCardsFromThirdRow.contains(path)) {
-//       selectedCardsFromThirdRow.add(path);
-//     }
-//     notifyListeners();
-//   }
-
-//   void removeSingleCard(String path) {
-//     selectedCards.remove(path);
-//     selectedCardsForSecondRow.remove(path);
-//     notifyListeners();
-//   }
-
-//   void removeCards() {
-//     selectedCards = [];
-//     selectedCardsForSecondRow = [];
-//     selectedCardsFromThirdRow = [];
-//     notifyListeners();
-//   }
-// }
-
-class AICardsProvider with ChangeNotifier {
-  List<String> selectedAICards = [];
-  bool isFlipped = false;
-
-  void flip() {
-    isFlipped = !isFlipped;
-    notifyListeners();
-  }
-
-  // List<String> get selectedCards;
-
-  void selectAICards(List<String> AICards) {
-    selectedAICards = AICards;
-    notifyListeners();
-  }
-
-  void removeCards() {
-    selectedAICards = [];
-    notifyListeners();
   }
 }

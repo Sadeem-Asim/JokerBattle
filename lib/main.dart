@@ -150,13 +150,12 @@ Future<void> main() async {
   Hive.init(appDocumentDirectory.path);
   // var box = await Hive.openBox('testBox');
   // Bloc.observer = SimpleBlocObserver();
-   
+
   return runApp(
-    
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CardsProvider()),
-        ChangeNotifierProvider(create: (_) => AICardsProvider()),
+        // ChangeNotifierProvider(create: (_) => AICardsProvider()),
       ],
       child: MyApp(),
     ),

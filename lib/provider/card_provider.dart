@@ -7,18 +7,104 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
+import 'dart:math';
+
+List<String> generateDeck() {
+  const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+  const ranks = [
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+    '09',
+    '10',
+    'J',
+    'Q',
+    'K',
+    'A'
+  ];
+  List<String> deck = [];
+  for (final suit in suits) {
+    for (final rank in ranks) {
+      deck.add("assets/images/card_${suit}_$rank.png");
+    }
+  }
+  // deck.add("assets/images/card_joker_red.png");
+  return deck;
+}
+
+List<String> generateDeckForAI() {
+  const suits = [
+    'clubs',
+    'spades',
+    'hearts',
+    'diamonds',
+  ];
+  const ranks = [
+    '09',
+    '10',
+    'J',
+    'Q',
+    'K',
+    'A',
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+  ];
+  List<String> deck = [];
+  for (final suit in suits) {
+    for (final rank in ranks) {
+      deck.add("assets/images/card_${suit}_$rank.png");
+    }
+  }
+  deck.add("assets/images/card_joker_red.png");
+  // print({
+  //   "hijra:": deck,
+  // });
+  return deck;
+}
+
+List<String> shuffleDeck(List<String> deck) {
+  for (int i = deck.length - 1; i > 0; i--) {
+    final j = Random().nextInt(i + 1);
+    final temp = deck[i];
+    deck[i] = deck[j];
+    deck[j] = temp;
+  }
+  return deck.sublist(0, 7);
+}
+
+List<String> shuffleAIDeck(List<String> deck) {
+  for (int i = deck.length - 1; i > 0; i--) {
+    final j = Random().nextInt(i + 1);
+    final temp = deck[i];
+    deck[i] = deck[j];
+    deck[j] = temp;
+  }
+
+  return deck.sublist(0, 5);
+}
 
 class CardsProvider with ChangeNotifier {
   List<String> selectedCards = [];
   List<String> selectedCardsForSecondRow = [];
   List<String> selectedCardsFromThirdRow = [];
   List<String> remainingDeckElements = [];
+  List<String> remainingAiElements = [];
   List<String> discardedDeckElements = [];
+  List<String> selectedCardsForAi = [];
   List<String> shuffleDeckElements = [];
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
-   
+  bool isFlipped = false;
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
@@ -106,13 +192,18 @@ class CardsProvider with ChangeNotifier {
   }
 
   void swapFunctionality() {
-    // print({"choocha1": shuffleElements});
-    var index = selectedCards.indexOf(selectedCardsFromThirdRow[0]);
-    print({"choocha2": remainingDeckElements.length, "index": index});
-    if (index != -1) {
-      selectedCards[index] = remainingDeckElements[index];
-      selectedCardsFromThirdRow = [];
+    for (int i = 0; i < selectedCardsFromThirdRow.length; i++) {
+      var index = selectedCards.indexOf(selectedCardsFromThirdRow[i]);
+      if (index != -1) {
+        final j = Random().nextInt(i + 1);
+        var temp = selectedCards[index];
+        selectedCards[index] = remainingDeckElements[j];
+        remainingAiElements[j] = temp;
+        selectedCardsFromThirdRow = [];
+      }
     }
+    selectedCardsFromThirdRow = [];
+    notifyListeners();
 
     notifyListeners();
   }
@@ -139,16 +230,28 @@ class CardsProvider with ChangeNotifier {
   void incrementCurrentRound() {
     if (currentRound < 6) {
       currentRound++;
+      selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+      remainingAiElements
+          .removeWhere((card) => selectedCardsForAi.contains(card));
     }
-    // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
 
   void incrementCurrentLevel() {
     if (currentRound >= 5) {
-    currentLevel++;
+      currentLevel++;
+      currentRound = 1;
+      discardedDeckElements = [];
+      remainingDeckElements = generateDeck();
+      remainingAiElements = generateDeckForAI();
+      selectedCardsForSecondRow = shuffleDeck(remainingDeckElements);
+      remainingDeckElements
+          .removeWhere((card) => selectedCardsForSecondRow.contains(card));
+      discardedDeckElements += selectedCardsForSecondRow;
+      selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+      remainingAiElements
+          .removeWhere((card) => selectedCardsForAi.contains(card));
     }
-    // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
 
@@ -157,8 +260,6 @@ class CardsProvider with ChangeNotifier {
     if (value == 1) {
       selectedCardsFromThirdRow = [];
     }
-    ;
-    // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
 
@@ -171,12 +272,8 @@ class CardsProvider with ChangeNotifier {
   void shuffleDeckElement(deck) {
     shuffleDeckElements = shuffleDeck(deck);
     selectedCards = shuffleDeckElements;
-
-    print({"murgha": shuffleDeckElements.length});
     notifyListeners();
   }
-
-  // List<String> get selectedCards;
 
   void selectCards(String path) {
     if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
@@ -191,9 +288,6 @@ class CardsProvider with ChangeNotifier {
   }
 
   void selectCardsForSecondRow(List<String> selectedCards) {
-    // if (selectedCards.length <= 4 && !selectedCards.contains(path)) {
-    //   selectedCards.add(path);
-    // }
     selectedCardsForSecondRow = selectedCards;
     notifyListeners();
   }
@@ -214,30 +308,31 @@ class CardsProvider with ChangeNotifier {
 
   void removeCards() {
     discardedDeckElements += selectedCardsFromThirdRow;
-
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
-
     selectedCardToSwap = [];
     notifyListeners();
   }
 
   void removeCardsOnGameClick() {
-    // selectedCards = [];
     selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
-
-    // List<String> selectedCards = [];
-    // List<String> selectedCardsForSecondRow = [];
-    // List<String> selectedCardsFromThirdRow = [];
-    // List<String> remainingDeckElements = [];
-    // List<String> shuffleDeckElements = [];
     selectedCardToSwap = [];
     currentRound = 1;
-    // noOfChips = 0;
     currentLevel = 1;
     playerScore = 0;
     aiScore = 0;
+    discardedDeckElements = [];
+    remainingDeckElements = generateDeck();
+    remainingAiElements = generateDeckForAI();
+    selectedCardsForSecondRow = shuffleDeck(remainingDeckElements);
+    remainingDeckElements
+        .removeWhere((card) => selectedCardsForSecondRow.contains(card));
+    discardedDeckElements += selectedCardsForSecondRow;
+
+    selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+    remainingAiElements
+        .removeWhere((card) => selectedCardsForAi.contains(card));
     notifyListeners();
   }
 }

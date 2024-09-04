@@ -71,10 +71,12 @@ class _MyHomePageState extends State<HomeScreen> {
                           context
                               .read<CardsProvider>()
                               .shuffleDeckElement(deck);
-                          context.read<CardsProvider>().removeCardsOnGameClick();
-                           context
-                              .read<AICardsProvider>()
-                              .removeCards();
+                          context
+                              .read<CardsProvider>()
+                              .removeCardsOnGameClick();
+                          //  context
+                          //     .read<AICardsProvider>()
+                          //     .removeCards();
                           // .addMultipleCards(selectedCards);
                           Navigator.pushNamed(context, '/game');
                         },
