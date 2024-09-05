@@ -252,6 +252,8 @@ class CardsProvider with ChangeNotifier {
       remainingAiElements
           .removeWhere((card) => selectedCardsForAi.contains(card));
     }
+    aiScore = 0;
+    playerScore = 0;
     notifyListeners();
   }
 

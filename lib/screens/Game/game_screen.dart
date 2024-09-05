@@ -27,7 +27,7 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int _selectedButtonIndex = 0;
   List<String> selectedCardsList = [];
   int playerScore = 0;
@@ -37,6 +37,23 @@ class _GameScreenState extends State<GameScreen> {
   final player = AudioPlayer();
   bool showWhiteText = false;
   bool isPlay = false;
+  late AnimationController _controller;
+  late Animation _animation;
+  AnimationStatus _status = AnimationStatus.dismissed;
+
+  void initState() {
+    super.initState();
+
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animation = Tween(end: 1.0, begin: 0.0).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {
+        _status = status;
+      });
+  }
 
   final List<Map<String, dynamic>> upgradeArray = [
     {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
@@ -1060,26 +1077,48 @@ class _GameScreenState extends State<GameScreen> {
                                 children: [
                                   Column(
                                     children: [
-                                      Text("You Base Score:${playerScore}",
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 17)),
-                                      const SizedBox(height: 7),
-                                      Text(
-                                          "Two Pair Bonus:${context.read<CardsProvider>().playerScore}",
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 14)),
-                                      const SizedBox(height: 7),
-                                      Text(
-                                          "Total:${context.read<CardsProvider>().playerScore}",
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 14)),
-                                      const SizedBox(height: 7),
+                                      TweenAnimationBuilder(
+                                          tween: Tween(begin: 0.0, end: 1.0),
+                                          duration: Duration(seconds: 1),
+                                          builder: (BuildContext context,
+                                              double value, Widget? child) {
+                                            return Text(
+                                                "You Base Score:${playerScore}",
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withOpacity(value),
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 14,
+                                                ));
+                                          }),
+                                      TweenAnimationBuilder(
+                                          tween: Tween(begin: 0.0, end: 1.0),
+                                          duration: Duration(seconds: 2),
+                                          builder: (BuildContext context,
+                                              double value, Widget? child) {
+                                            return Text(
+                                                "Two Pair Bonus:${context.read<CardsProvider>().playerScore}",
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withOpacity(value),
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 14,
+                                                ));
+                                          }),
+                                      TweenAnimationBuilder(
+                                          tween: Tween(begin: 0.0, end: 1.0),
+                                          duration: Duration(seconds: 3),
+                                          builder: (BuildContext context,
+                                              double value, Widget? child) {
+                                            return Text(
+                                                "Total:${context.read<CardsProvider>().playerScore}",
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withOpacity(value),
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 14,
+                                                ));
+                                          }),
                                     ],
                                   ),
                                   const SizedBox(width: 5)
@@ -1102,23 +1141,48 @@ class _GameScreenState extends State<GameScreen> {
                         showWhiteText
                             ? Column(
                                 children: [
-                                  Text("Opponent Base Score:${aiScore}",
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  Text(
-                                      "High Card Bonus:${context.read<CardsProvider>().aiScore}",
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
-                                  Text(
-                                      "Total:${context.read<CardsProvider>().aiScore}",
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 14)),
+                                  TweenAnimationBuilder(
+                                      tween: Tween(begin: 0.0, end: 1.0),
+                                      duration: Duration(seconds: 1),
+                                      builder: (BuildContext context,
+                                          double value, Widget? child) {
+                                        return Text(
+                                            "Opponent Base Score:${aiScore}",
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(value),
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 14,
+                                            ));
+                                      }),
+                                  TweenAnimationBuilder(
+                                      tween: Tween(begin: 0.0, end: 1.0),
+                                      duration: Duration(seconds: 2),
+                                      builder: (BuildContext context,
+                                          double value, Widget? child) {
+                                        return Text(
+                                            "High Card Bonus:${context.read<CardsProvider>().aiScore}",
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(value),
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 14,
+                                            ));
+                                      }),
+                                  TweenAnimationBuilder(
+                                      tween: Tween(begin: 0.0, end: 1.0),
+                                      duration: Duration(seconds: 3),
+                                      builder: (BuildContext context,
+                                          double value, Widget? child) {
+                                        return Text(
+                                            "Total:${context.read<CardsProvider>().aiScore}",
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(value),
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 14,
+                                            ));
+                                      }),
                                 ],
                               )
                             : const Text(""),
@@ -1174,9 +1238,13 @@ class _GameScreenState extends State<GameScreen> {
                                           (BuildContext context, int index) {
                                         return Row(
                                           children: [
-                                            AnimatedSwitcher(
-                                              duration:
-                                                  const Duration(seconds: 1),
+                                            Transform(
+                                              alignment:
+                                                  FractionalOffset.center,
+                                              transform: Matrix4.identity()
+                                                ..setEntry(2, 1, 0.0015)
+                                                ..rotateY(
+                                                    3.14 * _animation.value),
                                               child: isPlay
                                                   ? Container(
                                                       width: 28,
@@ -1208,12 +1276,6 @@ class _GameScreenState extends State<GameScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                              transitionBuilder:
-                                                  (child, animation) =>
-                                                      ScaleTransition(
-                                                scale: animation,
-                                                child: child,
-                                              ),
                                             ),
                                             const SizedBox(
                                               width: 8,
@@ -1472,6 +1534,13 @@ class _GameScreenState extends State<GameScreen> {
                                       showWhiteText = true;
                                       isPlay = true;
                                     });
+
+                                    if (_status == AnimationStatus.dismissed) {
+                                      _controller.forward();
+                                    } else {
+                                      _controller.reverse();
+                                    }
+
                                     await Future.delayed(
                                         const Duration(seconds: 3));
                                     await player
