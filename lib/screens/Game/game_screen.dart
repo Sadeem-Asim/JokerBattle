@@ -1234,37 +1234,62 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                               alignment:
                                                   FractionalOffset.center,
                                               transform: Matrix4.identity()
-                                                ..setEntry(2, 1, 0.0015)
+                                                ..setEntry(3, 2, 0.0015)
+                                                // Rotate by 180 degrees for the back side when flipped
                                                 ..rotateY(
                                                     3.14 * _animation.value),
-                                              child: isPlay
-                                                  ? Container(
-                                                      width: 28,
-                                                      height: 39,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                            counter.selectedCardsForAi
-                                                                        .length ==
-                                                                    5
-                                                                ? counter
-                                                                        .selectedCardsForAi[
-                                                                    index]
-                                                                : "assets/images/${cardDataAI[index]}",
+                                              child: _animation.value <= 0.5
+                                                  ? Transform(
+                                                      // Apply a 180-degree flip to the back side when not visible
+                                                      alignment:
+                                                          FractionalOffset
+                                                              .center,
+                                                      transform: Matrix4
+                                                          .identity()
+                                                        ..rotateY(
+                                                            0), // Front side
+                                                      child: Container(
+                                                        width: 28,
+                                                        height: 39,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                            image: AssetImage(
+                                                              "assets/images/${cardDataAI[index]}",
+                                                            ),
+                                                            fit: BoxFit.cover,
                                                           ),
-                                                          fit: BoxFit.cover,
                                                         ),
                                                       ),
                                                     )
-                                                  : Container(
-                                                      width: 28,
-                                                      height: 39,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                            "assets/images/${cardDataAI[index]}",
+                                                  : Transform(
+                                                      // Flip the front side by 180 degrees when showing the back
+                                                      alignment:
+                                                          FractionalOffset
+                                                              .center,
+                                                      transform: Matrix4
+                                                          .identity()
+                                                        ..rotateY(
+                                                            3.14), // Back side
+                                                      child: Container(
+                                                        width: 28,
+                                                        height: 39,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                            image: AssetImage(
+                                                              counter.selectedCardsForAi
+                                                                          .length ==
+                                                                      5
+                                                                  ? counter
+                                                                          .selectedCardsForAi[
+                                                                      index]
+                                                                  : "assets/images/${cardDataAI[index]}",
+                                                            ),
+                                                            fit: BoxFit.cover,
                                                           ),
-                                                          fit: BoxFit.cover,
                                                         ),
                                                       ),
                                                     ),
@@ -1762,7 +1787,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
                             return Text(
-                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length}');
+                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
                           })
                         ],
                       ),
