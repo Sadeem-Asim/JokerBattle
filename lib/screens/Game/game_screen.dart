@@ -280,13 +280,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                             SizedBox(
                                               height: 18,
                                               child: ElevatedButton(
-                                                  child: Text(
-                                                      "${context.read<CardsProvider>().aiScore}",
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontFamily:
-                                                              "BreatheFire",
-                                                          fontSize: 14)),
                                                   onPressed: () {
                                                     // Handle button 1 press
                                                   },
@@ -305,7 +298,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                   .symmetric(
                                                                   vertical: 0,
                                                                   horizontal:
-                                                                      23))),
+                                                                      23)),
+                                                  child: Text(
+                                                      "${context.read<CardsProvider>().aiScore}",
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              "BreatheFire",
+                                                          fontSize: 14))),
                                             ),
                                           ],
                                         ),
@@ -324,13 +324,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                             SizedBox(
                                               height: 18,
                                               child: ElevatedButton(
-                                                  child: Text(
-                                                      "${context.read<CardsProvider>().playerScore}",
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontFamily:
-                                                              "BreatheFire",
-                                                          fontSize: 14)),
                                                   onPressed: () {
                                                     // Handle button 1 press
                                                   },
@@ -349,7 +342,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                   .symmetric(
                                                                   vertical: 0,
                                                                   horizontal:
-                                                                      23))),
+                                                                      23)),
+                                                  child: Text(
+                                                      "${context.read<CardsProvider>().playerScore}",
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              "BreatheFire",
+                                                          fontSize: 14))),
                                             ),
                                           ],
                                         )
@@ -365,11 +365,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
                                       //upgrade button
                                       ElevatedButton(
-                                          child: const Text("Upgrade",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "BreatheFire",
-                                                  fontSize: 35)),
                                           onPressed: () async {
                                             var box =
                                                 await Hive.openBox('noOfChips');
@@ -696,13 +691,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                       context,
                                                                       '/home');
                                                             },
-                                                            child: const Text(
-                                                              'Menu',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "BreatheFire",
-                                                                  fontSize: 32),
-                                                            ),
                                                             style:
                                                                 ElevatedButton
                                                                     .styleFrom(
@@ -726,6 +714,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                           85,
                                                                       vertical:
                                                                           8),
+                                                            ),
+                                                            child: const Text(
+                                                              'Menu',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      "BreatheFire",
+                                                                  fontSize: 32),
                                                             ),
                                                           )
                                                   ],
@@ -751,7 +746,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 0,
-                                                      horizontal: 80))),
+                                                      horizontal: 80)),
+                                          child: const Text("Upgrade",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 35))),
                                       // ),
                                     ]),
                               ),
@@ -812,11 +812,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         SizedBox(
                                           height: 18,
                                           child: ElevatedButton(
-                                              child: Text("$aiScore",
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "BreatheFire",
-                                                      fontSize: 14)),
                                               onPressed: () {
                                                 // Handle button 1 press
                                               },
@@ -831,7 +826,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   padding: const EdgeInsets
                                                       .symmetric(
                                                       vertical: 0,
-                                                      horizontal: 23))),
+                                                      horizontal: 23)),
+                                              child: Text("$aiScore",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "BreatheFire",
+                                                      fontSize: 14))),
                                         ),
                                       ],
                                     ),
@@ -850,11 +850,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         SizedBox(
                                           height: 18,
                                           child: ElevatedButton(
-                                              child: Text("$playerScore",
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "BreatheFire",
-                                                      fontSize: 14)),
                                               onPressed: () {
                                                 // Handle button 1 press
                                               },
@@ -869,7 +864,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   padding: const EdgeInsets
                                                       .symmetric(
                                                       vertical: 0,
-                                                      horizontal: 23))),
+                                                      horizontal: 23)),
+                                              child: Text("$playerScore",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "BreatheFire",
+                                                      fontSize: 14))),
                                         ),
                                       ],
                                     )
@@ -884,11 +884,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   ),
 
                                   ElevatedButton(
-                                      child: const Text("MENU",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 30)),
                                       onPressed: () {
                                         Navigator.pushNamed(context, '/home');
                                         // Handle button 1 press
@@ -906,7 +901,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
                                           // padding: EdgeInsets.zero,
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 80))),
+                                              vertical: 0, horizontal: 80)),
+                                      child: const Text("MENU",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 30))),
                                   // ),
                                 ]),
                           ),
@@ -926,17 +926,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     });
   }
 
-  void _addToSelectedCards(String index) {
-    setState(() {
-      selectedCardsList
-          .add(index); // Assuming ThirdCardData has an 'id' property
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     List<String> deck = generateDeck();
-    List<String> AIDeck = generateDeckForAI();
 
     final List<String> cardData = [
       'card_back.png',
@@ -1290,12 +1282,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 SizedBox(
                                   height: 18,
                                   child: ElevatedButton(
-                                      child: Text(
-                                          "${context.read<CardsProvider>().aiScore}",
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 14)),
                                       onPressed: () {
                                         // Handle button 1 press
                                       },
@@ -1308,7 +1294,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
                                           // padding: EdgeInsets.zero,
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 23))),
+                                              vertical: 0, horizontal: 23)),
+                                      child: Text(
+                                          "${context.read<CardsProvider>().aiScore}",
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 14))),
                                 ),
                                 Row(
                                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1384,18 +1376,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 SizedBox(
                                     height: 18,
                                     child: ElevatedButton(
-                                        child: Text(
-                                            "${context.read<CardsProvider>().playerScore}",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: "BreatheFire",
-                                                fontSize: 14)),
                                         onPressed: () {},
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 const Color(0xFF88E060),
                                             padding: const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 23)))),
+                                                vertical: 0, horizontal: 23)),
+                                        child: Text(
+                                            "${context.read<CardsProvider>().playerScore}",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: "BreatheFire",
+                                                fontSize: 14)))),
 
                                 //third-row-cards
                                 Consumer<CardsProvider>(
@@ -1405,10 +1397,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: 7,
-                                      // counter.selectedCards.length > 0
-                                      //     ? counter.selectedCards.length
-                                      //     : cardData.length,
+                                      itemCount: counter.selectedCards.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Row(
@@ -1416,7 +1405,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                             InkWell(
                                               onTap: () {
                                                 final selectedCard = counter
-                                                    .shuffleDeckElements[index];
+                                                    .selectedCards[index];
                                                 final cardsProvider = context
                                                     .read<CardsProvider>();
 
@@ -1441,36 +1430,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 height: 39,
                                                 decoration: BoxDecoration(
                                                   border: counter
-                                                              .selectedCardToSwap
-                                                              .contains(counter
-                                                                      .selectedCards[
-                                                                  index]) ||
-                                                          counter
-                                                              .selectedCardsFromThirdRow
-                                                              .contains(counter
-                                                                      .selectedCards[
-                                                                  index])
+                                                          .selectedCardsFromThirdRow
+                                                          .contains(counter
+                                                                  .selectedCards[
+                                                              index])
                                                       ? Border.all(
                                                           color: const Color
-                                                              .fromARGB(
-                                                              255,
-                                                              253,
-                                                              187,
-                                                              54), // Set the border color
+                                                              .fromARGB(255,
+                                                              253, 187, 54),
                                                           width: 3,
-                                                          // Set the border width
                                                         )
                                                       : null,
                                                   borderRadius:
                                                       BorderRadius.circular(6),
                                                   image: DecorationImage(
-                                                    image: AssetImage(
-                                                        //if index<
-
-//  '${(index)>=counter.selectedCards.length ? "assets/images/${cardData[index]}" : counter.selectedCards[index] }'),
-                                                        counter.shuffleDeckElements[
-                                                            index]),
-                                                    // '${counter.selectedCards.length > 0 ? counter.selectedCards[index] : "assets/images/${cardData[index]}"}'),
+                                                    image: AssetImage(counter
+                                                        .selectedCards[index]),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -1530,6 +1505,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           return ElevatedButton(
                             onPressed: isButtonEnabled
                                 ? () async {
+                                    context.read<CardsProvider>().putCards();
                                     setState(() {
                                       showWhiteText = true;
                                       isPlay = true;
@@ -1542,7 +1518,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     }
 
                                     await Future.delayed(
-                                        const Duration(seconds: 3));
+                                        const Duration(seconds: 4));
                                     await player
                                         .play(AssetSource('Music/Play.mp3'));
                                     var result = await _calculateScores(
@@ -1730,8 +1706,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Provider.of<CardsProvider>(context, listen: false)
-                                  .remainingDeck(deck);
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -1781,9 +1755,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         image: const AssetImage(
                                             'assets/images/card_hearts_10.png'),
                                         fit: BoxFit.fill)),
-                                child: const Text(""),
                                 width: 45,
-                                height: 50),
+                                height: 50,
+                                child: const Text("")),
                           ),
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
@@ -1894,9 +1868,6 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
             onTap: () {
               setState(() async {
                 _isSelected = !_isSelected;
-
-                // if (counter.selectedCards.length <= 5)
-                // _isSelected = !_isSelected;
 
                 if (_isSelected == false) {
                   context

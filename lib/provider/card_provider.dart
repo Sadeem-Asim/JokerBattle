@@ -94,7 +94,6 @@ List<String> shuffleAIDeck(List<String> deck) {
 
 class CardsProvider with ChangeNotifier {
   List<String> selectedCards = [];
-  List<String> selectedCardsForSecondRow = [];
   List<String> selectedCardsFromThirdRow = [];
   List<String> remainingDeckElements = [];
   List<String> remainingAiElements = [];
@@ -121,8 +120,7 @@ class CardsProvider with ChangeNotifier {
     if (selectedCardsFromThirdRow.contains(path)) {
       selectedCardsFromThirdRow.remove(path);
     }
-
-    notifyListeners(); // Notify listeners about the change
+    notifyListeners();
   }
 
   Future<void> addPurchasedCard(String path, int cost) async {
@@ -204,13 +202,9 @@ class CardsProvider with ChangeNotifier {
     }
     selectedCardsFromThirdRow = [];
     notifyListeners();
-
-    notifyListeners();
   }
 
   void remainingDeck(deck) {
-    remainingDeckElements =
-        deck.where((element) => !selectedCards.contains(element)).toList();
     print({"remainingDeckElements": remainingDeckElements.length});
     notifyListeners();
   }
@@ -230,9 +224,12 @@ class CardsProvider with ChangeNotifier {
   void incrementCurrentRound() {
     if (currentRound < 6) {
       currentRound++;
+      selectedCards = shuffleDeck(remainingAiElements);
       selectedCardsForAi = shuffleAIDeck(remainingAiElements);
       remainingAiElements
           .removeWhere((card) => selectedCardsForAi.contains(card));
+      remainingDeckElements
+          .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
     }
     notifyListeners();
   }
@@ -244,10 +241,9 @@ class CardsProvider with ChangeNotifier {
       discardedDeckElements = [];
       remainingDeckElements = generateDeck();
       remainingAiElements = generateDeckForAI();
-      selectedCardsForSecondRow = shuffleDeck(remainingDeckElements);
-      remainingDeckElements
-          .removeWhere((card) => selectedCardsForSecondRow.contains(card));
-      discardedDeckElements += selectedCardsForSecondRow;
+      selectedCards = shuffleDeck(remainingDeckElements);
+      remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+      discardedDeckElements += selectedCards;
       selectedCardsForAi = shuffleAIDeck(remainingAiElements);
       remainingAiElements
           .removeWhere((card) => selectedCardsForAi.contains(card));
@@ -265,9 +261,14 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void putCards() {
+    selectedCards
+        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
+    notifyListeners();
+  }
+
   void setWindStatus(bool status) {
     winStatus = status;
-    // print({"murgha": remainingDeckElements.length});
     notifyListeners();
   }
 
@@ -290,7 +291,7 @@ class CardsProvider with ChangeNotifier {
   }
 
   void selectCardsForSecondRow(List<String> selectedCards) {
-    selectedCardsForSecondRow = selectedCards;
+    selectedCards = selectedCards;
     notifyListeners();
   }
 
@@ -304,20 +305,18 @@ class CardsProvider with ChangeNotifier {
 
   void removeSingleCard(String path) {
     selectedCards.remove(path);
-    selectedCardsForSecondRow.remove(path);
+    selectedCards.remove(path);
     notifyListeners();
   }
 
   void removeCards() {
     discardedDeckElements += selectedCardsFromThirdRow;
-    selectedCardsForSecondRow = [];
     selectedCardsFromThirdRow = [];
-    selectedCardToSwap = [];
     notifyListeners();
   }
 
   void removeCardsOnGameClick() {
-    selectedCardsForSecondRow = [];
+    selectedCards = [];
     selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
     currentRound = 1;
@@ -327,11 +326,9 @@ class CardsProvider with ChangeNotifier {
     discardedDeckElements = [];
     remainingDeckElements = generateDeck();
     remainingAiElements = generateDeckForAI();
-    selectedCardsForSecondRow = shuffleDeck(remainingDeckElements);
-    remainingDeckElements
-        .removeWhere((card) => selectedCardsForSecondRow.contains(card));
-    discardedDeckElements += selectedCardsForSecondRow;
-
+    selectedCards = shuffleDeck(remainingDeckElements);
+    remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+    discardedDeckElements += selectedCards;
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
