@@ -210,7 +210,6 @@ class CardsProvider with ChangeNotifier {
         var temp = selectedCards[index];
         selectedCards[index] = remainingDeckElements[j];
         remainingDeckElements[j] = temp;
-        selectedCardsFromThirdRow = [];
       }
     }
     selectedCardsFromThirdRow = [];
