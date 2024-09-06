@@ -564,14 +564,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                       horizontal:
                                                                           85,
                                                                       vertical:
-                                                                          8),
+                                                                          2),
                                                             ),
                                                             child: const Text(
                                                               'NEXT LEVEL',
                                                               style: TextStyle(
                                                                   fontFamily:
                                                                       "BreatheFire",
-                                                                  fontSize: 32),
+                                                                  fontSize: 25),
                                                             ),
                                                           )
                                                         : ElevatedButton(
@@ -633,7 +633,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                       horizontal:
                                                                           85,
                                                                       vertical:
-                                                                          8),
+                                                                          2),
                                                             ),
                                                             child: const Text(
                                                               'Menu',
@@ -865,30 +865,31 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       'transparent.png'
     ];
     final List<Map<String,dynamic>> jokerFirstScreenAssets = [
-    {"imageUrl":"assets/images/suit",'text':'SUIT','cost':10,'additionalText':"changes the suit of any card in your hand"},
-     {"imageUrl":"assets/images/fake",'text':'FAKE','cost':15,
+    {"imageUrl":"assets/images/suit.png",'text':'SUIT','cost':10,'additionalText':"changes the suit of any card in your hand"},
+     {"imageUrl":"assets/images/fake.png",'text':'FAKE','cost':15,
         'additionalText': "make any card in your hand a copy of another card in your hand"
       },
-      {"imageUrl":"assets/images/extrachange(2)",'text':'EXTRACHANGE', 'cost':20,
+      
+      {"imageUrl":"assets/images/extrachange(2).png",'text':'EXTRACHANGE', 'cost':20,
         'additionalText': "gives you an extra attempt to change the cards in your hand" },
-       {"imageUrl": "assets/images/trump", 'text': 'TRUMP','cost':20,
+       {"imageUrl": "assets/images/trump.png", 'text': 'TRUMP','cost':20,
         'additionalText': "changes a card from your hand to a specific card in the rest of the deck"
       },
 
 
         
-         {"imageUrl":"assets/images/empty-bonus",'text':'EMPTYBONUS','cost':15,
+         {"imageUrl":"assets/images/empty-bonus.png",'text':'EMPTYBONUS','cost':15,
         'additionalText': "adds to the result of your combo the amount of points for cards that were not in your combo."
       },
-          {"imageUrl":"assets/images/hand-bonus",'text':'HANDBONUS', 'cost':15 ,
+          {"imageUrl":"assets/images/hand-bonus.png",'text':'HANDBONUS', 'cost':15 ,
         'additionalText': "get points for the remaining cards in your hand that you did not put on the table"
       },
-           {"imageUrl":"assets/images/visor",'text':'VISOR','cost':20,
+           {"imageUrl":"assets/images/visor.png",'text':'VISOR','cost':20,
         'additionalText': "see your opponent's current combo"
       },
-            {"imageUrl":"assets/images/score",'text':'SCORE', 'cost':30,
+            {"imageUrl":"assets/images/score.png",'text':'SCORE', 'cost':30,
         'additionalText': "the point value of each card in your combo is increased by 2" },
-             {"imageUrl": "assets/images/transformer", 'text': 'TRANSFORMER', 'cost': 25,
+             {"imageUrl": "assets/images/transformer.png", 'text': 'TRANSFORMER', 'cost': 25,
         'additionalText': "make any card any card in the deck (even the one that has already left the game)"
       },
             
