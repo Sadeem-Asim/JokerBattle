@@ -56,10 +56,27 @@ List<Map> generateDeckForUpgrade() {
   List<Map> deck = [];
   for (final suit in suits) {
     for (final rank in ranks) {
-      deck.add({"imageUrl":"assets/images/card_${suit}_$rank.png","cost":15   });
+      var cost = 5;
+      if (rank == "02" || rank == "03" || rank == "04") {
+        cost = 5;
+      } else if (rank == "05" || rank == "06" || rank == "07") {
+        cost = 8;
+      } else if (rank == "09" || rank == "10") {
+        cost = 10;
+      } else if (rank == "J") {
+        cost = 13;
+      } else if (rank == "Q") {
+        cost = 15;
+      } else if (rank == "K") {
+        cost = 17;
+      } else if (rank == "A") {
+        cost = 20;
+      }
+      deck.add(
+          {"imageUrl": "assets/images/card_${suit}_$rank.png", "cost": cost});
     }
   }
-   
+
   List<String> jokers = [
     'suit',
     'fake',
@@ -73,9 +90,24 @@ List<Map> generateDeckForUpgrade() {
   ];
 
   for (int i = 0; i < jokers.length; i++) {
-    deck.add({"imageUrl": "assets/images/${jokers[i]}.png", "cost": 15});
+    var cost = 15;
+
+    if (jokers[i] == "suit") {
+      cost = 10;
+    } else if (jokers[i] == "extrachange(2)") {
+      cost = 20;
+    } else if (jokers[i] == "trump") {
+      cost = 20;
+    } else if (jokers[i] == "visor") {
+      cost = 20;
+    } else if (jokers[i] == "score") {
+      cost = 30;
+    } else if (jokers[i] == "transformer") {
+      cost = 25;
+    }
+    deck.add({"imageUrl": "assets/images/${jokers[i]}.png", "cost": cost});
   }
- print({"-khrwa": deck});
+  print({"deck": deck});
   return deck;
 }
 
@@ -146,18 +178,12 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
-  List<Map<String, dynamic>> upgradeCards = [
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-  ];
+  List<Map> upgradeScreenDeck = [];
+
   bool isFlipped = false;
   bool? winStatus;
   int currentRound = 1;
-  int noOfChips = 0;
+  int noOfChips = 100;
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
@@ -174,16 +200,10 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addPurchasedCard(String path, int cost) async {
-    print(path);
-    print(cost);
-    var box = await Hive.openBox('noOfChips');
-    var noOFChips = await box.get('noOfChips');
-    noOFChips = int.tryParse(noOFChips) ?? 0;
-    if (noOFChips >= cost) {
-      noOfChips = noOFChips - cost;
+  void addPurchasedCard(String path, int cost) {
+    if (noOfChips >= cost) {
+      noOfChips -= cost;
       print(noOfChips);
-      await box.put("noOfChips", "${noOfChips}");
       purchaseCards.add(path);
     }
     notifyListeners();
@@ -259,16 +279,10 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addTenChipsOnWin() async {
-    var box = await Hive.openBox('noOfChips');
-    var N_O_C = await box.get('noOfChips');
-    print(N_O_C);
-    N_O_C += 10;
-    await box.put('noOfChips', N_O_C);
-    noOfChips = N_O_C;
+  void addTenChipsOnWin() {
+    noOfChips += 10;
     currentRound = 1;
-    incrementCurrentLevel();
-
+    // incrementCurrentLevel();
     notifyListeners();
   }
 
@@ -381,6 +395,20 @@ class CardsProvider with ChangeNotifier {
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
+
+    upgradeScreenDeck = generateDeckForUpgrade();
+    updateChipsInProvider();
     notifyListeners();
+  }
+
+  Future<void> updateChipsInProvider() async {
+    var box = await Hive.openBox('noOfChips');
+    var N_O_C = await box.get('noOfChips');
+    noOfChips = N_O_C;
+  }
+
+  Future<void> updateChipsInHive() async {
+    var box = await Hive.openBox('noOfChips');
+    await box.put('noOfChips', noOfChips);
   }
 }

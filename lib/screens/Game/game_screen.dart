@@ -40,12 +40,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation _animation;
   AnimationStatus _status = AnimationStatus.dismissed;
-  List<Map> upgradeScreenDeck = generateDeckForUpgrade();
 
   void initState() {
     super.initState();
-    print({"print(upgradeScreenDeck):": upgradeScreenDeck});
-
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _animation = Tween(end: 1.0, begin: 0.0).animate(_controller)
@@ -154,7 +151,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
     bool winStatus = playerScore > aiScore ? true : true;
 
-    if (Provider.of<CardsProvider>(context, listen: false).currentRound == 5) {
+    if (Provider.of<CardsProvider>(context, listen: false).currentRound == 6) {
       winStatus = playerScore > aiScore ? true : false;
     }
 
@@ -163,19 +160,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     var box = await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
 
     if (winStatus == true) {
-      if (Provider.of<CardsProvider>(context, listen: false).currentRound ==
-          5) {
-        await context.read<CardsProvider>().addTenChipsOnWin();
-        await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
-      }
-
+      print(context.read<CardsProvider>().noOfChips);
       Future.delayed(
           const Duration(seconds: 0, milliseconds: 70),
           () => {
                 if (winStatus == true &&
                     Provider.of<CardsProvider>(context, listen: false)
                             .currentRound ==
-                        5)
+                        6)
                   {
                     showDialog(
                         context: context,
@@ -298,13 +290,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       //upgrade button
                                       ElevatedButton(
                                           onPressed: () async {
-                                            var box =
-                                                await Hive.openBox('noOfChips');
-                                            print(box);
-                                            var noOfChips =
-                                                box.get('noOfChips');
                                             await player.play(AssetSource(
                                                 'Music/Upgrade.mp3'));
+                                            context
+                                                .read<CardsProvider>()
+                                                .addTenChipsOnWin();
 
                                             showDialog(
                                               context: context,
@@ -407,8 +397,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
                                                                           .center,
-                                                                  // crossAxisAlignment:
-                                                                  //     CrossAxisAlignment.start,
                                                                   children: [
                                                                     SvgPicture
                                                                         .asset(
@@ -421,7 +409,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                         width:
                                                                             7),
                                                                     Text(
-                                                                        '${noOfChips}',
+                                                                        '${counter.noOfChips}',
                                                                         style: const TextStyle(
                                                                             fontFamily:
                                                                                 "BreatheFire",
@@ -497,20 +485,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 crossAxisSpacing:
                                                                     1,
                                                               ),
-                                                              itemCount:
-                                                                  upgradeScreenDeck
-                                                                      .length,
+                                                              itemCount: counter
+                                                                  .upgradeScreenDeck
+                                                                  .length,
                                                               itemBuilder:
                                                                   (BuildContext
                                                                           context,
                                                                       int index) {
                                                                 return SelectableCardForUpgrade(
-                                                                    imageUrl: upgradeScreenDeck[
-                                                                            index]
+                                                                    imageUrl: counter
+                                                                            .upgradeScreenDeck[index]
                                                                         [
                                                                         "imageUrl"],
-                                                                    cost: upgradeScreenDeck[
-                                                                            index]
+                                                                    cost: counter
+                                                                            .upgradeScreenDeck[index]
                                                                         [
                                                                         "cost"]);
                                                               },
@@ -523,7 +511,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 .read<
                                                                     CardsProvider>()
                                                                 .currentRound ==
-                                                            5
+                                                            6
                                                         ? ElevatedButton(
                                                             onPressed:
                                                                 () async {
@@ -579,35 +567,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                         : ElevatedButton(
                                                             onPressed:
                                                                 () async {
-                                                              // context
-                                                              //     .read<CardsProvider>()
-                                                              //     .shuffleDeckElement(deck);
-                                                              //     // context
-                                                              //     // .read<CardsProvider>()
-                                                              //     // .addMultipleCards(selectedCards);
-                                                              // context
-                                                              //     .read<CardsProvider>()
-                                                              //     .incrementCurrentRound();
-                                                              // context
-                                                              //     .read<CardsProvider>()
-                                                              //     .removeCards();
-
-                                                              // context
-                                                              // .read<CardsProvider>()
-                                                              // .setPlayerScore((context
-                                                              //         .read<CardsProvider>()
-                                                              //         .playerScore) +
-                                                              //     playerScore);
-
-                                                              //     context
-                                                              // .read<CardsProvider>()
-                                                              // .setPlayerScore((context
-                                                              //         .read<CardsProvider>()
-                                                              //         .aiScore) +
-                                                              //     aiScore);
-
-                                                              // await player.play(AssetSource(
-                                                              //     'Music/Round-start.mp3'));
                                                               Navigator
                                                                   .pushNamed(
                                                                       context,
@@ -2311,20 +2270,18 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
               });
 
               if (_isSelected == false) {
-                context.read<CardsProvider>().removeSingleCard(widget.imageUrl);
               } else {
-                var box = await Hive.openBox('noOfChips');
-                var noOFChips = await box.get('noOfChips');
-                context.read<CardsProvider>().selectCards(widget.imageUrl);
-                if (noOFChips is String) {
-                  noOFChips = int.tryParse(noOFChips) ?? 0;
-                }
+                // var box = await Hive.openBox('noOfChips');
+                // var noOFChips = await box.get('noOfChips');
+                // if (noOFChips is String) {
+                //   noOFChips = int.tryParse(noOFChips) ?? 0;
+                // }
+                var noOFChips = context.read<CardsProvider>().noOfChips;
+                print(noOFChips);
                 if (noOFChips >= widget.cost) {
-                  context
-                      .read<CardsProvider>()
-                      .addPurchasedCard(widget.imageUrl, widget.cost);
                 } else {
                   setState(() {
+                    _isSelected = !_isSelected;
                     insufficientBalance = true;
                   });
                 }
@@ -2345,15 +2302,12 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                 image: DecorationImage(
                                   image: AssetImage('${widget.imageUrl}'),
                                   fit: BoxFit.fill,
-                                  // colorFilter: ColorFilter.mode(
-                                  //     Colors.black.withOpacity(0.8),
-                                  //     BlendMode.darken)
                                 ),
                               ),
                             ),
                           ),
                           content: Text(
-                              'Do You Want To Purchase This Card For ${widget.cost}',
+                              'Insufficient Balance To Purchase This Card For ${widget.cost}',
                               style: const TextStyle(
                                   fontFamily: "BreatheFire",
                                   fontSize: 20,
@@ -2366,24 +2320,24 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('Yes',
-                                      style: const TextStyle(
+                                  child: const Text('Ok',
+                                      style: TextStyle(
                                           fontFamily: "BreatheFire",
                                           fontSize: 21,
                                           color: Color.fromARGB(
                                               255, 252, 252, 252))),
                                 ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('No',
-                                      style: const TextStyle(
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 21,
-                                          color: Color.fromARGB(
-                                              255, 252, 252, 252))),
-                                ),
+                                // TextButton(
+                                //   onPressed: () {
+                                //     Navigator.of(context).pop();
+                                //   },
+                                //   child: Text('No',
+                                //       style: const TextStyle(
+                                //           fontFamily: "BreatheFire",
+                                //           fontSize: 21,
+                                //           color: Color.fromARGB(
+                                //               255, 252, 252, 252))),
+                                // ),
                               ],
                             )
                           ],
@@ -2403,9 +2357,6 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                 image: DecorationImage(
                                   image: AssetImage('${widget.imageUrl}'),
                                   fit: BoxFit.fill,
-                                  // colorFilter: ColorFilter.mode(
-                                  //     Colors.black.withOpacity(0.8),
-                                  //     BlendMode.darken)
                                 ),
                               ),
                             ),
@@ -2423,6 +2374,10 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
+                                    context
+                                        .read<CardsProvider>()
+                                        .addPurchasedCard(
+                                            widget.imageUrl, widget.cost);
                                   },
                                   child: Text('Yes',
                                       style: const TextStyle(
