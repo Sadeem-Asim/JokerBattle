@@ -103,6 +103,14 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
+  List<Map<String, dynamic>> upgradeCards = [
+    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
+    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
+    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
+  ];
   bool isFlipped = false;
   bool? winStatus;
   int currentRound = 1;
@@ -124,11 +132,15 @@ class CardsProvider with ChangeNotifier {
   }
 
   Future<void> addPurchasedCard(String path, int cost) async {
+    print(path);
+    print(cost);
     var box = await Hive.openBox('noOfChips');
     var noOFChips = await box.get('noOfChips');
-    if (noOFChips > cost) {
-      await box.put("noOfChips", "${noOFChips - cost}");
+    noOFChips = int.tryParse(noOFChips) ?? 0;
+    if (noOFChips >= cost) {
       noOfChips = noOFChips - cost;
+      print(noOfChips);
+      await box.put("noOfChips", "${noOfChips}");
       purchaseCards.add(path);
     }
     notifyListeners();
@@ -207,10 +219,11 @@ class CardsProvider with ChangeNotifier {
 
   Future<void> addTenChipsOnWin() async {
     var box = await Hive.openBox('noOfChips');
-    var noOFChips = await box.get('noOfChips');
-    noOFChips += 10;
-    await box.put('noOfChips', noOFChips);
-    noOfChips = noOFChips;
+    var N_O_C = await box.get('noOfChips');
+    print(N_O_C);
+    N_O_C += 10;
+    await box.put('noOfChips', N_O_C);
+    noOfChips = N_O_C;
     currentRound = 1;
     incrementCurrentLevel();
 

@@ -55,80 +55,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       });
   }
 
-  final List<Map<String, dynamic>> upgradeArray = [
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-    // {"imageUrl": "assets/images/card_spades_09.png", "cost": 10},
-    // {"imageUrl": "assets/images/card_spades_10.png", "cost": 10},
-
-    // {"imageUrl": "assets/images/card_spades_J.png", "cost": 13},
-    // {"imageUrl": "assets/images/card_spades_K.png", "cost": 15},
-    // {"imageUrl": "assets/images/card_spades_Q.png", "cost": 17},
-    // {"imageUrl": "assets/images/card_clubs_A.png", "cost": 20},
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    {"imageUrl": "assets/images/card_clubs_02.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_03.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_04.png", "cost": 5},
-    {"imageUrl": "assets/images/card_clubs_05.png", "cost": 8},
-    // {"imageUrl": "assets/images/card_clubs_06.png", "cost": 8},
-    // {"imageUrl": "assets/images/card_clubs_07.png", "cost": 8},
-
-    // {"imageUrl": "assets/images/", "cost":5},
-    // {"imageUrl": "assets/images/", "cost":5}
-  ];
-
   void swapButtonPress() {
     remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
   }
@@ -204,14 +130,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return score;
   }
 
-  Future _calculateScores(int noOfChips) async {
+  Future _calculateScores() async {
     List<String> userSelectedCards =
         context.read<CardsProvider>().selectedCardsFromThirdRow;
 
     playerScore = calculateScore(userSelectedCards);
-    setState(() {
-      playerScore = playerScore;
-    });
+
     context.read<CardsProvider>().setPlayerScore(
         (context.read<CardsProvider>().playerScore) + playerScore);
 
@@ -221,6 +145,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     setState(() {
       aiScore = aiScore;
+      playerScore = playerScore;
     });
     context
         .read<CardsProvider>()
@@ -228,15 +153,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     bool winStatus = playerScore > aiScore ? true : true;
 
     if (Provider.of<CardsProvider>(context, listen: false).currentRound == 5) {
-      await context.read<CardsProvider>().addTenChipsOnWin();
+      winStatus = playerScore > aiScore ? true : false;
     }
 
     final appDocumentDirectory = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDirectory.path);
     var box = await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
-    await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
 
     if (winStatus == true) {
+      if (Provider.of<CardsProvider>(context, listen: false).currentRound ==
+          5) {
+        await context.read<CardsProvider>().addTenChipsOnWin();
+        await box.put('noOfChips', context.read<CardsProvider>().noOfChips);
+      }
+
       Future.delayed(
           const Duration(seconds: 0, milliseconds: 70),
           () => {
@@ -368,6 +298,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           onPressed: () async {
                                             var box =
                                                 await Hive.openBox('noOfChips');
+                                            print(box);
                                             var noOfChips =
                                                 box.get('noOfChips');
                                             await player.play(AssetSource(
@@ -426,7 +357,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             ),
                                                             // ),
                                                           ),
-
                                                           const SizedBox(
                                                               width: 45),
                                                           ElevatedButton(
@@ -500,7 +430,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                   ],
                                                                 );
                                                               })),
-
                                                           const SizedBox(
                                                               width: 27),
                                                           ElevatedButton(
@@ -543,10 +472,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                               // width: 49,
                                                             ),
                                                           ),
-                                                          // const SizedBox(width: 15),
                                                         ]),
                                                     const SizedBox(height: 45),
-
                                                     //upgrade-grid
                                                     SizedBox(
                                                       height: 400,
@@ -568,21 +495,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 crossAxisSpacing:
                                                                     1,
                                                               ),
-                                                              itemCount:
-                                                                  upgradeArray
-                                                                      .length,
-                                                              // shuffleDeck(deck).length,
+                                                              itemCount: counter
+                                                                  .upgradeCards
+                                                                  .length,
                                                               itemBuilder:
                                                                   (BuildContext
                                                                           context,
                                                                       int index) {
                                                                 return SelectableCardForUpgrade(
-                                                                    imageUrl: upgradeArray[
-                                                                            index]
+                                                                    imageUrl: counter
+                                                                            .upgradeCards[index]
                                                                         [
                                                                         "imageUrl"],
-                                                                    cost: upgradeArray[
-                                                                            index]
+                                                                    cost: counter
+                                                                            .upgradeCards[index]
                                                                         [
                                                                         "cost"]);
                                                               },
@@ -591,7 +517,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                     ),
 
                                                     //hook
-
                                                     context
                                                                 .read<
                                                                     CardsProvider>()
@@ -600,11 +525,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                         ? ElevatedButton(
                                                             onPressed:
                                                                 () async {
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .incrementCurrentRound();
-
                                                               context
                                                                   .read<
                                                                       CardsProvider>()
@@ -764,7 +684,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               });
       return true;
     } else {
-      //  context.read<CardsProvider>().setCurrentRound();
       player.play(AssetSource('Music/Round-over.mp3'));
       Future.delayed(
           const Duration(seconds: 0, milliseconds: 70),
@@ -785,16 +704,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   colorFilter: ColorFilter.mode(
                                       Colors.black.withOpacity(0.8),
                                       BlendMode.darken)),
-                              // color: Color(0xFF5C5E68),
-                              // border: Border.all(
-                              //   color: Color.fromARGB(255, 239, 239, 241), // Set the border color
-                              //   width: 4,
-
-                              //   // Set the border width
-                              // ),
-                              // borderRadius: BorderRadius.circular(20),
                             ),
-                            // alignment: Alignment.center,
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -1546,8 +1456,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         const Duration(seconds: 4));
                                     await player
                                         .play(AssetSource('Music/Play.mp3'));
-                                    var result = await _calculateScores(
-                                        counter.noOfChips);
+                                    var result = await _calculateScores();
                                     if (result == true) {
                                       context
                                           .read<CardsProvider>()
@@ -1890,30 +1799,30 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
       child: Consumer<CardsProvider>(
         builder: (context, counter, child) {
           return GestureDetector(
-            onTap: () {
-              setState(() async {
+            onTap: () async {
+              setState(() {
                 _isSelected = !_isSelected;
+              });
 
-                if (_isSelected == false) {
+              if (_isSelected == false) {
+                context.read<CardsProvider>().removeSingleCard(widget.imageUrl);
+              } else {
+                var box = await Hive.openBox('noOfChips');
+                var noOFChips = await box.get('noOfChips');
+                context.read<CardsProvider>().selectCards(widget.imageUrl);
+                if (noOFChips is String) {
+                  noOFChips = int.tryParse(noOFChips) ?? 0;
+                }
+                if (noOFChips >= widget.cost) {
                   context
                       .read<CardsProvider>()
-                      .removeSingleCard(widget.imageUrl);
+                      .addPurchasedCard(widget.imageUrl, widget.cost);
                 } else {
-                  var box = await Hive.openBox('noOfChips');
-                  var noOFChips = await box.get('noOfChips');
-                  // context.read<CardsProvider>().selectCards(widget.imageUrl);
-                  if (noOFChips > widget.cost) {
-                    await context
-                        .read<CardsProvider>()
-                        .addPurchasedCard(widget.imageUrl, widget.cost);
-                  } else {
-                    setState(() {
-                      insufficientBalance = true;
-                    });
-                  }
+                  setState(() {
+                    insufficientBalance = true;
+                  });
                 }
-              });
-              // if()
+              }
 
               insufficientBalance == true
                   ? showDialog(
