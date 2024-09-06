@@ -36,6 +36,49 @@ List<String> generateDeck() {
   return deck;
 }
 
+List<Map> generateDeckForUpgrade() {
+  const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+  const ranks = [
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+    '09',
+    '10',
+    'J',
+    'Q',
+    'K',
+    'A'
+  ];
+  List<Map> deck = [];
+  for (final suit in suits) {
+    for (final rank in ranks) {
+      deck.add({"imageUrl":"assets/images/card_${suit}_$rank.png","cost":15   });
+    }
+  }
+   
+  List<String> jokers = [
+    'suit',
+    'fake',
+    'empty-bonus',
+    'extrachange(2)',
+    'hand-bonus',
+    'score',
+    'transformer',
+    "trump",
+    "visor"
+  ];
+
+  for (int i = 0; i < jokers.length; i++) {
+    deck.add({"imageUrl": "assets/images/${jokers[i]}.png", "cost": 15});
+  }
+ print({"-khrwa": deck});
+  return deck;
+}
+
 List<String> generateDeckForAI() {
   const suits = [
     'clubs',

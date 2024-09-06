@@ -40,9 +40,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation _animation;
   AnimationStatus _status = AnimationStatus.dismissed;
+  List<Map> upgradeScreenDeck = generateDeckForUpgrade();
 
   void initState() {
     super.initState();
+    print({"print(upgradeScreenDeck):": upgradeScreenDeck});
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
@@ -495,20 +497,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 crossAxisSpacing:
                                                                     1,
                                                               ),
-                                                              itemCount: counter
-                                                                  .upgradeCards
-                                                                  .length,
+                                                              itemCount:
+                                                                  upgradeScreenDeck
+                                                                      .length,
                                                               itemBuilder:
                                                                   (BuildContext
                                                                           context,
                                                                       int index) {
                                                                 return SelectableCardForUpgrade(
-                                                                    imageUrl: counter
-                                                                            .upgradeCards[index]
+                                                                    imageUrl: upgradeScreenDeck[
+                                                                            index]
                                                                         [
                                                                         "imageUrl"],
-                                                                    cost: counter
-                                                                            .upgradeCards[index]
+                                                                    cost: upgradeScreenDeck[
+                                                                            index]
                                                                         [
                                                                         "cost"]);
                                                               },
@@ -864,35 +866,68 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       'transparent.png',
       'transparent.png'
     ];
-    final List<Map<String,dynamic>> jokerFirstScreenAssets = [
-    {"imageUrl":"assets/images/suit.png",'text':'SUIT','cost':10,'additionalText':"changes the suit of any card in your hand"},
-     {"imageUrl":"assets/images/fake.png",'text':'FAKE','cost':15,
-        'additionalText': "make any card in your hand a copy of another card in your hand"
+    final List<Map<String, dynamic>> jokerFirstScreenAssets = [
+      {
+        "imageUrl": "assets/images/suit.png",
+        'text': 'SUIT',
+        'cost': 10,
+        'additionalText': "changes the suit of any card in your hand"
       },
-      
-      {"imageUrl":"assets/images/extrachange(2).png",'text':'EXTRACHANGE', 'cost':20,
-        'additionalText': "gives you an extra attempt to change the cards in your hand" },
-       {"imageUrl": "assets/images/trump.png", 'text': 'TRUMP','cost':20,
-        'additionalText': "changes a card from your hand to a specific card in the rest of the deck"
+      {
+        "imageUrl": "assets/images/fake.png",
+        'text': 'FAKE',
+        'cost': 15,
+        'additionalText':
+            "make any card in your hand a copy of another card in your hand"
       },
-
-
-        
-         {"imageUrl":"assets/images/empty-bonus.png",'text':'EMPTYBONUS','cost':15,
-        'additionalText': "adds to the result of your combo the amount of points for cards that were not in your combo."
+      {
+        "imageUrl": "assets/images/extrachange(2).png",
+        'text': 'EXTRACHANGE',
+        'cost': 20,
+        'additionalText':
+            "gives you an extra attempt to change the cards in your hand"
       },
-          {"imageUrl":"assets/images/hand-bonus.png",'text':'HANDBONUS', 'cost':15 ,
-        'additionalText': "get points for the remaining cards in your hand that you did not put on the table"
+      {
+        "imageUrl": "assets/images/trump.png",
+        'text': 'TRUMP',
+        'cost': 20,
+        'additionalText':
+            "changes a card from your hand to a specific card in the rest of the deck"
       },
-           {"imageUrl":"assets/images/visor.png",'text':'VISOR','cost':20,
+      {
+        "imageUrl": "assets/images/empty-bonus.png",
+        'text': 'EMPTYBONUS',
+        'cost': 15,
+        'additionalText':
+            "adds to the result of your combo the amount of points for cards that were not in your combo."
+      },
+      {
+        "imageUrl": "assets/images/hand-bonus.png",
+        'text': 'HANDBONUS',
+        'cost': 15,
+        'additionalText':
+            "get points for the remaining cards in your hand that you did not put on the table"
+      },
+      {
+        "imageUrl": "assets/images/visor.png",
+        'text': 'VISOR',
+        'cost': 20,
         'additionalText': "see your opponent's current combo"
       },
-            {"imageUrl":"assets/images/score.png",'text':'SCORE', 'cost':30,
-        'additionalText': "the point value of each card in your combo is increased by 2" },
-             {"imageUrl": "assets/images/transformer.png", 'text': 'TRANSFORMER', 'cost': 25,
-        'additionalText': "make any card any card in the deck (even the one that has already left the game)"
+      {
+        "imageUrl": "assets/images/score.png",
+        'text': 'SCORE',
+        'cost': 30,
+        'additionalText':
+            "the point value of each card in your combo is increased by 2"
       },
-            
+      {
+        "imageUrl": "assets/images/transformer.png",
+        'text': 'TRANSFORMER',
+        'cost': 25,
+        'additionalText':
+            "make any card any card in the deck (even the one that has already left the game)"
+      },
     ];
 
     Widget buildCard(BuildContext context, int index) {
@@ -1536,121 +1571,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                               showDialog(
+                            showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return Scaffold(
@@ -1702,7 +1623,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   mainAxisSpacing: 1,
                                                   crossAxisSpacing: 1,
                                                 ),
-                                                itemCount: jokerFirstScreenAssets.length,
+                                                itemCount:
+                                                    jokerFirstScreenAssets
+                                                        .length,
                                                 // shuffleDeck(deck).length,
                                                 itemBuilder:
                                                     (BuildContext context,
@@ -1774,7 +1697,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                 Column(
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               children: [
-                                                                                 Text(jokerFirstScreenAssets[index]["additionalText"], style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                Text(jokerFirstScreenAssets[index]["additionalText"], style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
                                                                                 SizedBox(height: 27),
                                                                                 Container(
                                                                                   height: 240,
@@ -1868,13 +1791,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                                   ),
                                                                                                                 ),
                                                                                                                 SizedBox(height: 13),
-                                                                                                                 GestureDetector(
+                                                                                                                GestureDetector(
                                                                                                                     onTap: () {
                                                                                                                       Navigator.pushNamed(context, '/game');
                                                                                                                     },
                                                                                                                     child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                            
-                                                                                                                ],
+                                                                                                              ],
                                                                                                             ),
 
 //                                               Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1964,7 +1886,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                   ),
                                                                                 ),
                                                                                 SizedBox(height: 13),
-                                                                                GestureDetector(  onTap:(){  Navigator.pushNamed(context, '/game');},    child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                GestureDetector(
+                                                                                    onTap: () {
+                                                                                      Navigator.pushNamed(context, '/game');
+                                                                                    },
+                                                                                    child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
                                                                               ],
                                                                             ),
 
@@ -2038,16 +1964,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             height: 70,
                                                             width: 70,
                                                             decoration: BoxDecoration(
-                                                                image:  DecorationImage(
+                                                                image: DecorationImage(
                                                                     image: AssetImage(
-                                                                        jokerFirstScreenAssets[index]["imageUrl"]),
+                                                                        jokerFirstScreenAssets[index]
+                                                                            [
+                                                                            "imageUrl"]),
                                                                     fit: BoxFit
                                                                         .fill))),
                                                       ),
                                                       Text(
                                                           jokerFirstScreenAssets[
-                                                                  index]
-                                                              ["text"],
+                                                              index]["text"],
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white,
@@ -2124,255 +2051,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 );
                               },
                             );
-                         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                         },
+                          },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
                             backgroundColor: const Color(0xFFD3BF8F),
@@ -2656,14 +2335,56 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Important Message'),
-                          content: const Text('You have insfficient balance'),
+                          elevation: 20,
+                          backgroundColor: const Color(0xFF838796),
+                          title: Center(
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('${widget.imageUrl}'),
+                                  fit: BoxFit.fill,
+                                  // colorFilter: ColorFilter.mode(
+                                  //     Colors.black.withOpacity(0.8),
+                                  //     BlendMode.darken)
+                                ),
+                              ),
+                            ),
+                          ),
+                          content: Text(
+                              'Do You Want To Purchase This Card For ${widget.cost}',
+                              style: const TextStyle(
+                                  fontFamily: "BreatheFire",
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 252, 252, 252))),
                           actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Yes',
+                                      style: const TextStyle(
+                                          fontFamily: "BreatheFire",
+                                          fontSize: 21,
+                                          color: Color.fromARGB(
+                                              255, 252, 252, 252))),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('No',
+                                      style: const TextStyle(
+                                          fontFamily: "BreatheFire",
+                                          fontSize: 21,
+                                          color: Color.fromARGB(
+                                              255, 252, 252, 252))),
+                                ),
+                              ],
                             )
                           ],
                         );
@@ -2672,14 +2393,56 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Important Message'),
-                          content: const Text('You have purchased a card'),
+                          elevation: 20,
+                          backgroundColor: const Color(0xFF838796),
+                          title: Center(
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('${widget.imageUrl}'),
+                                  fit: BoxFit.fill,
+                                  // colorFilter: ColorFilter.mode(
+                                  //     Colors.black.withOpacity(0.8),
+                                  //     BlendMode.darken)
+                                ),
+                              ),
+                            ),
+                          ),
+                          content: Text(
+                              'Do You Want To Purchase This Card For ${widget.cost}',
+                              style: const TextStyle(
+                                  fontFamily: "BreatheFire",
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 252, 252, 252))),
                           actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Yes',
+                                      style: const TextStyle(
+                                          fontFamily: "BreatheFire",
+                                          fontSize: 21,
+                                          color: Color.fromARGB(
+                                              255, 252, 252, 252))),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('No',
+                                      style: const TextStyle(
+                                          fontFamily: "BreatheFire",
+                                          fontSize: 21,
+                                          color: Color.fromARGB(
+                                              255, 252, 252, 252))),
+                                ),
+                              ],
                             )
                           ],
                         );
