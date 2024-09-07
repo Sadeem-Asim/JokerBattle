@@ -1,13 +1,9 @@
 import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
-import 'package:joker_battle/utils/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:joker_battle/utils/game.dart';
 import 'dart:math';
+import 'package:hive_flutter/hive_flutter.dart';
 
 List<String> generateDeck() {
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
@@ -36,7 +32,16 @@ List<String> generateDeck() {
   return deck;
 }
 
-List<Map> generateDeckForUpgrade() {
+class UpgradeClass {
+  String imageUrl;
+  int cost;
+  bool isPurchased;
+
+  UpgradeClass(
+      {required this.imageUrl, required this.cost, required this.isPurchased});
+}
+
+List<UpgradeClass> generateDeckForUpgrade() {
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
   const ranks = [
     '02',
@@ -53,7 +58,7 @@ List<Map> generateDeckForUpgrade() {
     'K',
     'A'
   ];
-  List<Map> deck = [];
+  List<UpgradeClass> deck = [];
   for (final suit in suits) {
     for (final rank in ranks) {
       var cost = 5;
@@ -72,8 +77,10 @@ List<Map> generateDeckForUpgrade() {
       } else if (rank == "A") {
         cost = 20;
       }
-      deck.add(
-          {"imageUrl": "assets/images/card_${suit}_$rank.png", "cost": cost});
+      deck.add(UpgradeClass(
+          imageUrl: "assets/images/card_${suit}_$rank.png",
+          cost: cost,
+          isPurchased: false));
     }
   }
 
@@ -105,7 +112,11 @@ List<Map> generateDeckForUpgrade() {
     } else if (jokers[i] == "transformer") {
       cost = 25;
     }
-    deck.add({"imageUrl": "assets/images/${jokers[i]}.png", "cost": cost});
+
+    deck.add(UpgradeClass(
+        imageUrl: "assets/images/${jokers[i]}.png",
+        cost: cost,
+        isPurchased: false));
   }
   print({"deck": deck});
   return deck;
@@ -178,12 +189,12 @@ class CardsProvider with ChangeNotifier {
   List<String> selectedCardToSwap = [];
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
-  List<Map> upgradeScreenDeck = [];
+  List<UpgradeClass> upgradeScreenDeck = [];
 
   bool isFlipped = false;
   bool? winStatus;
   int currentRound = 1;
-  int noOfChips = 100;
+  int noOfChips = 0;
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
@@ -203,8 +214,11 @@ class CardsProvider with ChangeNotifier {
   void addPurchasedCard(String path, int cost) {
     if (noOfChips >= cost) {
       noOfChips -= cost;
-      print(noOfChips);
       purchaseCards.add(path);
+      var cardToUpdate =
+          upgradeScreenDeck.firstWhere((card) => card.imageUrl == path);
+
+      cardToUpdate.isPurchased = true;
     }
     notifyListeners();
   }
@@ -281,7 +295,6 @@ class CardsProvider with ChangeNotifier {
 
   void addTenChipsOnWin() {
     noOfChips += 10;
-    currentRound = 1;
     // incrementCurrentLevel();
     notifyListeners();
   }
@@ -300,11 +313,12 @@ class CardsProvider with ChangeNotifier {
   }
 
   void incrementCurrentLevel() {
-    if (currentRound >= 5) {
+    if (currentRound >= 6) {
       currentLevel++;
       currentRound = 1;
       discardedDeckElements = [];
       remainingDeckElements = generateDeck();
+      remainingDeckElements += purchaseCards;
       remainingAiElements = generateDeckForAI();
       selectedCards = shuffleDeck(remainingDeckElements);
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
@@ -379,7 +393,7 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeCardsOnGameClick() {
+  void removeCardsOnGameClick() async {
     selectedCards = [];
     selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
@@ -389,26 +403,18 @@ class CardsProvider with ChangeNotifier {
     aiScore = 0;
     discardedDeckElements = [];
     remainingDeckElements = generateDeck();
+    remainingDeckElements += purchaseCards;
     remainingAiElements = generateDeckForAI();
     selectedCards = shuffleDeck(remainingDeckElements);
     remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
-
     upgradeScreenDeck = generateDeckForUpgrade();
-    updateChipsInProvider();
     notifyListeners();
   }
 
-  Future<void> updateChipsInProvider() async {
-    var box = await Hive.openBox('noOfChips');
-    var N_O_C = await box.get('noOfChips');
-    noOfChips = N_O_C;
-  }
-
-  Future<void> updateChipsInHive() async {
-    var box = await Hive.openBox('noOfChips');
-    await box.put('noOfChips', noOfChips);
+  void updateChipsInProvider(int noOFChips) {
+    noOfChips = noOFChips;
   }
 }

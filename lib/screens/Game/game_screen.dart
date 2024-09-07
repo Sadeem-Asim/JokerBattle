@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'package:hive/hive.dart';
 import "package:path_provider/path_provider.dart";
-import 'dart:io';
-import 'package:joker_battle/widgets/flip.dart';
-import 'package:flip_card/flip_card.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeName = '/game';
@@ -33,16 +30,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
-  var box = Hive.openBox('noOfChips');
   final player = AudioPlayer();
   bool showWhiteText = false;
   bool isPlay = false;
   late AnimationController _controller;
   late Animation _animation;
   AnimationStatus _status = AnimationStatus.dismissed;
-
   void initState() {
     super.initState();
+    openBox();
+
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _animation = Tween(end: 1.0, begin: 0.0).animate(_controller)
@@ -52,6 +49,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       ..addStatusListener((status) {
         _status = status;
       });
+  }
+
+  void openBox() async {
+    var box = await Hive.openBox("myBox");
+    var b = Hive.box("myBox");
+    print(b.get("noOfChips"));
+    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
   }
 
   void swapButtonPress() {
@@ -129,6 +133,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return score;
   }
 
+  void updateChipsInHive() {}
+
   Future _calculateScores() async {
     List<String> userSelectedCards =
         context.read<CardsProvider>().selectedCardsFromThirdRow;
@@ -155,12 +161,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       winStatus = playerScore > aiScore ? true : false;
     }
 
-    final appDocumentDirectory = await getApplicationDocumentsDirectory();
-    Hive.init(appDocumentDirectory.path);
-    var box = await Hive.openBox('noOfChips', path: appDocumentDirectory.path);
-
     if (winStatus == true) {
-      print(context.read<CardsProvider>().noOfChips);
       Future.delayed(
           const Duration(seconds: 0, milliseconds: 70),
           () => {
@@ -253,14 +254,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                          // elevation: 30,
-
-                                                          //                 horizontal: 5, vertical: 12),
                                                           backgroundColor:
                                                               const Color(
                                                                   0xFF88E060),
-
-                                                          // padding: EdgeInsets.zero,
                                                           padding:
                                                               const EdgeInsets
                                                                   .symmetric(
@@ -290,12 +286,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       //upgrade button
                                       ElevatedButton(
                                           onPressed: () async {
+                                            var box =
+                                                await Hive.openBox("myBox");
+                                            var b = Hive.box("myBox");
+
                                             await player.play(AssetSource(
                                                 'Music/Upgrade.mp3'));
                                             context
                                                 .read<CardsProvider>()
                                                 .addTenChipsOnWin();
-
+                                            b.put(
+                                                "noOfChips",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .noOfChips);
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
@@ -309,46 +313,46 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             MainAxisAlignment
                                                                 .spaceAround,
                                                         children: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              minimumSize:
-                                                                  const Size(
-                                                                      6, 30),
-                                                              backgroundColor:
-                                                                  const Color(
-                                                                      0xFF838796),
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              // elevation: 10,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            2),
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          8,
-                                                                      vertical:
-                                                                          8),
-                                                            ),
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              'assets/images/backbutton.svg',
-                                                              fit: BoxFit.cover,
-                                                              // width: 49,
-                                                            ),
-                                                            // ),
-                                                          ),
+                                                          // ElevatedButton(
+                                                          //   onPressed: () {
+                                                          //     Navigator.pop(
+                                                          //         context);
+                                                          //   },
+                                                          //   style:
+                                                          //       ElevatedButton
+                                                          //           .styleFrom(
+                                                          //     minimumSize:
+                                                          //         const Size(
+                                                          //             6, 30),
+                                                          //     backgroundColor:
+                                                          //         const Color(
+                                                          //             0xFF838796),
+                                                          //     foregroundColor:
+                                                          //         Colors.white,
+                                                          //     // elevation: 10,
+                                                          //     shape:
+                                                          //         RoundedRectangleBorder(
+                                                          //       borderRadius:
+                                                          //           BorderRadius
+                                                          //               .circular(
+                                                          //                   2),
+                                                          //     ),
+                                                          //     padding:
+                                                          //         const EdgeInsets
+                                                          //             .symmetric(
+                                                          //             horizontal:
+                                                          //                 8,
+                                                          //             vertical:
+                                                          //                 8),
+                                                          //   ),
+                                                          //   child: SvgPicture
+                                                          //       .asset(
+                                                          //     'assets/images/backbutton.svg',
+                                                          //     fit: BoxFit.cover,
+                                                          //     // width: 49,
+                                                          //   ),
+                                                          //   // ),
+                                                          // ),
                                                           const SizedBox(
                                                               width: 45),
                                                           ElevatedButton(
@@ -494,122 +498,71 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                       int index) {
                                                                 return SelectableCardForUpgrade(
                                                                     imageUrl: counter
-                                                                            .upgradeScreenDeck[index]
-                                                                        [
-                                                                        "imageUrl"],
+                                                                        .upgradeScreenDeck[
+                                                                            index]
+                                                                        .imageUrl,
                                                                     cost: counter
-                                                                            .upgradeScreenDeck[index]
-                                                                        [
-                                                                        "cost"]);
+                                                                        .upgradeScreenDeck[
+                                                                            index]
+                                                                        .cost,
+                                                                    isPurchased: counter
+                                                                        .upgradeScreenDeck[
+                                                                            index]
+                                                                        .isPurchased);
                                                               },
                                                             ));
                                                       }),
                                                     ),
 
-                                                    //hook
-                                                    context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .currentRound ==
-                                                            6
-                                                        ? ElevatedButton(
-                                                            onPressed:
-                                                                () async {
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .incrementCurrentLevel();
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .removeCards();
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        context
+                                                            .read<
+                                                                CardsProvider>()
+                                                            .incrementCurrentLevel();
+                                                        context
+                                                            .read<
+                                                                CardsProvider>()
+                                                            .removeCards();
 
-                                                              await player.play(
-                                                                  AssetSource(
-                                                                      'Music/Round-start.mp3'));
-                                                              Navigator
-                                                                  .pushNamed(
-                                                                      context,
-                                                                      '/game');
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              backgroundColor:
-                                                                  const Color(
-                                                                      0xFF838796),
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              elevation: 10,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          85,
-                                                                      vertical:
-                                                                          2),
-                                                            ),
-                                                            child: const Text(
-                                                              'NEXT LEVEL',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "BreatheFire",
-                                                                  fontSize: 25),
-                                                            ),
-                                                          )
-                                                        : ElevatedButton(
-                                                            onPressed:
-                                                                () async {
-                                                              Navigator
-                                                                  .pushNamed(
-                                                                      context,
-                                                                      '/home');
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              backgroundColor:
-                                                                  const Color(
-                                                                      0xFF838796),
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              elevation: 10,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          85,
-                                                                      vertical:
-                                                                          2),
-                                                            ),
-                                                            child: const Text(
-                                                              'Menu',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "BreatheFire",
-                                                                  fontSize: 32),
-                                                            ),
-                                                          )
+                                                        await player.play(
+                                                            AssetSource(
+                                                                'Music/Round-start.mp3'));
+                                                        Navigator.pushNamed(
+                                                            context, '/game');
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            const Color(
+                                                                0xFF838796),
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        elevation: 10,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 85,
+                                                                vertical: 2),
+                                                      ),
+                                                      child: const Text(
+                                                        'NEXT LEVEL',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "BreatheFire",
+                                                            fontSize: 25),
+                                                      ),
+                                                    )
                                                   ],
                                                 );
                                               },
                                             );
-
-                                            // Handle button 1 press
                                           },
                                           style: ElevatedButton.styleFrom(
                                               elevation: 30,
@@ -799,8 +752,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<String> deck = generateDeck();
-
     final List<String> cardData = [
       'card_back.png',
       'card_back.png',
@@ -1005,7 +956,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     children: [
                                       TweenAnimationBuilder(
                                           tween: Tween(begin: 0.0, end: 1.0),
-                                          duration: Duration(seconds: 1),
+                                          duration: const Duration(seconds: 1),
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
@@ -1019,7 +970,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           }),
                                       TweenAnimationBuilder(
                                           tween: Tween(begin: 0.0, end: 1.0),
-                                          duration: Duration(seconds: 2),
+                                          duration: const Duration(seconds: 2),
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
@@ -1033,7 +984,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           }),
                                       TweenAnimationBuilder(
                                           tween: Tween(begin: 0.0, end: 1.0),
-                                          duration: Duration(seconds: 3),
+                                          duration: const Duration(seconds: 3),
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
@@ -1069,7 +1020,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 children: [
                                   TweenAnimationBuilder(
                                       tween: Tween(begin: 0.0, end: 1.0),
-                                      duration: Duration(seconds: 1),
+                                      duration: const Duration(seconds: 1),
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
@@ -1083,7 +1034,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       }),
                                   TweenAnimationBuilder(
                                       tween: Tween(begin: 0.0, end: 1.0),
-                                      duration: Duration(seconds: 2),
+                                      duration: const Duration(seconds: 2),
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
@@ -1097,7 +1048,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       }),
                                   TweenAnimationBuilder(
                                       tween: Tween(begin: 0.0, end: 1.0),
-                                      duration: Duration(seconds: 3),
+                                      duration: const Duration(seconds: 3),
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
@@ -1541,7 +1492,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image: AssetImage(
+                                            image: const AssetImage(
                                                 'assets/images/background.png'),
                                             fit: BoxFit.fill,
                                             colorFilter: ColorFilter.mode(
@@ -1556,7 +1507,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           SizedBox(
                                               height: 20,
                                               child: Container(
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       // border: Border.all(
                                                       //   color: Colors.white,
                                                       // ),
@@ -1565,7 +1516,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                       //     'assets/images/button_border.png'),
                                                       // fit: BoxFit.fill)
                                                       ),
-                                                  child: Text(""))),
+                                                  child: const Text(""))),
                                           SizedBox(
                                             height: 400,
                                             width: 270,
@@ -1611,7 +1562,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       image: DecorationImage(
-                                                                          image: AssetImage(
+                                                                          image: const AssetImage(
                                                                               'assets/images/background.png'),
                                                                           fit: BoxFit
                                                                               .fill,
@@ -1630,7 +1581,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                             height:
                                                                                 50,
                                                                             child: Container(
-                                                                                decoration: BoxDecoration(
+                                                                                decoration: const BoxDecoration(
                                                                                     // border: Border.all(
                                                                                     //   color: Colors.white,
                                                                                     // ),
@@ -1647,7 +1598,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                               330,
                                                                           child:
                                                                               Container(
-                                                                            decoration: BoxDecoration(
+                                                                            decoration: const BoxDecoration(
                                                                                 // border: Border.all(
                                                                                 //   color: const Color.fromARGB(255, 228, 38, 38),
                                                                                 // ),
@@ -1656,8 +1607,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                 Column(
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               children: [
-                                                                                Text(jokerFirstScreenAssets[index]["additionalText"], style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                SizedBox(height: 27),
+                                                                                Text(jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                const SizedBox(height: 27),
                                                                                 Container(
                                                                                   height: 240,
                                                                                   width: double.infinity,
@@ -1682,7 +1633,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                     height: double.infinity,
                                                                                                     width: double.infinity,
                                                                                                     decoration: BoxDecoration(
-                                                                                                      image: DecorationImage(image: AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                      image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
                                                                                                     ),
                                                                                                     child: Column(
                                                                                                       // MainAxisAlignment.spaceAround,
@@ -1691,7 +1642,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                         SizedBox(
                                                                                                             height: 50,
                                                                                                             child: Container(
-                                                                                                                decoration: BoxDecoration(
+                                                                                                                decoration: const BoxDecoration(
                                                                                                                     // border: Border.all(
                                                                                                                     //   color: Colors.white,
                                                                                                                     // ),
@@ -1700,12 +1651,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                                     //     'assets/images/button_border.png'),
                                                                                                                     // fit: BoxFit.fill)
                                                                                                                     ),
-                                                                                                                child: Text("Select a card to change suit"))),
+                                                                                                                child: const Text("Select a card to change suit"))),
                                                                                                         SizedBox(
                                                                                                           height: 700,
                                                                                                           width: 330,
                                                                                                           child: Container(
-                                                                                                            decoration: BoxDecoration(
+                                                                                                            decoration: const BoxDecoration(
                                                                                                                 // border: Border.all(
                                                                                                                 //   color: const Color.fromARGB(255, 228, 38, 38),
                                                                                                                 // ),
@@ -1714,7 +1665,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                                                               children: [
                                                                                                                 const Text("Select New Suit", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                SizedBox(height: 27),
+                                                                                                                const SizedBox(height: 27),
                                                                                                                 Container(
                                                                                                                   height: 240,
                                                                                                                   width: double.infinity,
@@ -1732,7 +1683,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                                         child: Container(
                                                                                                                           width: 5,
                                                                                                                           height: 5,
-                                                                                                                          decoration: BoxDecoration(
+                                                                                                                          decoration: const BoxDecoration(
                                                                                                                             color: Color(0xFF838796),
                                                                                                                             // border: Border.all(
                                                                                                                             //   color: Colors.white,
@@ -1743,13 +1694,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                                                   border: Border.all(
                                                                                                                                     color: const Color.fromARGB(0, 0, 0, 0),
                                                                                                                                   ),
-                                                                                                                                  image: DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
+                                                                                                                                  image: const DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
                                                                                                                         ),
                                                                                                                       );
                                                                                                                     },
                                                                                                                   ),
                                                                                                                 ),
-                                                                                                                SizedBox(height: 13),
+                                                                                                                const SizedBox(height: 13),
                                                                                                                 GestureDetector(
                                                                                                                     onTap: () {
                                                                                                                       Navigator.pushNamed(context, '/game');
@@ -1827,7 +1778,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                         child: Container(
                                                                                           width: 5,
                                                                                           height: 5,
-                                                                                          decoration: BoxDecoration(
+                                                                                          decoration: const BoxDecoration(
                                                                                             color: Color(0xFF838796),
                                                                                             // border: Border.all(
                                                                                             //   color: Colors.white,
@@ -1838,13 +1789,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                   border: Border.all(
                                                                                                     color: const Color.fromARGB(0, 0, 0, 0),
                                                                                                   ),
-                                                                                                  image: DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
+                                                                                                  image: const DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
                                                                                         ),
                                                                                       );
                                                                                     },
                                                                                   ),
                                                                                 ),
-                                                                                SizedBox(height: 13),
+                                                                                const SizedBox(height: 13),
                                                                                 GestureDetector(
                                                                                     onTap: () {
                                                                                       Navigator.pushNamed(context, '/game');
@@ -1934,7 +1885,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                       Text(
                                                           jokerFirstScreenAssets[
                                                               index]["text"],
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               color:
                                                                   Colors.white,
                                                               fontFamily:
@@ -2161,7 +2112,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
                             return Text(
-                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
+                                '${counter.remainingDeckElements.length + counter.purchaseCards.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
                           })
                         ],
                       ),
@@ -2235,10 +2186,11 @@ class _SelectableCardState extends State<SelectableCard> {
 class SelectableCardForUpgrade extends StatefulWidget {
   final String imageUrl;
   final int cost;
-
+  final bool isPurchased;
   SelectableCardForUpgrade({
     required this.imageUrl,
     required this.cost,
+    required this.isPurchased,
   });
 
   @override
@@ -2249,6 +2201,18 @@ class SelectableCardForUpgrade extends StatefulWidget {
 class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   bool _isSelected = false;
   bool insufficientBalance = false;
+  void initState() {
+    super.initState();
+    openBox();
+  }
+
+  var b = Hive.box("myBox");
+  void openBox() async {
+    var box = await Hive.openBox("myBox");
+
+    print(b.get("noOfChips"));
+    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2271,13 +2235,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
 
               if (_isSelected == false) {
               } else {
-                // var box = await Hive.openBox('noOfChips');
-                // var noOFChips = await box.get('noOfChips');
-                // if (noOFChips is String) {
-                //   noOFChips = int.tryParse(noOFChips) ?? 0;
-                // }
                 var noOFChips = context.read<CardsProvider>().noOfChips;
-                print(noOFChips);
                 if (noOFChips >= widget.cost) {
                 } else {
                   setState(() {
@@ -2300,7 +2258,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                               height: 60,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage('${widget.imageUrl}'),
+                                  image: AssetImage(widget.imageUrl),
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -2327,99 +2285,95 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                           color: Color.fromARGB(
                                               255, 252, 252, 252))),
                                 ),
-                                // TextButton(
-                                //   onPressed: () {
-                                //     Navigator.of(context).pop();
-                                //   },
-                                //   child: Text('No',
-                                //       style: const TextStyle(
-                                //           fontFamily: "BreatheFire",
-                                //           fontSize: 21,
-                                //           color: Color.fromARGB(
-                                //               255, 252, 252, 252))),
-                                // ),
                               ],
                             )
                           ],
                         );
                       })
-                  : showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          elevation: 20,
-                          backgroundColor: const Color(0xFF838796),
-                          title: Center(
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('${widget.imageUrl}'),
-                                  fit: BoxFit.fill,
+                  : widget.isPurchased == false
+                      ? showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              elevation: 20,
+                              backgroundColor: const Color(0xFF838796),
+                              title: Center(
+                                child: Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(widget.imageUrl),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          content: Text(
-                              'Do You Want To Purchase This Card For ${widget.cost}',
-                              style: const TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 252, 252, 252))),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    context
-                                        .read<CardsProvider>()
-                                        .addPurchasedCard(
-                                            widget.imageUrl, widget.cost);
-                                  },
-                                  child: Text('Yes',
-                                      style: const TextStyle(
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 21,
-                                          color: Color.fromARGB(
-                                              255, 252, 252, 252))),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('No',
-                                      style: const TextStyle(
-                                          fontFamily: "BreatheFire",
-                                          fontSize: 21,
-                                          color: Color.fromARGB(
-                                              255, 252, 252, 252))),
-                                ),
+                              content: Text(
+                                  'Do You Want To Purchase This Card For ${widget.cost}',
+                                  style: const TextStyle(
+                                      fontFamily: "BreatheFire",
+                                      fontSize: 20,
+                                      color:
+                                          Color.fromARGB(255, 252, 252, 252))),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        context
+                                            .read<CardsProvider>()
+                                            .addPurchasedCard(
+                                                widget.imageUrl, widget.cost);
+                                        b.put("noOfChips", counter.noOfChips);
+                                      },
+                                      child: const Text('Yes',
+                                          style: TextStyle(
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 21,
+                                              color: Color.fromARGB(
+                                                  255, 252, 252, 252))),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('No',
+                                          style: TextStyle(
+                                              fontFamily: "BreatheFire",
+                                              fontSize: 21,
+                                              color: Color.fromARGB(
+                                                  255, 252, 252, 252))),
+                                    ),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
-                        );
-                      });
+                            );
+                          })
+                      : null;
             },
             child: Column(
               children: [
                 Image.asset(widget.imageUrl),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SvgPicture.asset(
-                    'assets/images/upgrade-card-2.svg',
-                    fit: BoxFit.cover,
-                    // width: 49,
-                  ),
+                  if (widget.isPurchased == false)
+                    SvgPicture.asset(
+                      'assets/images/upgrade-card-2.svg',
+                      fit: BoxFit.cover,
+                      // width: 49,
+                    ),
                   const SizedBox(
                     width: 10,
                   ),
-                  Text('${widget.cost}',
-                      style: const TextStyle(
-                          fontFamily: "BreatheFire",
-                          fontSize: 17,
-                          color: Color.fromARGB(255, 252, 252, 252))),
+                  if (widget.isPurchased == false)
+                    Text('${widget.cost}',
+                        style: const TextStyle(
+                            fontFamily: "BreatheFire",
+                            fontSize: 17,
+                            color: Color.fromARGB(255, 252, 252, 252))),
                 ])
                 // Text(${widget.cost})
               ],
