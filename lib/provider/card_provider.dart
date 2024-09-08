@@ -184,7 +184,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets() {
       "imageUrl": "assets/images/suit.png",
       'text': 'SUIT',
       'cost': 10,
-      'additionalText': "changes the suit of any card in your hand"
+      'additionalText': "Select A Card To Change Suit"
     },
     {
       "imageUrl": "assets/images/fake.png",
@@ -203,8 +203,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets() {
       "imageUrl": "assets/images/trump.png",
       'text': 'TRUMP',
       'cost': 20,
-      'additionalText':
-          "changes a card from your hand to a specific card in the rest of the deck"
+      'additionalText': "Select A Card To Replace"
     },
     {
       "imageUrl": "assets/images/empty-bonus.png",
@@ -237,8 +236,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets() {
       "imageUrl": "assets/images/transformer.png",
       'text': 'TRANSFORMER',
       'cost': 25,
-      'additionalText':
-          "make any card any card in the deck (even the one that has already left the game)"
+      'additionalText': "Select a card to transform"
     },
   ];
 }
@@ -266,6 +264,42 @@ class CardsProvider with ChangeNotifier {
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
+  int remainingDeckView = 3;
+
+  void jokerFake(String selectedCardToFake, String selectedCardToCopy) {
+    int index = selectedCards.indexOf(selectedCardToFake);
+    remainingDeckElements.add(selectedCards[index]);
+    selectedCards[index] = selectedCardToCopy;
+    notifyListeners();
+  }
+
+  void jokerSuit(String selectedCardToSuit, String selectedCardToCopy) {
+    int index = selectedCards.indexOf(selectedCardToSuit);
+    remainingDeckElements.add(selectedCardToSuit);
+    remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
+    selectedCards[index] = selectedCardToCopy;
+    notifyListeners();
+  }
+
+  void extraChanges() {
+    remainingDeckView++;
+    notifyListeners();
+  }
+
+  void trump(String selectedCardToSwap, String selectedCardToCopy) {
+    int index = selectedCards.indexOf(selectedCardToSwap);
+    remainingDeckElements.add(selectedCardToSwap);
+    remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
+    selectedCards[index] = selectedCardToCopy;
+    notifyListeners();
+  }
+
+  void transform(String selectedCardToSwap, String selectedCardToCopy) {
+    int index = selectedCards.indexOf(selectedCardToSwap);
+    remainingDeckElements.add(selectedCardToSwap);
+    selectedCards[index] = selectedCardToCopy;
+    notifyListeners();
+  }
 
   bool isCardSelected(String path) {
     return selectedCardsFromThirdRow.contains(path);
@@ -358,6 +392,7 @@ class CardsProvider with ChangeNotifier {
       }
     }
     selectedCardsFromThirdRow = [];
+    remainingDeckView > 0 ? remainingDeckView-- : null;
     notifyListeners();
   }
 
