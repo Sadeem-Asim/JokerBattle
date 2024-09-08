@@ -887,9 +887,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       ),
                       // const SizedBox(width: 15),
                     ]),
-                const SizedBox(height: 45),
+                SizedBox(height: MediaQuery.of(context).size.height * .04),
                 Container(
-                  height: 560,
+                  height: MediaQuery.of(context).size.height * .70,
                   child: Stack(children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1011,8 +1011,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       ],
                     ),
                     Positioned(
-                      bottom: 22,
-                      right: 147,
+                      bottom: MediaQuery.of(context).size.height * 0.027,
+                      right: MediaQuery.of(context).size.width * 0.38,
                       child: SvgPicture.asset(
                         'assets/images/kadoo-tail.svg',
                       ),
@@ -1023,13 +1023,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       top: 70,
                       right: -4,
                       child: Container(
-                          height: 390,
-                          width: 390,
+                          height: MediaQuery.of(context).size.height * 0.467,
+                          width: MediaQuery.of(context).size.width * 0.99,
                           decoration: BoxDecoration(
                             image: const DecorationImage(
                                 image: const AssetImage(
                                     'assets/images/texture.png'),
-                                fit: BoxFit.fill),
+                                fit: BoxFit.cover),
                             border: Border.all(
                                 color: const Color.fromARGB(255, 153, 0, 0),
                                 width: 3.0),
@@ -1176,7 +1176,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
                                     const SizedBox(
-                                      width: 25,
+                                      width: 7,
                                     ),
                                     Consumer<CardsProvider>(
                                         builder: (context, counter, child) {
@@ -1352,6 +1352,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       const SizedBox(
                         width: 8,
                       ),
+
                       Container(
                         decoration: BoxDecoration(
                             border: Border.all(
