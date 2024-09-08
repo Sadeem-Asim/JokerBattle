@@ -178,6 +178,73 @@ List<String> shuffleAIDeck(List<String> deck) {
   return deck.sublist(0, 5);
 }
 
+List<Map<String, dynamic>> setJokerFirstScreenAssets() {
+  return [
+    {
+      "imageUrl": "assets/images/suit.png",
+      'text': 'SUIT',
+      'cost': 10,
+      'additionalText': "changes the suit of any card in your hand"
+    },
+    {
+      "imageUrl": "assets/images/fake.png",
+      'text': 'FAKE',
+      'cost': 15,
+      'additionalText': "Select A Card To Replace"
+    },
+    {
+      "imageUrl": "assets/images/extrachange(2).png",
+      'text': 'EXTRACHANGE',
+      'cost': 20,
+      'additionalText':
+          "gives you an extra attempt to change the cards in your hand"
+    },
+    {
+      "imageUrl": "assets/images/trump.png",
+      'text': 'TRUMP',
+      'cost': 20,
+      'additionalText':
+          "changes a card from your hand to a specific card in the rest of the deck"
+    },
+    {
+      "imageUrl": "assets/images/empty-bonus.png",
+      'text': 'EMPTYBONUS',
+      'cost': 15,
+      'additionalText':
+          "adds to the result of your combo the amount of points for cards that were not in your combo."
+    },
+    {
+      "imageUrl": "assets/images/hand-bonus.png",
+      'text': 'HANDBONUS',
+      'cost': 15,
+      'additionalText':
+          "get points for the remaining cards in your hand that you did not put on the table"
+    },
+    {
+      "imageUrl": "assets/images/visor.png",
+      'text': 'VISOR',
+      'cost': 20,
+      'additionalText': "see your opponent's current combo"
+    },
+    {
+      "imageUrl": "assets/images/score.png",
+      'text': 'SCORE',
+      'cost': 30,
+      'additionalText':
+          "the point value of each card in your combo is increased by 2"
+    },
+    {
+      "imageUrl": "assets/images/transformer.png",
+      'text': 'TRANSFORMER',
+      'cost': 25,
+      'additionalText':
+          "make any card any card in the deck (even the one that has already left the game)"
+    },
+  ];
+}
+
+// final List<Map<String, dynamic>> jokerFirstScreenAssets =
+
 class CardsProvider with ChangeNotifier {
   List<String> selectedCards = [];
   List<String> selectedCardsFromThirdRow = [];
@@ -190,7 +257,8 @@ class CardsProvider with ChangeNotifier {
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
   List<UpgradeClass> upgradeScreenDeck = [];
-
+  List<Map<String, dynamic>> jokerFirstScreenAssets =
+      setJokerFirstScreenAssets();
   bool isFlipped = false;
   bool? winStatus;
   int currentRound = 1;
@@ -294,7 +362,10 @@ class CardsProvider with ChangeNotifier {
   }
 
   void addTenChipsOnWin() {
-    noOfChips += 10;
+    if (currentRound > 1) {
+      noOfChips += 10;
+      currentRound = 1;
+    }
     // incrementCurrentLevel();
     notifyListeners();
   }
@@ -313,19 +384,17 @@ class CardsProvider with ChangeNotifier {
   }
 
   void incrementCurrentLevel() {
-    if (currentRound >= 6) {
-      currentLevel++;
-      currentRound = 1;
-      discardedDeckElements = [];
-      remainingDeckElements = generateDeck();
-      remainingDeckElements += purchaseCards;
-      remainingAiElements = generateDeckForAI();
-      selectedCards = shuffleDeck(remainingDeckElements);
-      remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
-      selectedCardsForAi = shuffleAIDeck(remainingAiElements);
-      remainingAiElements
-          .removeWhere((card) => selectedCardsForAi.contains(card));
-    }
+    currentLevel++;
+    currentRound = 1;
+    discardedDeckElements = [];
+    remainingDeckElements = generateDeck();
+    remainingDeckElements += purchaseCards;
+    remainingAiElements = generateDeckForAI();
+    selectedCards = shuffleDeck(remainingDeckElements);
+    remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+    selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+    remainingAiElements
+        .removeWhere((card) => selectedCardsForAi.contains(card));
     aiScore = 0;
     playerScore = 0;
     notifyListeners();
@@ -341,6 +410,18 @@ class CardsProvider with ChangeNotifier {
 
   void putCards() {
     discardedDeckElements += selectedCardsFromThirdRow;
+    purchaseCards
+        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
+    var cardsToUpdate = upgradeScreenDeck.where(
+      (card) =>
+          selectedCardsFromThirdRow.contains(card.imageUrl) &&
+          card.isPurchased == true,
+    );
+
+    for (var card in cardsToUpdate) {
+      card.isPurchased = false;
+    }
+
     selectedCards
         .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
     notifyListeners();
@@ -417,4 +498,6 @@ class CardsProvider with ChangeNotifier {
   void updateChipsInProvider(int noOFChips) {
     noOfChips = noOFChips;
   }
+
+  void setJokerFunctionality(String joker) {}
 }

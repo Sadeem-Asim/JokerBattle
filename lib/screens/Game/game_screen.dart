@@ -54,8 +54,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void openBox() async {
     var box = await Hive.openBox("myBox");
     var b = Hive.box("myBox");
-    print(b.get("noOfChips"));
+    // print(b.get("noOfChips"));
     context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
+  }
+
+  void flipCards() {
+    if (_status == AnimationStatus.dismissed) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
   }
 
   void swapButtonPress() {
@@ -133,9 +141,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return score;
   }
 
-  void updateChipsInHive() {}
-
-  Future _calculateScores() async {
+  void calculateScores() {
     List<String> userSelectedCards =
         context.read<CardsProvider>().selectedCardsFromThirdRow;
 
@@ -148,22 +154,24 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         context.read<CardsProvider>().selectedCardsForAi;
     aiScore = calculateScore(aiSelectedCards);
 
+    context
+        .read<CardsProvider>()
+        .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
     setState(() {
       aiScore = aiScore;
       playerScore = playerScore;
     });
-    context
-        .read<CardsProvider>()
-        .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
-    bool winStatus = playerScore > aiScore ? true : true;
+  }
 
+  Future _calculateScores() async {
+    bool winStatus = playerScore > aiScore ? true : true;
     if (Provider.of<CardsProvider>(context, listen: false).currentRound == 6) {
       winStatus = playerScore > aiScore ? true : false;
     }
 
     if (winStatus == true) {
       Future.delayed(
-          const Duration(seconds: 0, milliseconds: 70),
+          const Duration(seconds: 0, milliseconds: 0),
           () => {
                 if (winStatus == true &&
                     Provider.of<CardsProvider>(context, listen: false)
@@ -776,69 +784,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       'transparent.png',
       'transparent.png'
     ];
-    final List<Map<String, dynamic>> jokerFirstScreenAssets = [
-      {
-        "imageUrl": "assets/images/suit.png",
-        'text': 'SUIT',
-        'cost': 10,
-        'additionalText': "changes the suit of any card in your hand"
-      },
-      {
-        "imageUrl": "assets/images/fake.png",
-        'text': 'FAKE',
-        'cost': 15,
-        'additionalText':
-            "make any card in your hand a copy of another card in your hand"
-      },
-      {
-        "imageUrl": "assets/images/extrachange(2).png",
-        'text': 'EXTRACHANGE',
-        'cost': 20,
-        'additionalText':
-            "gives you an extra attempt to change the cards in your hand"
-      },
-      {
-        "imageUrl": "assets/images/trump.png",
-        'text': 'TRUMP',
-        'cost': 20,
-        'additionalText':
-            "changes a card from your hand to a specific card in the rest of the deck"
-      },
-      {
-        "imageUrl": "assets/images/empty-bonus.png",
-        'text': 'EMPTYBONUS',
-        'cost': 15,
-        'additionalText':
-            "adds to the result of your combo the amount of points for cards that were not in your combo."
-      },
-      {
-        "imageUrl": "assets/images/hand-bonus.png",
-        'text': 'HANDBONUS',
-        'cost': 15,
-        'additionalText':
-            "get points for the remaining cards in your hand that you did not put on the table"
-      },
-      {
-        "imageUrl": "assets/images/visor.png",
-        'text': 'VISOR',
-        'cost': 20,
-        'additionalText': "see your opponent's current combo"
-      },
-      {
-        "imageUrl": "assets/images/score.png",
-        'text': 'SCORE',
-        'cost': 30,
-        'additionalText':
-            "the point value of each card in your combo is increased by 2"
-      },
-      {
-        "imageUrl": "assets/images/transformer.png",
-        'text': 'TRANSFORMER',
-        'cost': 25,
-        'additionalText':
-            "make any card any card in the deck (even the one that has already left the game)"
-      },
-    ];
 
     Widget buildCard(BuildContext context, int index) {
       return Container(
@@ -1120,12 +1065,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   FractionalOffset.center,
                                               transform: Matrix4.identity()
                                                 ..setEntry(3, 2, 0.0015)
-                                                // Rotate by 180 degrees for the back side when flipped
                                                 ..rotateY(
                                                     3.14 * _animation.value),
                                               child: _animation.value <= 0.5
                                                   ? Transform(
-                                                      // Apply a 180-degree flip to the back side when not visible
                                                       alignment:
                                                           FractionalOffset
                                                               .center,
@@ -1149,7 +1092,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                       ),
                                                     )
                                                   : Transform(
-                                                      // Flip the front side by 180 degrees when showing the back
                                                       alignment:
                                                           FractionalOffset
                                                               .center,
@@ -1415,6 +1357,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           return ElevatedButton(
                             onPressed: isButtonEnabled
                                 ? () async {
+                                    calculateScores();
                                     context.read<CardsProvider>().putCards();
                                     setState(() {
                                       showWhiteText = true;
@@ -1500,32 +1443,19 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 BlendMode.darken)),
                                       ),
                                       child: Column(
-                                        // MainAxisAlignment.spaceAround,
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                               height: 20,
                                               child: Container(
-                                                  decoration: const BoxDecoration(
-                                                      // border: Border.all(
-                                                      //   color: Colors.white,
-                                                      // ),
-                                                      // image: const DecorationImage(
-                                                      // image: const AssetImage(
-                                                      //     'assets/images/button_border.png'),
-                                                      // fit: BoxFit.fill)
-                                                      ),
+                                                  decoration:
+                                                      const BoxDecoration(),
                                                   child: const Text(""))),
                                           SizedBox(
                                             height: 400,
                                             width: 270,
                                             child: Container(
-                                              // decoration: BoxDecoration(
-                                              //   border: Border.all(
-                                              //     color: Colors.white,
-                                              //   ),
-                                              // ),
                                               child: GridView.builder(
                                                 gridDelegate:
                                                     const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1533,9 +1463,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   mainAxisSpacing: 1,
                                                   crossAxisSpacing: 1,
                                                 ),
-                                                itemCount:
-                                                    jokerFirstScreenAssets
-                                                        .length,
+                                                itemCount: context
+                                                    .read<CardsProvider>()
+                                                    .jokerFirstScreenAssets
+                                                    .length,
                                                 // shuffleDeck(deck).length,
                                                 itemBuilder:
                                                     (BuildContext context,
@@ -1543,347 +1474,225 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   return Column(
                                                     children: [
                                                       GestureDetector(
-                                                        onTap: () {
-                                                          showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return Scaffold(
-                                                                backgroundColor:
-                                                                    Colors.black
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                body: Container(
-                                                                    height: double
-                                                                        .infinity,
-                                                                    width: double
-                                                                        .infinity,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      image: DecorationImage(
-                                                                          image: const AssetImage(
-                                                                              'assets/images/background.png'),
-                                                                          fit: BoxFit
-                                                                              .fill,
-                                                                          colorFilter: ColorFilter.mode(
-                                                                              Colors.black.withOpacity(0.8),
-                                                                              BlendMode.darken)),
-                                                                    ),
-                                                                    child:
-                                                                        Column(
-                                                                      // MainAxisAlignment.spaceAround,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        SizedBox(
+                                                        onTap: () async {
+                                                          var jokerName = context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .jokerFirstScreenAssets[
+                                                              index]["text"];
+                                                          if (jokerName ==
+                                                              "VISOR") {
+                                                            print(jokerName);
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pushNamed(
+                                                                    '/game');
+                                                          } else if (jokerName ==
+                                                              "HANDBONUS") {
+                                                            print(jokerName);
+                                                            // get points for the remaining cards in your hand that you did not put on
+                                                            // the table.
+                                                            // i will have to add 20 points in the end of the round
+                                                          } else if (jokerName ==
+                                                              "EMPTYBONUS") {
+                                                            // - adds to the result of your combo the amount of points for cards that
+                                                            // were not in your combo.
+                                                          } else if (jokerName ==
+                                                              "SCORE") {
+                                                            // he point value of each card in your combo is increased by 2.
+                                                          } else if (jokerName ==
+                                                              "FAKE") {
+                                                            showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return Scaffold(
+                                                                  backgroundColor: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.8),
+                                                                  body: Container(
+                                                                      height: double.infinity,
+                                                                      width: double.infinity,
+                                                                      decoration: BoxDecoration(
+                                                                        image: DecorationImage(
+                                                                            image:
+                                                                                const AssetImage('assets/images/background.png'),
+                                                                            fit: BoxFit.fill,
+                                                                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                      ),
+                                                                      child: Column(
+                                                                        // MainAxisAlignment.spaceAround,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.center,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                              height: 50,
+                                                                              child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
+                                                                          SizedBox(
                                                                             height:
-                                                                                50,
-                                                                            child: Container(
-                                                                                decoration: const BoxDecoration(
-                                                                                    // border: Border.all(
-                                                                                    //   color: Colors.white,
-                                                                                    // ),
-                                                                                    // image: const DecorationImage(
-                                                                                    // image: const AssetImage(
-                                                                                    //     'assets/images/button_border.png'),
-                                                                                    // fit: BoxFit.fill)
-                                                                                    ),
-                                                                                child: Text(jokerFirstScreenAssets[index]["additionalText"]))),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              700,
-                                                                          width:
-                                                                              330,
-                                                                          child:
-                                                                              Container(
-                                                                            decoration: const BoxDecoration(
-                                                                                // border: Border.all(
-                                                                                //   color: const Color.fromARGB(255, 228, 38, 38),
-                                                                                // ),
-                                                                                ),
+                                                                                700,
+                                                                            width:
+                                                                                330,
                                                                             child:
-                                                                                Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              children: [
-                                                                                Text(jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                const SizedBox(height: 27),
                                                                                 Container(
-                                                                                  height: 240,
-                                                                                  width: double.infinity,
-                                                                                  child: GridView.builder(
-                                                                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                      crossAxisCount: 4,
-                                                                                      mainAxisSpacing: 7,
-                                                                                      crossAxisSpacing: 11,
-                                                                                    ),
-                                                                                    itemCount: 9,
-                                                                                    // shuffleDeck(deck).length,
-                                                                                    itemBuilder: (BuildContext context, int index) {
-                                                                                      return GestureDetector(
-                                                                                        onTap: () {
-//dialogue to change suit
-                                                                                          showDialog(
-                                                                                            context: context,
-                                                                                            builder: (BuildContext context) {
-                                                                                              return Scaffold(
-                                                                                                backgroundColor: Colors.black.withOpacity(0.8),
-                                                                                                body: Container(
-                                                                                                    height: double.infinity,
-                                                                                                    width: double.infinity,
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                                                    ),
-                                                                                                    child: Column(
-                                                                                                      // MainAxisAlignment.spaceAround,
-                                                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                      children: [
-                                                                                                        SizedBox(
-                                                                                                            height: 50,
+                                                                              decoration: const BoxDecoration(),
+                                                                              child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                  const SizedBox(height: 27),
+                                                                                  Container(
+                                                                                    height: 240,
+                                                                                    width: double.infinity,
+                                                                                    child: GridView.builder(
+                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                        crossAxisCount: 4,
+                                                                                        mainAxisSpacing: 7,
+                                                                                        crossAxisSpacing: 11,
+                                                                                      ),
+                                                                                      itemCount: context.read<CardsProvider>().selectedCards.length,
+                                                                                      // shuffleDeck(deck).length,
+                                                                                      itemBuilder: (BuildContext context, int index) {
+                                                                                        return GestureDetector(
+                                                                                          onTap: () {
+                                                                                            showDialog(
+                                                                                              context: context,
+                                                                                              builder: (BuildContext context) {
+                                                                                                return Scaffold(
+                                                                                                  backgroundColor: Colors.black.withOpacity(0.8),
+                                                                                                  body: Container(
+                                                                                                      height: double.infinity,
+                                                                                                      width: double.infinity,
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                      ),
+                                                                                                      child: Column(
+                                                                                                        // MainAxisAlignment.spaceAround,
+                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                        children: [
+                                                                                                          SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
+                                                                                                          SizedBox(
+                                                                                                            height: 700,
+                                                                                                            width: 330,
                                                                                                             child: Container(
-                                                                                                                decoration: const BoxDecoration(
-                                                                                                                    // border: Border.all(
-                                                                                                                    //   color: Colors.white,
-                                                                                                                    // ),
-                                                                                                                    // image: const DecorationImage(
-                                                                                                                    // image: const AssetImage(
-                                                                                                                    //     'assets/images/button_border.png'),
-                                                                                                                    // fit: BoxFit.fill)
-                                                                                                                    ),
-                                                                                                                child: const Text("Select a card to change suit"))),
-                                                                                                        SizedBox(
-                                                                                                          height: 700,
-                                                                                                          width: 330,
-                                                                                                          child: Container(
-                                                                                                            decoration: const BoxDecoration(
-                                                                                                                // border: Border.all(
-                                                                                                                //   color: const Color.fromARGB(255, 228, 38, 38),
-                                                                                                                // ),
-                                                                                                                ),
-                                                                                                            child: Column(
-                                                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                              children: [
-                                                                                                                const Text("Select New Suit", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                const SizedBox(height: 27),
-                                                                                                                Container(
-                                                                                                                  height: 240,
-                                                                                                                  width: double.infinity,
-                                                                                                                  child: GridView.builder(
-                                                                                                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                                                      crossAxisCount: 3,
-                                                                                                                      mainAxisSpacing: 7,
-                                                                                                                      crossAxisSpacing: 11,
-                                                                                                                    ),
-                                                                                                                    itemCount: 3,
-                                                                                                                    // shuffleDeck(deck).length,
-                                                                                                                    itemBuilder: (BuildContext context, int index) {
-                                                                                                                      return GestureDetector(
-                                                                                                                        onTap: () {},
-                                                                                                                        child: Container(
-                                                                                                                          width: 5,
-                                                                                                                          height: 5,
-                                                                                                                          decoration: const BoxDecoration(
-                                                                                                                            color: Color(0xFF838796),
-                                                                                                                            // border: Border.all(
-                                                                                                                            //   color: Colors.white,
-                                                                                                                            // ),
-                                                                                                                          ),
-                                                                                                                          child: Container(
-                                                                                                                              decoration: BoxDecoration(
-                                                                                                                                  border: Border.all(
-                                                                                                                                    color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                                                  ),
-                                                                                                                                  image: const DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
-                                                                                                                        ),
-                                                                                                                      );
-                                                                                                                    },
+                                                                                                              decoration: const BoxDecoration(
+                                                                                                                  // border: Border.all(
+                                                                                                                  //   color: const Color.fromARGB(255, 228, 38, 38),
+                                                                                                                  // ),
                                                                                                                   ),
-                                                                                                                ),
-                                                                                                                const SizedBox(height: 13),
-                                                                                                                GestureDetector(
-                                                                                                                    onTap: () {
-                                                                                                                      Navigator.pushNamed(context, '/game');
-                                                                                                                    },
-                                                                                                                    child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                                              ],
+                                                                                                              child: Column(
+                                                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                children: [
+                                                                                                                  const Text("Select New Suit", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                                                  const SizedBox(height: 27),
+                                                                                                                  Container(
+                                                                                                                    height: 240,
+                                                                                                                    width: double.infinity,
+                                                                                                                    child: GridView.builder(
+                                                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                                        crossAxisCount: 3,
+                                                                                                                        mainAxisSpacing: 7,
+                                                                                                                        crossAxisSpacing: 11,
+                                                                                                                      ),
+                                                                                                                      itemCount: 3,
+                                                                                                                      // shuffleDeck(deck).length,
+                                                                                                                      itemBuilder: (BuildContext context, int index) {
+                                                                                                                        return GestureDetector(
+                                                                                                                          onTap: () {},
+                                                                                                                          child: Container(
+                                                                                                                            width: 5,
+                                                                                                                            height: 5,
+                                                                                                                            decoration: const BoxDecoration(
+                                                                                                                              color: Color(0xFF838796),
+                                                                                                                              // border: Border.all(
+                                                                                                                              //   color: Colors.white,
+                                                                                                                              // ),
+                                                                                                                            ),
+                                                                                                                            child: Container(
+                                                                                                                                decoration: BoxDecoration(
+                                                                                                                                    border: Border.all(
+                                                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                                                    ),
+                                                                                                                                    image: const DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
+                                                                                                                          ),
+                                                                                                                        );
+                                                                                                                      },
+                                                                                                                    ),
+                                                                                                                  ),
+                                                                                                                  const SizedBox(height: 13),
+                                                                                                                  GestureDetector(
+                                                                                                                      onTap: () {
+                                                                                                                        Navigator.pushNamed(context, '/game');
+                                                                                                                      },
+                                                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                                                ],
+                                                                                                              ),
                                                                                                             ),
-
-//                                               Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                               children: [
-
-// Column(
-//   children: [
-
-//      Container(
-//       height: 70,width: 70,
-//                                               decoration: BoxDecoration(
-
-//                                                   image: const DecorationImage(
-//                                                       image: const AssetImage(
-//                                                           'assets/images/card_clubs_02.png'),
-//                                                       fit: BoxFit.fill))),
-
-//                                                       const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-
-// ],)
-
-// ,
-// Column(
-//                                                       children: [
-//                                                         Container(
-//                                                             height: 70,
-//                                                             width: 70,
-//                                                             decoration: BoxDecoration(
-//                                                                 image: const DecorationImage(
-//                                                                     image: const AssetImage(
-//                                                                         'assets/images/card_clubs_02.png'),
-//                                                                     fit: BoxFit
-//                                                                         .fill))),
-//                                                         const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-//                                                       ],
-//                                                     )
-
-//                                            ],
-
-//                                               )
-
-                                                                                                            // Text(
-                                                                                                            //   "5 Jokers max",
-                                                                                                            //   style: TextStyle(
-                                                                                                            //       fontFamily: "BreatheFire",
-                                                                                                            //       fontSize: 40,
-                                                                                                            //       color: Color(0xFFF7A74F)),
-                                                                                                            // ),
                                                                                                           ),
-                                                                                                        ),
-                                                                                                      ],
-                                                                                                    )),
-                                                                                              );
-                                                                                            },
-                                                                                          );
-                                                                                        },
-                                                                                        child: Container(
-                                                                                          width: 5,
-                                                                                          height: 5,
-                                                                                          decoration: const BoxDecoration(
-                                                                                            color: Color(0xFF838796),
-                                                                                            // border: Border.all(
-                                                                                            //   color: Colors.white,
-                                                                                            // ),
-                                                                                          ),
+                                                                                                        ],
+                                                                                                      )),
+                                                                                                );
+                                                                                              },
+                                                                                            );
+                                                                                          },
                                                                                           child: Container(
-                                                                                              decoration: BoxDecoration(
-                                                                                                  border: Border.all(
-                                                                                                    color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                  ),
-                                                                                                  image: const DecorationImage(image: AssetImage('assets/images/card_clubs_02.png')))),
-                                                                                        ),
-                                                                                      );
-                                                                                    },
+                                                                                            width: 5,
+                                                                                            height: 5,
+                                                                                            decoration: const BoxDecoration(
+                                                                                              color: Color(0xFF838796),
+                                                                                              // border: Border.all(
+                                                                                              //   color: Colors.white,
+                                                                                              // ),
+                                                                                            ),
+                                                                                            child: Container(
+                                                                                                decoration: BoxDecoration(
+                                                                                                    border: Border.all(
+                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                    ),
+                                                                                                    image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                                const SizedBox(height: 13),
-                                                                                GestureDetector(
-                                                                                    onTap: () {
-                                                                                      Navigator.pushNamed(context, '/game');
-                                                                                    },
-                                                                                    child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                              ],
+                                                                                  const SizedBox(height: 13),
+                                                                                  GestureDetector(
+                                                                                      onTap: () {
+                                                                                        Navigator.pushNamed(context, '/game');
+                                                                                      },
+                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                ],
+                                                                              ),
                                                                             ),
-
-//                                               Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                               children: [
-
-// Column(
-//   children: [
-
-//      Container(
-//       height: 70,width: 70,
-//                                               decoration: BoxDecoration(
-
-//                                                   image: const DecorationImage(
-//                                                       image: const AssetImage(
-//                                                           'assets/images/card_clubs_02.png'),
-//                                                       fit: BoxFit.fill))),
-
-//                                                       const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-
-// ],)
-
-// ,
-// Column(
-//                                                       children: [
-//                                                         Container(
-//                                                             height: 70,
-//                                                             width: 70,
-//                                                             decoration: BoxDecoration(
-//                                                                 image: const DecorationImage(
-//                                                                     image: const AssetImage(
-//                                                                         'assets/images/card_clubs_02.png'),
-//                                                                     fit: BoxFit
-//                                                                         .fill))),
-//                                                         const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-//                                                       ],
-//                                                     )
-
-//                                            ],
-
-//                                               )
-
-                                                                            // Text(
-                                                                            //   "5 Jokers max",
-                                                                            //   style: TextStyle(
-                                                                            //       fontFamily: "BreatheFire",
-                                                                            //       fontSize: 40,
-                                                                            //       color: Color(0xFFF7A74F)),
-                                                                            // ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    )),
-                                                              );
-                                                            },
-                                                          );
+                                                                        ],
+                                                                      )),
+                                                                );
+                                                              },
+                                                            );
+                                                          }
                                                         },
                                                         child: Container(
                                                             height: 70,
                                                             width: 70,
                                                             decoration: BoxDecoration(
                                                                 image: DecorationImage(
-                                                                    image: AssetImage(
-                                                                        jokerFirstScreenAssets[index]
-                                                                            [
-                                                                            "imageUrl"]),
+                                                                    image: AssetImage(context
+                                                                            .read<
+                                                                                CardsProvider>()
+                                                                            .jokerFirstScreenAssets[index]
+                                                                        [
+                                                                        "imageUrl"]),
                                                                     fit: BoxFit
                                                                         .fill))),
                                                       ),
                                                       Text(
-                                                          jokerFirstScreenAssets[
+                                                          context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .jokerFirstScreenAssets[
                                                               index]["text"],
                                                           style: const TextStyle(
                                                               color:
@@ -1895,65 +1704,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   );
                                                 },
                                               ),
-
-//                                               Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                                               children: [
-
-// Column(
-//   children: [
-
-//      Container(
-//       height: 70,width: 70,
-//                                               decoration: BoxDecoration(
-
-//                                                   image: const DecorationImage(
-//                                                       image: const AssetImage(
-//                                                           'assets/images/card_clubs_02.png'),
-//                                                       fit: BoxFit.fill))),
-
-//                                                       const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-
-// ],)
-
-// ,
-// Column(
-//                                                       children: [
-//                                                         Container(
-//                                                             height: 70,
-//                                                             width: 70,
-//                                                             decoration: BoxDecoration(
-//                                                                 image: const DecorationImage(
-//                                                                     image: const AssetImage(
-//                                                                         'assets/images/card_clubs_02.png'),
-//                                                                     fit: BoxFit
-//                                                                         .fill))),
-//                                                         const Text("Suit",
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white,
-//                                                                 fontFamily:
-//                                                                     "BreatheFire",
-//                                                                 fontSize: 18)),
-//                                                       ],
-//                                                     )
-
-//                                            ],
-
-//                                               )
-
-                                              // Text(
-                                              //   "5 Jokers max",
-                                              //   style: TextStyle(
-                                              //       fontFamily: "BreatheFire",
-                                              //       fontSize: 40,
-                                              //       color: Color(0xFFF7A74F)),
-                                              // ),
                                             ),
                                           ),
                                         ],
@@ -2112,7 +1862,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
                             return Text(
-                                '${counter.remainingDeckElements.length + counter.purchaseCards.length}/${counter.remainingDeckElements.length + counter.purchaseCards.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
+                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
                           })
                         ],
                       ),
@@ -2210,7 +1960,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   void openBox() async {
     var box = await Hive.openBox("myBox");
 
-    print(b.get("noOfChips"));
+    // print(b.get("noOfChips"));
     context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
   }
 
