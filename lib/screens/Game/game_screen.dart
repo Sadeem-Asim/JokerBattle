@@ -32,6 +32,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final player = AudioPlayer();
   bool showWhiteText = false;
   bool isPlay = false;
+  bool visor = false;
   late AnimationController _controller;
   late Animation _animation;
   AnimationStatus _status = AnimationStatus.dismissed;
@@ -1066,59 +1067,76 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 ..setEntry(3, 2, 0.0015)
                                                 ..rotateY(
                                                     3.14 * _animation.value),
-                                              child: _animation.value <= 0.5
-                                                  ? Transform(
-                                                      alignment:
-                                                          FractionalOffset
-                                                              .center,
-                                                      transform: Matrix4
-                                                          .identity()
-                                                        ..rotateY(
-                                                            0), // Front side
-                                                      child: Container(
-                                                        width: 28,
-                                                        height: 39,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          image:
-                                                              DecorationImage(
-                                                            image: AssetImage(
-                                                              "assets/images/${cardDataAI[index]}",
-                                                            ),
-                                                            fit: BoxFit.cover,
+                                              child: counter.visor
+                                                  ? Container(
+                                                      width: 28,
+                                                      height: 39,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(
+                                                            "assets/images/${counter.selectedCardsForAi[index]}",
                                                           ),
+                                                          fit: BoxFit.cover,
                                                         ),
                                                       ),
                                                     )
-                                                  : Transform(
-                                                      alignment:
-                                                          FractionalOffset
-                                                              .center,
-                                                      transform: Matrix4
-                                                          .identity()
-                                                        ..rotateY(
-                                                            3.14), // Back side
-                                                      child: Container(
-                                                        width: 28,
-                                                        height: 39,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          image:
-                                                              DecorationImage(
-                                                            image: AssetImage(
-                                                              counter.selectedCardsForAi
-                                                                          .length ==
-                                                                      5
-                                                                  ? counter
-                                                                          .selectedCardsForAi[
-                                                                      index]
-                                                                  : "assets/images/${cardDataAI[index]}",
+                                                  : _animation.value <= 0.5
+                                                      ? Transform(
+                                                          alignment:
+                                                              FractionalOffset
+                                                                  .center,
+                                                          transform: Matrix4
+                                                              .identity()
+                                                            ..rotateY(
+                                                                0), // Front side
+                                                          child: Container(
+                                                            width: 28,
+                                                            height: 39,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              image:
+                                                                  DecorationImage(
+                                                                image:
+                                                                    AssetImage(
+                                                                  "assets/images/${cardDataAI[index]}",
+                                                                ),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
                                                             ),
-                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )
+                                                      : Transform(
+                                                          alignment:
+                                                              FractionalOffset
+                                                                  .center,
+                                                          transform: Matrix4
+                                                              .identity()
+                                                            ..rotateY(
+                                                                3.14), // Back side
+                                                          child: Container(
+                                                            width: 28,
+                                                            height: 39,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              image:
+                                                                  DecorationImage(
+                                                                image:
+                                                                    AssetImage(
+                                                                  counter.selectedCardsForAi
+                                                                              .length ==
+                                                                          5
+                                                                      ? counter
+                                                                              .selectedCardsForAi[
+                                                                          index]
+                                                                      : "assets/images/${cardDataAI[index]}",
+                                                                ),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
                                             ),
                                             const SizedBox(
                                               width: 8,
@@ -1169,13 +1187,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                               style: const TextStyle(
                                                   color: Color(0xFFF7A74F),
                                                   fontFamily: "BreatheFire",
-                                                  fontSize: 23))
-                                          //  SvgPicture.asset(
-                                          //   'assets/images/threeRound.svg',
-                                          //   fit: BoxFit.cover,
-                                          //   width: 49,
-                                          // ),
-                                          );
+                                                  fontSize: 23)));
                                     }),
                                     const SizedBox(
                                       width: 10,
@@ -1481,11 +1493,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                               index]["text"];
                                                           if (jokerName ==
                                                               "VISOR") {
-                                                            print(jokerName);
                                                             Navigator.of(
                                                                     context)
                                                                 .pushNamed(
                                                                     '/game');
+
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .visorShow();
                                                           } else if (jokerName ==
                                                               "HANDBONUS") {
                                                             print(jokerName);
