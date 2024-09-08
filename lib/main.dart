@@ -149,13 +149,13 @@ Future<void> main() async {
   // final appDocumentDirectory = await getApplicationDocumentsDirectory();
   // Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
-  try{
-   var i = await GameAuth.signIn();
-  print({"mirasi":  await GameAuth.isSignedIn});}
-  catch(e){
+  try {
+    var i = await GameAuth.signIn();
+    print({"mirasi": await GameAuth.isSignedIn});
+  } catch (e) {
     print({"kali": e});
   }
- 
+
   // var box = await Hive.openBox('testBox');
   // Bloc.observer = SimpleBlocObserver();
 
