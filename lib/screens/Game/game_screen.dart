@@ -885,7 +885,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           // width: 49,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width:13),
                     ]),
                 SizedBox(height: MediaQuery.of(context).size.height * .04),
                 Container(
@@ -2558,6 +2558,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      
       color: const Color(0xFF838796),
       elevation: 10,
       shape: RoundedRectangleBorder(
@@ -2696,28 +2697,30 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                           })
                       : null;
             },
-            child: Column(
-              children: [
-                Image.asset(widget.imageUrl),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  if (widget.isPurchased == false)
-                    SvgPicture.asset(
-                      'assets/images/upgrade-card-2.svg',
-                      fit: BoxFit.cover,
-                      // width: 49,
+            child: Container(
+              child: Column(
+                children: [
+                  Image.asset(widget.imageUrl,height: 50),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    if (widget.isPurchased == false)
+                      SvgPicture.asset(
+                        'assets/images/upgrade-card-2.svg',
+                        fit: BoxFit.cover,
+                        // width: 49,
+                      ),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  if (widget.isPurchased == false)
-                    Text('${widget.cost}',
-                        style: const TextStyle(
-                            fontFamily: "BreatheFire",
-                            fontSize: 17,
-                            color: Color.fromARGB(255, 252, 252, 252))),
-                ])
-                // Text(${widget.cost})
-              ],
+                    if (widget.isPurchased == false)
+                      Text('${widget.cost}',
+                          style: const TextStyle(
+                              fontFamily: "BreatheFire",
+                              fontSize: 17,
+                              color: Color.fromARGB(255, 252, 252, 252))),
+                  ])
+                  // Text(${widget.cost})
+                ],
+              ),
             ),
           );
         },
