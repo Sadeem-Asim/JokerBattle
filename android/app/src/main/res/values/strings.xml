@@ -1,0 +1,6 @@
+<resources>
+  <!-- Replace 0000000000 with your game’s project id. Example value shown above.  -->
+  <string translatable="false"  name="game_services_project_id"> 71836138487 </string>
+  <string name="default_web_client_id">http://71836138487-40urdbnnp2aje3l2e8hul52c2ra1m7u6.apps.googleusercontent.com</string>
+
+</resources>

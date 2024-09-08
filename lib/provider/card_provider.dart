@@ -258,6 +258,9 @@ class CardsProvider with ChangeNotifier {
   List<Map<String, dynamic>> jokerFirstScreenAssets =
       setJokerFirstScreenAssets();
   bool visor = false;
+  bool score = false;
+  bool handBonus = false;
+  bool emptyBonus = false;
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
@@ -265,9 +268,23 @@ class CardsProvider with ChangeNotifier {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
+  void scoreX2() {
+    score = true;
+    notifyListeners();
+  }
 
   void visorShow() {
     visor = true;
+    notifyListeners();
+  }
+
+  void handBonusShow() {
+    handBonus = true;
+    notifyListeners();
+  }
+
+  void emptyBonusShow() {
+    emptyBonus = true;
     notifyListeners();
   }
 

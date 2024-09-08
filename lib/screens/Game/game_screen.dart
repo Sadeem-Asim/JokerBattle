@@ -58,20 +58,39 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
   }
 
-  void swapButtonPress() {
-    // remainingDeckView > 0 ? setState(() => remainingDeckView--) : null;
-  }
+  List<Map<String, dynamic>> combos = [];
+  List<Map<String, dynamic>> combosAi = [];
 
   int getCardPoints(String rank) {
     switch (rank) {
-      case 'J':
+      case 'J.':
         return 11;
-      case 'Q':
+      case 'Q.':
         return 12;
-      case 'K':
+      case 'K.':
         return 13;
-      case 'A':
+      case 'A.':
         return 14;
+      case '01':
+        return 1;
+      case '02':
+        return 2;
+      case '03':
+        return 3;
+      case '04':
+        return 4;
+      case '05':
+        return 5;
+      case '06':
+        return 6;
+      case '07':
+        return 7;
+      case '08':
+        return 8;
+      case '09':
+        return 9;
+      case '10':
+        return 10;
       default:
         return int.tryParse(rank) ?? 0;
     }
@@ -88,49 +107,279 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   int calculateScore(List<String> combo) {
-    int score = 0;
+    int baseScore = 0;
+    Map<String, int> rankCounts = {};
+    Map<String, int> suitCounts = {};
+    List<int> rankValues = [];
+    Map<String, int> cardPoints = {};
+    for (var card in combo) {
+      String rank = card.split('_')[2].substring(0, 2);
+      String suit = card.split('_')[1];
+      int points = getCardPoints(rank);
+      points = context.read<CardsProvider>().score ? points * 2 : points;
+      rankValues.add(points);
+      rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
+      suitCounts[suit] = (suitCounts[suit] ?? 0) + 1;
+      cardPoints[rank] = points;
+    }
+    bool isFlush = suitCounts.containsValue(5);
+    bool isStraight = isStraightHand(rankValues);
+
+    int combinationScore = 0;
+
+    // Apply scoring based on hand type
+    if (isFlush && isStraight) {
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Straight Flush
+      }
+      combinationScore = baseScore * 7;
+      combos.add({
+        "Base Score": baseScore,
+        "Straight Flush : ": combinationScore,
+      });
+    } else if (rankCounts.containsValue(4)) {
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 4) {
+          baseScore += cardPoints[rank]! * 4; // Add points for Four of a Kind
+        }
+      }
+      combinationScore = baseScore * 5;
+      combos.add({
+        "Base Score": baseScore,
+        "Four of a Kind": combinationScore,
+      });
+    } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 3) {
+          baseScore += cardPoints[rank]! * 3;
+        } else if (rankCounts[rank] == 2) {
+          baseScore += cardPoints[rank]! * 2;
+        }
+      }
+      combinationScore = baseScore * 4;
+
+      combos.add({
+        "Base Score": baseScore,
+        "Full House": combinationScore,
+      });
+    } else if (isFlush) {
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Flush
+      }
+      combinationScore = baseScore * 3;
+      combos.add({
+        "Base Score": baseScore,
+        "Flush": combinationScore,
+      });
+    } else if (isStraight) {
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Straight
+      }
+      combinationScore = baseScore * 2;
+
+      combos.add({
+        "Base Score": baseScore,
+        "Straight": combinationScore,
+      });
+    } else if (rankCounts.values.where((v) => v == 2).length == 2) {
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+          baseScore += cardPoints[rank]! * 2; // Add points of both pairs
+        }
+      }
+      combinationScore = 10;
+      combos.add({
+        "Base Score": baseScore,
+        "Two Pair Bonus": combinationScore,
+      });
+    } else if (rankCounts.containsValue(2)) {
+      // One Pair
+
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+          baseScore += cardPoints[rank]! * 2; // Add points of the pair
+          break;
+        }
+      }
+      combinationScore = 5;
+      combos.add({
+        "Base Score": baseScore,
+        "One Pair Bonus": combinationScore,
+      });
+    } else {
+      baseScore = rankValues.reduce((a, b) => a > b ? a : b);
+      combinationScore = baseScore;
+      combos.add({
+        "Base Score": baseScore,
+        "High Card Bonus": combinationScore,
+      });
+    }
+    int total = baseScore + combinationScore;
+    if (context.read<CardsProvider>().handBonus) {
+      int handBonus = 0;
+      List<String> cards = context
+          .read<CardsProvider>()
+          .selectedCards
+          .where((card) => !context
+              .read<CardsProvider>()
+              .selectedCardsFromThirdRow
+              .contains(card))
+          .toList();
+      for (var card in cards) {
+        String rank = card.split('_')[2].substring(0, 2);
+        int points = getCardPoints(rank);
+        handBonus += points;
+      }
+      combos.add({"Hand Bonus": handBonus});
+      total += handBonus;
+    }
+
+    if (context.read<CardsProvider>().score) {
+      combos.add({"Score Joker Bonus Applied": 0});
+    }
+    if (context.read<CardsProvider>().emptyBonus) {
+      int emptyBonus = 0;
+      List<String> cards =
+          context.read<CardsProvider>().selectedCardsFromThirdRow.toList();
+      for (var card in cards) {
+        String rank = card.split('_')[2].substring(0, 2);
+        int points = getCardPoints(rank);
+        emptyBonus += points;
+      }
+      combos.add({"Empty Bonus": emptyBonus});
+      total += emptyBonus;
+    }
+
+    combos.add({"Total": total});
+    return total;
+  }
+
+  int calculateScoreAi(List<String> combo) {
+    int baseScore = 0;
+
     Map<String, int> rankCounts = {};
     Map<String, int> suitCounts = {};
     List<int> rankValues = [];
 
+    Map<String, int> cardPoints = {};
+
     for (var card in combo) {
-      String rank = card
-          .split('_')[2]
-          .substring(0, 1); // Assuming card format is "card_spades_A.png"
+      String rank = card.split('_')[2].substring(0, 2);
       String suit = card.split('_')[1];
       int points = getCardPoints(rank);
-      score += points;
+
+      baseScore += points;
       rankValues.add(points);
 
       rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
       suitCounts[suit] = (suitCounts[suit] ?? 0) + 1;
+
+      // Keep track of points for each rank
+      cardPoints[rank] = points;
     }
 
     bool isFlush = suitCounts.containsValue(5);
     bool isStraight = isStraightHand(rankValues);
 
+    int combinationScore = 0;
+
     // Apply scoring based on hand type
     if (isFlush && isStraight) {
-      score *= 7; // Straight Flush
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Straight Flush
+      }
+      combinationScore = baseScore * 7;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Straight Flush : ": combinationScore,
+        "Total": baseScore + combinationScore
+      });
     } else if (rankCounts.containsValue(4)) {
-      score *= 5; // Four of a Kind
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 4) {
+          baseScore += cardPoints[rank]! * 4; // Add points for Four of a Kind
+        }
+      }
+      combinationScore = baseScore * 5;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Four of a Kind": combinationScore,
+        "Total": baseScore + combinationScore
+      });
     } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
-      score *= 4; // Full House
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 3) {
+          baseScore += cardPoints[rank]! * 3;
+        } else if (rankCounts[rank] == 2) {
+          baseScore += cardPoints[rank]! * 2;
+        }
+      }
+      combinationScore = baseScore * 4;
+
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Full House": combinationScore,
+        "Total": baseScore + combinationScore
+      });
     } else if (isFlush) {
-      score *= 3; // Flush
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Flush
+      }
+      combinationScore = baseScore * 3;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Flush": combinationScore,
+        "Total": baseScore + combinationScore,
+      });
     } else if (isStraight) {
-      score *= 2; // Straight
-    } else if (rankCounts.containsValue(3)) {
-      score *= 2; // Three of a Kind
+      for (var points in rankValues) {
+        baseScore += points; // Add points of all cards for Straight
+      }
+      combinationScore = baseScore * 2;
+
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Straight": combinationScore,
+        "Total": baseScore + combinationScore,
+      });
     } else if (rankCounts.values.where((v) => v == 2).length == 2) {
-      score += 10; // Two Pair
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+          baseScore += cardPoints[rank]! * 2; // Add points of both pairs
+        }
+      }
+      combinationScore = 10;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Two Pair Bonus": combinationScore,
+        "Total": baseScore + combinationScore,
+      });
     } else if (rankCounts.containsValue(2)) {
-      score += 5; // One Pair
+      // One Pair
+
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+          baseScore += cardPoints[rank]! * 2; // Add points of the pair
+          break;
+        }
+      }
+      combinationScore = 5;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "One Pair Bonus": combinationScore,
+        "Total": baseScore + combinationScore
+      });
     } else {
-      score *= 1; // High Card
+      baseScore = rankValues.reduce((a, b) => a > b ? a : b);
+      combinationScore = baseScore;
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "High Card Bonus": combinationScore,
+        "Total": baseScore + combinationScore
+      });
     }
 
-    return score;
+    return combinationScore + baseScore;
   }
 
   List<String> generateSuits(String path) {
@@ -152,7 +401,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     List<String> aiSelectedCards =
         context.read<CardsProvider>().selectedCardsForAi;
-    aiScore = calculateScore(aiSelectedCards);
+    aiScore = calculateScoreAi(aiSelectedCards);
 
     context
         .read<CardsProvider>()
@@ -835,7 +1084,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         ),
                         // ),
                       ),
-
                       const SizedBox(width: 45),
                       ElevatedButton(
                         onPressed: () {
@@ -861,7 +1109,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fontSize: 25,
                                 color: Colors.white)),
                       ),
-
                       const SizedBox(width: 27),
                       ElevatedButton(
                         onPressed: () {
@@ -885,7 +1132,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           // width: 49,
                         ),
                       ),
-                      const SizedBox(width:13),
+                      const SizedBox(width: 13),
                     ]),
                 SizedBox(height: MediaQuery.of(context).size.height * .04),
                 Container(
@@ -905,7 +1152,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
-                                                "You Base Score:${playerScore}",
+                                                "You Base Score:${combos[0]["Base Score"]}",
                                                 style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(value),
@@ -919,12 +1166,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
-                                                "Two Pair Bonus:${context.read<CardsProvider>().playerScore}",
+                                                "${combos[0].entries.map((entry) => entry.key).toList()[1]}:${combos[0][combos[0].entries.map((entry) => entry.key).toList()[1]]}",
                                                 style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(value),
                                                   fontFamily: "BreatheFire",
-                                                  fontSize: 14,
+                                                  fontSize: 13,
                                                 ));
                                           }),
                                       TweenAnimationBuilder(
@@ -933,17 +1180,30 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
                                             return Text(
-                                                "Total:${context.read<CardsProvider>().playerScore}",
+                                                "Total:${combos[combos.length - 1][combos[combos.length - 1].entries.map((entry) => entry.key).toList()[0]]}",
                                                 style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(value),
                                                   fontFamily: "BreatheFire",
-                                                  fontSize: 14,
+                                                  fontSize: 13,
+                                                ));
+                                          }),
+                                      TweenAnimationBuilder(
+                                          tween: Tween(begin: 0.0, end: 1.0),
+                                          duration: const Duration(seconds: 3),
+                                          builder: (BuildContext context,
+                                              double value, Widget? child) {
+                                            return Text(
+                                                "Total:${combos[combos.length - 1][combos[combos.length - 1].entries.map((entry) => entry.key).toList()[0]]}",
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withOpacity(value),
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 13,
                                                 ));
                                           }),
                                     ],
                                   ),
-                                 
                                 ],
                               )
                             : const Text(""),
@@ -969,12 +1229,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
-                                            "Opponent Base Score:${aiScore}",
+                                            "Opponent Base Score:${combosAi[0]["Opponent Base Score"]}",
                                             style: TextStyle(
                                               color: Colors.white
                                                   .withOpacity(value),
                                               fontFamily: "BreatheFire",
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ));
                                       }),
                                   TweenAnimationBuilder(
@@ -983,12 +1243,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
-                                            "High Card Bonus:${context.read<CardsProvider>().aiScore}",
+                                            "${combosAi[0].entries.map((entry) => entry.key).toList()[1]}:${combosAi[0][combosAi[0].entries.map((entry) => entry.key).toList()[1]]}",
                                             style: TextStyle(
                                               color: Colors.white
                                                   .withOpacity(value),
                                               fontFamily: "BreatheFire",
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ));
                                       }),
                                   TweenAnimationBuilder(
@@ -997,12 +1257,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       builder: (BuildContext context,
                                           double value, Widget? child) {
                                         return Text(
-                                            "Total:${context.read<CardsProvider>().aiScore}",
+                                            "Total:${combosAi[0][combosAi[0].entries.map((entry) => entry.key).toList()[2]]}",
                                             style: TextStyle(
                                               color: Colors.white
                                                   .withOpacity(value),
                                               fontFamily: "BreatheFire",
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ));
                                       }),
                                 ],
@@ -1336,7 +1596,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     ),
                   ]),
                 ),
-
                 Container(
                   // padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
                   decoration: BoxDecoration(
@@ -1438,11 +1697,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
-
-
-
-
-
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -1461,11 +1715,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 Colors.black.withOpacity(0.8),
                                                 BlendMode.darken)),
                                       ),
-                                      child: 
-                                      
-                                      
-                                      
-                                      Column(
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
@@ -1476,13 +1726,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                       const BoxDecoration(),
                                                   child: const Text(""))),
 
-
-
-
-
-
-
-                                              //joker-grid    
+                                          //joker-grid
                                           SizedBox(
                                             height: 400,
                                             width: 270,
@@ -1524,38 +1768,31 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 .visorShow();
                                                           } else if (jokerName ==
                                                               "HANDBONUS") {
-                                                            print(jokerName);
-                                                            // get points for the remaining cards in your hand that you did not put on
-                                                            // the table.
-                                                            // i will have to add 20 points in the end of the round
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pushNamed(
+                                                                    '/game');
+
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .handBonusShow();
                                                           } else if (jokerName ==
                                                               "EMPTYBONUS") {
                                                             // - adds to the result of your combo the amount of points for cards that
                                                             // were not in your combo.
                                                           } else if (jokerName ==
                                                               "SCORE") {
-                                                            // he point value of each card in your combo is increased by 2.
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .scoreX2();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pushNamed(
+                                                                    '/game');
                                                           } else if (jokerName ==
                                                               "FAKE") {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                                             showDialog(
                                                               context: context,
                                                               builder:
@@ -1576,13 +1813,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                             fit: BoxFit.cover,
                                                                             colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
                                                                       ),
-                                                                      child:
-                                                                      
-                                                                      
-                                                                      
-                                                                      
-                                                                       Column(
-                                                                        
+                                                                      child: Column(
                                                                         // MainAxisAlignment.spaceAround,
                                                                         mainAxisAlignment:
                                                                             MainAxisAlignment.center,
@@ -1619,14 +1850,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                             var selectedCardToFake = context.read<CardsProvider>().selectedCards[index];
                                                                                             List<String> selectedCardsToCopy = context.read<CardsProvider>().selectedCards.where((card) => card != selectedCardToFake).toList();
 
-
                                                                                             showDialog(
                                                                                               context: context,
                                                                                               builder: (BuildContext context) {
                                                                                                 return Scaffold(
                                                                                                   backgroundColor: Colors.black.withOpacity(0.8),
                                                                                                   body: Container(
-                                                                                                      height: double.infinity ,
+                                                                                                      height: double.infinity,
                                                                                                       width: double.infinity,
                                                                                                       decoration: BoxDecoration(
                                                                                                         image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
@@ -1634,7 +1864,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                       child: Column(
                                                                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                                                                         children: [
-                                                                                                         SizedBox(
+                                                                                                          SizedBox(
                                                                                                             height: 700,
                                                                                                             width: 330,
                                                                                                             child: Container(
@@ -2282,26 +2512,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             );
                           },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
                             backgroundColor: const Color(0xFFD3BF8F),
@@ -2558,7 +2768,6 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      
       color: const Color(0xFF838796),
       elevation: 10,
       shape: RoundedRectangleBorder(
@@ -2700,7 +2909,7 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
             child: Container(
               child: Column(
                 children: [
-                  Image.asset(widget.imageUrl,height: 50),
+                  Image.asset(widget.imageUrl, height: 50),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     if (widget.isPurchased == false)
                       SvgPicture.asset(

@@ -151,10 +151,9 @@ Future<void> main() async {
   // Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
   try {
-    var i = await GamesServices.signIn();
-    print({"mirasi": i});
-  }catch(e) {
-    print({"kali": e});
+    await GamesServices.signIn();
+  } catch (e) {
+    print({"error": e});
   }
 
   // var box = await Hive.openBox('testBox');
