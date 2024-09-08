@@ -257,7 +257,7 @@ class CardsProvider with ChangeNotifier {
   List<UpgradeClass> upgradeScreenDeck = [];
   List<Map<String, dynamic>> jokerFirstScreenAssets =
       setJokerFirstScreenAssets();
-  bool isFlipped = false;
+  bool visor = false;
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
@@ -265,6 +265,11 @@ class CardsProvider with ChangeNotifier {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
+
+  void visorShow() {
+    visor = true;
+    notifyListeners();
+  }
 
   void jokerFake(String selectedCardToFake, String selectedCardToCopy) {
     int index = selectedCards.indexOf(selectedCardToFake);
@@ -415,6 +420,7 @@ class CardsProvider with ChangeNotifier {
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
       currentRound++;
     }
+    visor = false;
     notifyListeners();
   }
 
@@ -432,6 +438,8 @@ class CardsProvider with ChangeNotifier {
         .removeWhere((card) => selectedCardsForAi.contains(card));
     aiScore = 0;
     playerScore = 0;
+    visor = false;
+
     notifyListeners();
   }
 
@@ -444,6 +452,8 @@ class CardsProvider with ChangeNotifier {
   }
 
   void putCards() {
+    visor = false;
+
     discardedDeckElements += selectedCardsFromThirdRow;
     purchaseCards
         .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
@@ -505,11 +515,15 @@ class CardsProvider with ChangeNotifier {
   }
 
   void removeCards() {
+    visor = false;
+
     selectedCardsFromThirdRow = [];
     notifyListeners();
   }
 
   void removeCardsOnGameClick() async {
+    visor = false;
+
     selectedCards = [];
     selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
