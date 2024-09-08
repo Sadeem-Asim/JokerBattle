@@ -478,7 +478,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                     const SizedBox(height: 45),
                                                     //upgrade-grid
                                                     SizedBox(
-                                                      height: 400,
+                                                      height: 500,
                                                       child: Consumer<
                                                               CardsProvider>(
                                                           builder: (context,
@@ -885,7 +885,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           // width: 49,
                         ),
                       ),
-                      // const SizedBox(width: 15),
+                      const SizedBox(width: 8),
                     ]),
                 SizedBox(height: MediaQuery.of(context).size.height * .04),
                 Container(
@@ -943,7 +943,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           }),
                                     ],
                                   ),
-                                  const SizedBox(width: 5)
+                                 
                                 ],
                               )
                             : const Text(""),

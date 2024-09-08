@@ -135,6 +135,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:games_services/games_services.dart';
+import 'package:flutter/services.dart';
 
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -150,9 +151,9 @@ Future<void> main() async {
   // Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
   try {
-    var i = await GameAuth.signIn();
-    print({"mirasi": await GameAuth.isSignedIn});
-  } catch (e) {
+    var i = await GamesServices.signIn();
+    print({"mirasi": i});
+  }catch(e) {
     print({"kali": e});
   }
 
