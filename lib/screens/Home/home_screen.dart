@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:joker_battle/utils/game.dart';
 import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:games_services/games_services.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -25,12 +26,21 @@ class _MyHomePageState extends State<HomeScreen> {
   List<String> deck = generateDeck();
   final player = AudioPlayer();
 
+
+
+
+
+
+
+  
+
   // Set the release mode to keep the source after playback has completed.
   // player.setReleaseMode();
   @override
   void initState() {
     super.initState();
     _playBackgroundMusic();
+   
   }
 
   void _playBackgroundMusic() async {
@@ -174,8 +184,18 @@ class _MyHomePageState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 18),
                     ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                         try{
+                          final result = await GamesServices.loadAchievements();
+                          print(result);
+                          print({"koila": result});
                           // Handle button 2 press
+                          final resulti = await GamesServices.showAchievements();}
+                          catch(e){
+print({"jilii": e});
+                          };
+                          
+                          
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF838796),

@@ -134,6 +134,8 @@ import 'package:joker_battle/provider/card_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:games_services/games_services.dart';
+
 // import 'blocs/blocs.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
@@ -147,6 +149,13 @@ Future<void> main() async {
   // final appDocumentDirectory = await getApplicationDocumentsDirectory();
   // Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
+  try{
+   var i = await GameAuth.signIn();
+  print({"mirasi":  await GameAuth.isSignedIn});}
+  catch(e){
+    print({"kali": e});
+  }
+ 
   // var box = await Hive.openBox('testBox');
   // Bloc.observer = SimpleBlocObserver();
 

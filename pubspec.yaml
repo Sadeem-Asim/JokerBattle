@@ -41,6 +41,7 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: 2.1.4
   flip_card: ^0.7.0
+  games_services: ^4.0.2 
 
 dev_dependencies:
   flutter_test:

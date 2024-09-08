@@ -192,6 +192,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  games_services:
+    dependency: "direct main"
+    description:
+      name: games_services
+      sha256: b01cbe11e3a73a19d56a9164154659eb1bce282005d8465e6d02682b7c0df24d
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
+  games_services_platform_interface:
+    dependency: transitive
+    description:
+      name: games_services_platform_interface
+      sha256: "3742c23afdd5ebd5498612b13dc251853fccf935f6f56ef6bf13c6e8c0c89a8d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
   hive:
     dependency: "direct main"
     description:
