@@ -257,7 +257,7 @@ class CardsProvider with ChangeNotifier {
   List<UpgradeClass> upgradeScreenDeck = [];
   List<Map<String, dynamic>> jokerFirstScreenAssets =
       setJokerFirstScreenAssets();
-  bool isFlipped = false;
+  bool visor = false;
   bool? winStatus;
   int currentRound = 1;
   int noOfChips = 0;
@@ -265,6 +265,11 @@ class CardsProvider with ChangeNotifier {
   int playerScore = 0;
   int aiScore = 0;
   int remainingDeckView = 3;
+
+  void visorShow() {
+    visor = true;
+    notifyListeners();
+  }
 
   void jokerFake(String selectedCardToFake, String selectedCardToCopy) {
     int index = selectedCards.indexOf(selectedCardToFake);
