@@ -1074,7 +1074,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                       decoration: BoxDecoration(
                                                         image: DecorationImage(
                                                           image: AssetImage(
-                                                            "assets/images/${counter.selectedCardsForAi[index]}",
+                                                            counter.selectedCardsForAi[
+                                                                index],
                                                           ),
                                                           fit: BoxFit.cover,
                                                         ),

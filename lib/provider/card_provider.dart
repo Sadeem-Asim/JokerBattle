@@ -420,6 +420,7 @@ class CardsProvider with ChangeNotifier {
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
       currentRound++;
     }
+    visor = false;
     notifyListeners();
   }
 
@@ -437,6 +438,8 @@ class CardsProvider with ChangeNotifier {
         .removeWhere((card) => selectedCardsForAi.contains(card));
     aiScore = 0;
     playerScore = 0;
+    visor = false;
+
     notifyListeners();
   }
 
@@ -449,6 +452,8 @@ class CardsProvider with ChangeNotifier {
   }
 
   void putCards() {
+    visor = false;
+
     discardedDeckElements += selectedCardsFromThirdRow;
     purchaseCards
         .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
@@ -510,11 +515,15 @@ class CardsProvider with ChangeNotifier {
   }
 
   void removeCards() {
+    visor = false;
+
     selectedCardsFromThirdRow = [];
     notifyListeners();
   }
 
   void removeCardsOnGameClick() async {
+    visor = false;
+
     selectedCards = [];
     selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
