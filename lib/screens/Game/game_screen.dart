@@ -1336,6 +1336,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     ),
                   ]),
                 ),
+
                 Container(
                   // padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
                   decoration: BoxDecoration(
@@ -1437,6 +1438,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
+
+
+
+
+
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -1455,7 +1461,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 Colors.black.withOpacity(0.8),
                                                 BlendMode.darken)),
                                       ),
-                                      child: Column(
+                                      child: 
+                                      
+                                      
+                                      
+                                      Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
@@ -1465,6 +1475,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   decoration:
                                                       const BoxDecoration(),
                                                   child: const Text(""))),
+
+
+
+
+
+
+
+                                              //joker-grid    
                                           SizedBox(
                                             height: 400,
                                             width: 270,
@@ -1519,6 +1537,25 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             // he point value of each card in your combo is increased by 2.
                                                           } else if (jokerName ==
                                                               "FAKE") {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                                             showDialog(
                                                               context: context,
                                                               builder:
@@ -1536,10 +1573,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                         image: DecorationImage(
                                                                             image:
                                                                                 const AssetImage('assets/images/background.png'),
-                                                                            fit: BoxFit.fill,
+                                                                            fit: BoxFit.cover,
                                                                             colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
                                                                       ),
-                                                                      child: Column(
+                                                                      child:
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+                                                                       Column(
+                                                                        
                                                                         // MainAxisAlignment.spaceAround,
                                                                         mainAxisAlignment:
                                                                             MainAxisAlignment.center,
@@ -1549,7 +1592,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                               child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
                                                                           SizedBox(
                                                                             height:
-                                                                                700,
+                                                                                400,
                                                                             width:
                                                                                 330,
                                                                             child:
@@ -1575,13 +1618,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                           onTap: () {
                                                                                             var selectedCardToFake = context.read<CardsProvider>().selectedCards[index];
                                                                                             List<String> selectedCardsToCopy = context.read<CardsProvider>().selectedCards.where((card) => card != selectedCardToFake).toList();
+
+
                                                                                             showDialog(
                                                                                               context: context,
                                                                                               builder: (BuildContext context) {
                                                                                                 return Scaffold(
                                                                                                   backgroundColor: Colors.black.withOpacity(0.8),
                                                                                                   body: Container(
-                                                                                                      height: double.infinity,
+                                                                                                      height: double.infinity ,
                                                                                                       width: double.infinity,
                                                                                                       decoration: BoxDecoration(
                                                                                                         image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
@@ -1589,8 +1634,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                                                       child: Column(
                                                                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                                                                         children: [
-                                                                                                          SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
-                                                                                                          SizedBox(
+                                                                                                         SizedBox(
                                                                                                             height: 700,
                                                                                                             width: 330,
                                                                                                             child: Container(
@@ -1718,7 +1762,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                               child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
                                                                           SizedBox(
                                                                             height:
-                                                                                700,
+                                                                                400,
                                                                             width:
                                                                                 330,
                                                                             child:
@@ -1897,7 +1941,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                               child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
                                                                           SizedBox(
                                                                             height:
-                                                                                700,
+                                                                                400,
                                                                             width:
                                                                                 330,
                                                                             child:
@@ -2063,7 +2107,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                               child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
                                                                           SizedBox(
                                                                             height:
-                                                                                700,
+                                                                                400,
                                                                             width:
                                                                                 330,
                                                                             child:
@@ -2237,6 +2281,27 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               },
                             );
                           },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(6, 30),
                             backgroundColor: const Color(0xFFD3BF8F),
