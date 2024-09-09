@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<HomeScreen> {
-  List<String> deck = generateDeck();
   final player = AudioPlayer();
   bool isContinue = false;
 

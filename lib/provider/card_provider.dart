@@ -5,6 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'dart:math';
 import 'package:hive_flutter/hive_flutter.dart';
 
+String removeCopy(String card) {
+  card = '${card.split("_")[0]}.png';
+  return card;
+}
+
 List<String> generateDeck() {
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
   const ranks = [
@@ -41,7 +46,8 @@ class UpgradeClass {
       {required this.imageUrl, required this.cost, required this.isPurchased});
 }
 
-List<UpgradeClass> generateDeckForUpgrade() {
+List<UpgradeClass> generateDeckForUpgrade(
+    List<String> purchaseCards, List<String> purchaseJokers) {
   const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
   const ranks = [
     '02',
@@ -118,7 +124,14 @@ List<UpgradeClass> generateDeckForUpgrade() {
         cost: cost,
         isPurchased: false));
   }
-  print({"deck": deck});
+  purchaseCards = purchaseCards.map((card) => removeCopy(card)).toList();
+  List<String> cards = purchaseCards + purchaseJokers;
+
+  for (var purchase in cards) {
+    var cardToUpdate = deck.firstWhere((card) => card.imageUrl == purchase);
+    cardToUpdate.isPurchased = true;
+  }
+
   return deck;
 }
 
@@ -365,7 +378,11 @@ class CardsProvider with ChangeNotifier {
     if (path.contains("card")) {
       if (noOfChips >= cost) {
         noOfChips -= cost;
-        purchaseCards.add(path);
+
+        String suit = path.split('.')[0];
+
+        String copy = '${suit}-Copy.png';
+        purchaseCards.add(copy);
         var cardToUpdate =
             upgradeScreenDeck.firstWhere((card) => card.imageUrl == path);
 
@@ -409,41 +426,6 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void selectCardToSwap(String Path) {
-    selectedCardToSwap.contains(Path)
-        ? {
-            selectedCardToSwap.remove(Path),
-            print({
-              "harami-swap-remove": {
-                "path": Path,
-                "selectedCardToSwap.length": selectedCardToSwap.length,
-                "selectedCardToSwap": selectedCardToSwap
-              }
-            })
-          }
-        : selectedCardsFromThirdRow.length == 5 && selectedCardToSwap.length < 1
-            ? {
-                selectedCardToSwap.add(Path),
-                print({
-                  "harami-swap-add": {
-                    "path": Path,
-                    "selectedCardToSwap.length": selectedCardToSwap.length,
-                    "selectedCardsFromThrdorow.length":
-                        selectedCardsFromThirdRow.length,
-                    "selectedCardToSwap": selectedCardToSwap
-                  }
-                }),
-              }
-            : null;
-
-    notifyListeners();
-  }
-
-  void removeCardToSwap(String Path) {
-    selectedCardToSwap.contains(Path) ? selectedCardToSwap.remove(Path) : null;
-    notifyListeners();
-  }
-
   void swapFunctionality() {
     for (int i = 0; i < selectedCardsFromThirdRow.length; i++) {
       var index = selectedCards.indexOf(selectedCardsFromThirdRow[i]);
@@ -477,6 +459,8 @@ class CardsProvider with ChangeNotifier {
       remainingAiElements
           .removeWhere((card) => selectedCardsForAi.contains(card));
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+      remainingDeckView = 3;
+
       currentRound++;
     }
     visor = false;
@@ -507,20 +491,17 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentRound(int value) {
-    currentRound = value;
-    if (value == 1) {
-      selectedCardsFromThirdRow = [];
-    }
-    notifyListeners();
+  String removeCopy(String card) {
+    card = '${card.split("_")[0]}.png';
+    return card;
   }
 
   void putCards() {
     visor = false;
 
     discardedDeckElements += selectedCardsFromThirdRow;
-    purchaseCards
-        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
+    purchaseCards.removeWhere(
+        (card) => selectedCardsFromThirdRow.contains(removeCopy(card)));
     var cardsToUpdate = upgradeScreenDeck.where(
       (card) =>
           selectedCardsFromThirdRow.contains(card.imageUrl) &&
@@ -541,26 +522,7 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void shuffleDeckElement(deck) {
-    shuffleDeckElements = shuffleDeck(deck);
-    selectedCards = shuffleDeckElements;
-    notifyListeners();
-  }
-
   void selectCards(String path) {
-    if ((selectedCards.length < 7) && !selectedCards.contains(path)) {
-      selectedCards.add(path);
-    }
-    notifyListeners();
-  }
-
-  void addMultipleCards(List<String> deck) {
-    selectedCards = deck;
-    notifyListeners();
-  }
-
-  void selectCardsForSecondRow(List<String> selectedCards) {
-    selectedCards = selectedCards;
     notifyListeners();
   }
 
@@ -572,11 +534,7 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSingleCard(String path) {
-    selectedCards.remove(path);
-    selectedCards.remove(path);
-    notifyListeners();
-  }
+  void removeSingleCard(String path) {}
 
   void removeCards() {
     visor = false;
@@ -609,7 +567,7 @@ class CardsProvider with ChangeNotifier {
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
-    upgradeScreenDeck = generateDeckForUpgrade();
+    upgradeScreenDeck = generateDeckForUpgrade(purchaseCards, purchaseJokers);
     jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
@@ -636,7 +594,7 @@ class CardsProvider with ChangeNotifier {
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
-    upgradeScreenDeck = generateDeckForUpgrade();
+    upgradeScreenDeck = generateDeckForUpgrade(purchaseCards, purchaseJokers);
     jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
