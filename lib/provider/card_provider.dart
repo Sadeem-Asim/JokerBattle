@@ -88,7 +88,7 @@ List<UpgradeClass> generateDeckForUpgrade() {
     'suit',
     'fake',
     'empty-bonus',
-    'extrachange(2)',
+    'extrachange',
     'hand-bonus',
     'score',
     'transformer',
@@ -178,8 +178,9 @@ List<String> shuffleAIDeck(List<String> deck) {
   return deck.sublist(0, 5);
 }
 
-List<Map<String, dynamic>> setJokerFirstScreenAssets() {
-  return [
+List<Map<String, dynamic>> setJokerFirstScreenAssets(
+    List<String> purchaseJokers) {
+  List<Map<String, dynamic>> allAssets = [
     {
       "imageUrl": "assets/images/suit.png",
       'text': 'SUIT',
@@ -193,7 +194,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets() {
       'additionalText': "Select A Card To Replace"
     },
     {
-      "imageUrl": "assets/images/extrachange(2).png",
+      "imageUrl": "assets/images/extrachange.png",
       'text': 'EXTRACHANGE',
       'cost': 20,
       'additionalText':
@@ -239,9 +240,12 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets() {
       'additionalText': "Select a card to transform"
     },
   ];
+  List<Map<String, dynamic>> result = allAssets
+      .where((asset) => purchaseJokers.contains(asset["imageUrl"]))
+      .toList();
+  print(result);
+  return result;
 }
-
-// final List<Map<String, dynamic>> jokerFirstScreenAssets =
 
 class CardsProvider with ChangeNotifier {
   List<String> selectedCards = [];
@@ -255,8 +259,8 @@ class CardsProvider with ChangeNotifier {
   List<String> purchaseCards = [];
   List<String> purchaseJokers = [];
   List<UpgradeClass> upgradeScreenDeck = [];
-  List<Map<String, dynamic>> jokerFirstScreenAssets =
-      setJokerFirstScreenAssets();
+  List<Map<String, dynamic>> jokerFirstScreenAssets = [];
+
   bool visor = false;
   bool score = false;
   bool handBonus = false;
@@ -270,21 +274,31 @@ class CardsProvider with ChangeNotifier {
   int remainingDeckView = 3;
   void scoreX2() {
     score = true;
+    purchaseJokers.removeWhere((joker) => joker == "assets/images/score.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void visorShow() {
     visor = true;
+    purchaseJokers.removeWhere((joker) => joker == "assets/images/visor.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void handBonusShow() {
     handBonus = true;
+    purchaseJokers
+        .removeWhere((joker) => joker == "assets/images/hand-bonus.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void emptyBonusShow() {
     emptyBonus = true;
+    purchaseJokers
+        .removeWhere((joker) => joker == "assets/images/empty-bonus.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
@@ -292,6 +306,8 @@ class CardsProvider with ChangeNotifier {
     int index = selectedCards.indexOf(selectedCardToFake);
     remainingDeckElements.add(selectedCards[index]);
     selectedCards[index] = selectedCardToCopy;
+    purchaseJokers.removeWhere((joker) => joker == "assets/images/fake.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
@@ -300,11 +316,16 @@ class CardsProvider with ChangeNotifier {
     remainingDeckElements.add(selectedCardToSuit);
     remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
     selectedCards[index] = selectedCardToCopy;
+    purchaseJokers.removeWhere((joker) => joker == "assets/images/suit.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void extraChanges() {
     remainingDeckView++;
+    purchaseJokers
+        .removeWhere((joker) => joker == "assets/images/extrachanges.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
@@ -313,6 +334,8 @@ class CardsProvider with ChangeNotifier {
     remainingDeckElements.add(selectedCardToSwap);
     remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
     selectedCards[index] = selectedCardToCopy;
+    purchaseJokers.removeWhere((joker) => joker == "assets/images/trump.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
@@ -320,6 +343,9 @@ class CardsProvider with ChangeNotifier {
     int index = selectedCards.indexOf(selectedCardToSwap);
     remainingDeckElements.add(selectedCardToSwap);
     selectedCards[index] = selectedCardToCopy;
+    purchaseJokers
+        .removeWhere((joker) => joker == "assets/images/transformer.png");
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
@@ -336,14 +362,30 @@ class CardsProvider with ChangeNotifier {
   }
 
   void addPurchasedCard(String path, int cost) {
-    if (noOfChips >= cost) {
-      noOfChips -= cost;
-      purchaseCards.add(path);
-      var cardToUpdate =
-          upgradeScreenDeck.firstWhere((card) => card.imageUrl == path);
+    if (path.contains("card")) {
+      if (noOfChips >= cost) {
+        noOfChips -= cost;
+        purchaseCards.add(path);
+        var cardToUpdate =
+            upgradeScreenDeck.firstWhere((card) => card.imageUrl == path);
 
-      cardToUpdate.isPurchased = true;
+        cardToUpdate.isPurchased = true;
+      }
+    } else {
+      if (noOfChips >= cost) {
+        if (purchaseJokers.length < 5) {
+          noOfChips -= cost;
+          purchaseJokers.add(path);
+          jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
+          var cardToUpdate =
+              upgradeScreenDeck.firstWhere((card) => card.imageUrl == path);
+
+          cardToUpdate.isPurchased = true;
+        }
+      }
     }
+    print(purchaseCards);
+    print(purchaseJokers);
     notifyListeners();
   }
 
@@ -438,6 +480,9 @@ class CardsProvider with ChangeNotifier {
       currentRound++;
     }
     visor = false;
+    handBonus = false;
+    score = false;
+    emptyBonus = false;
     notifyListeners();
   }
 
@@ -456,7 +501,9 @@ class CardsProvider with ChangeNotifier {
     aiScore = 0;
     playerScore = 0;
     visor = false;
-
+    handBonus = false;
+    score = false;
+    emptyBonus = false;
     notifyListeners();
   }
 
@@ -533,13 +580,18 @@ class CardsProvider with ChangeNotifier {
 
   void removeCards() {
     visor = false;
-
+    handBonus = false;
+    score = false;
+    emptyBonus = false;
     selectedCardsFromThirdRow = [];
     notifyListeners();
   }
 
   void removeCardsOnGameClick() async {
     visor = false;
+    handBonus = false;
+    score = false;
+    emptyBonus = false;
 
     selectedCards = [];
     selectedCardsFromThirdRow = [];
@@ -558,11 +610,43 @@ class CardsProvider with ChangeNotifier {
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
     upgradeScreenDeck = generateDeckForUpgrade();
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
-  void updateChipsInProvider(int noOFChips) {
+  void removeCardsOnContinueClick() async {
+    visor = false;
+    handBonus = false;
+    score = false;
+    emptyBonus = false;
+
+    selectedCards = [];
+    selectedCardsFromThirdRow = [];
+    selectedCardToSwap = [];
+    currentRound = 1;
+    // currentLevel = 1;
+    playerScore = 0;
+    aiScore = 0;
+    discardedDeckElements = [];
+    remainingDeckElements = generateDeck();
+    remainingDeckElements += purchaseCards;
+    remainingAiElements = generateDeckForAI();
+    selectedCards = shuffleDeck(remainingDeckElements);
+    remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+    selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+    remainingAiElements
+        .removeWhere((card) => selectedCardsForAi.contains(card));
+    upgradeScreenDeck = generateDeckForUpgrade();
+    jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
+    notifyListeners();
+  }
+
+  void updateChipsInProvider(
+      int noOFChips, int level, List<String> jokers, List<String> cards) {
     noOfChips = noOFChips;
+    currentLevel = level;
+    purchaseCards = cards;
+    purchaseJokers = jokers;
   }
 
   void setJokerFunctionality(String joker) {}

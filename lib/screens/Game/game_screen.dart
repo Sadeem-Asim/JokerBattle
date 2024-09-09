@@ -7,7 +7,6 @@ import 'package:joker_battle/provider/card_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'package:hive/hive.dart';
-import "package:path_provider/path_provider.dart";
 import 'package:hive_flutter/hive_flutter.dart';
 
 class GameScreen extends StatefulWidget {
@@ -32,7 +31,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final player = AudioPlayer();
   bool showWhiteText = false;
   bool isPlay = false;
-  bool visor = false;
   late AnimationController _controller;
   late Animation _animation;
   AnimationStatus _status = AnimationStatus.dismissed;
@@ -55,7 +53,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     var box = await Hive.openBox("myBox");
     var b = Hive.box("myBox");
     // print(b.get("noOfChips"));
-    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
+    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
+        b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
   }
 
   List<Map<String, dynamic>> combos = [];
@@ -557,6 +556,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 context
                                                     .read<CardsProvider>()
                                                     .noOfChips);
+                                            b.put(
+                                                "level",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .currentLevel);
+                                            b.put(
+                                                "purchaseJokers",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .purchaseJokers);
+                                            b.put(
+                                                "purchaseCards",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .purchaseCards);
+
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
@@ -787,6 +802,30 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 'Music/Round-start.mp3'));
                                                         Navigator.pushNamed(
                                                             context, '/game');
+                                                        b.put(
+                                                            "noOfChips",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .noOfChips);
+                                                        b.put(
+                                                            "level",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .currentLevel);
+                                                        b.put(
+                                                            "purchaseJokers",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .purchaseJokers);
+                                                        b.put(
+                                                            "purchaseCards",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .purchaseCards);
                                                       },
                                                       style: ElevatedButton
                                                           .styleFrom(
@@ -1779,8 +1818,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 .handBonusShow();
                                                           } else if (jokerName ==
                                                               "EMPTYBONUS") {
-                                                            // - adds to the result of your combo the amount of points for cards that
-                                                            // were not in your combo.
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pushNamed(
+                                                                    '/game');
+
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .emptyBonusShow();
                                                           } else if (jokerName ==
                                                               "SCORE") {
                                                             context
@@ -2472,6 +2518,35 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                               },
                                                             );
                                                           }
+                                                          var box = await Hive
+                                                              .openBox("myBox");
+                                                          var b =
+                                                              Hive.box("myBox");
+
+                                                          b.put(
+                                                              "noOfChips",
+                                                              context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .noOfChips);
+                                                          b.put(
+                                                              "level",
+                                                              context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .currentLevel);
+                                                          b.put(
+                                                              "purchaseJokers",
+                                                              context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .purchaseJokers);
+                                                          b.put(
+                                                              "purchaseCards",
+                                                              context
+                                                                  .read<
+                                                                      CardsProvider>()
+                                                                  .purchaseCards);
                                                         },
                                                         child: Container(
                                                             height: 70,
@@ -2760,9 +2835,8 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   var b = Hive.box("myBox");
   void openBox() async {
     var box = await Hive.openBox("myBox");
-
-    // print(b.get("noOfChips"));
-    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"));
+    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
+        b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
   }
 
   @override
@@ -2880,6 +2954,11 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                             .addPurchasedCard(
                                                 widget.imageUrl, widget.cost);
                                         b.put("noOfChips", counter.noOfChips);
+                                        b.put("level", counter.currentLevel);
+                                        b.put("purchaseJokers",
+                                            counter.purchaseJokers);
+                                        b.put("purchaseCards",
+                                            counter.purchaseCards);
                                       },
                                       child: const Text('Yes',
                                           style: TextStyle(
