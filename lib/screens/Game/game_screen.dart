@@ -551,6 +551,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                             context
                                                 .read<CardsProvider>()
                                                 .addTenChipsOnWin();
+
                                             b.put(
                                                 "noOfChips",
                                                 context

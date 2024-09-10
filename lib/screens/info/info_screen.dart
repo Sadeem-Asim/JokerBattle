@@ -51,11 +51,6 @@ class _InfoScreenState extends State<InfoScreen> {
                   fit: BoxFit.cover)),
           child: Column(
             children: [
-
-
-
-
-              
               Row(children: [
                 ElevatedButton(
                   onPressed: () {

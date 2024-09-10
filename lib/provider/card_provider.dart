@@ -6,7 +6,13 @@ import 'dart:math';
 import 'package:hive_flutter/hive_flutter.dart';
 
 String removeCopy(String card) {
-  card = '${card.split("_")[0]}.png';
+  card = '${card.split("-")[0]}.png';
+  return card;
+}
+
+String addCopy(String card) {
+  card = '${card.split(".")[0]}-Copy.png';
+  print(card);
   return card;
 }
 
@@ -124,9 +130,10 @@ List<UpgradeClass> generateDeckForUpgrade(
         cost: cost,
         isPurchased: false));
   }
+  print(purchaseCards);
   purchaseCards = purchaseCards.map((card) => removeCopy(card)).toList();
   List<String> cards = purchaseCards + purchaseJokers;
-
+  print(cards);
   for (var purchase in cards) {
     var cardToUpdate = deck.firstWhere((card) => card.imageUrl == purchase);
     cardToUpdate.isPurchased = true;
@@ -316,19 +323,22 @@ class CardsProvider with ChangeNotifier {
   }
 
   void jokerFake(String selectedCardToFake, String selectedCardToCopy) {
+    selectedCardsFromThirdRow = [];
     int index = selectedCards.indexOf(selectedCardToFake);
     remainingDeckElements.add(selectedCards[index]);
-    selectedCards[index] = selectedCardToCopy;
+    selectedCards[index] = addCopy(selectedCardToCopy);
+    print(selectedCards);
     purchaseJokers.removeWhere((joker) => joker == "assets/images/fake.png");
     jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void jokerSuit(String selectedCardToSuit, String selectedCardToCopy) {
+    selectedCardsFromThirdRow = [];
+
     int index = selectedCards.indexOf(selectedCardToSuit);
     remainingDeckElements.add(selectedCardToSuit);
-    remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
-    selectedCards[index] = selectedCardToCopy;
+    selectedCards[index] = addCopy(selectedCardToCopy);
     purchaseJokers.removeWhere((joker) => joker == "assets/images/suit.png");
     jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
@@ -343,6 +353,8 @@ class CardsProvider with ChangeNotifier {
   }
 
   void trump(String selectedCardToSwap, String selectedCardToCopy) {
+    selectedCardsFromThirdRow = [];
+
     int index = selectedCards.indexOf(selectedCardToSwap);
     remainingDeckElements.add(selectedCardToSwap);
     remainingDeckElements.removeWhere((card) => card == selectedCardToCopy);
@@ -353,6 +365,8 @@ class CardsProvider with ChangeNotifier {
   }
 
   void transform(String selectedCardToSwap, String selectedCardToCopy) {
+    selectedCardsFromThirdRow = [];
+
     int index = selectedCards.indexOf(selectedCardToSwap);
     remainingDeckElements.add(selectedCardToSwap);
     selectedCards[index] = selectedCardToCopy;
@@ -378,9 +392,7 @@ class CardsProvider with ChangeNotifier {
     if (path.contains("card")) {
       if (noOfChips >= cost) {
         noOfChips -= cost;
-
         String suit = path.split('.')[0];
-
         String copy = '${suit}-Copy.png';
         purchaseCards.add(copy);
         var cardToUpdate =
@@ -401,8 +413,6 @@ class CardsProvider with ChangeNotifier {
         }
       }
     }
-    print(purchaseCards);
-    print(purchaseJokers);
     notifyListeners();
   }
 
@@ -500,16 +510,22 @@ class CardsProvider with ChangeNotifier {
     visor = false;
 
     discardedDeckElements += selectedCardsFromThirdRow;
-    purchaseCards.removeWhere(
-        (card) => selectedCardsFromThirdRow.contains(removeCopy(card)));
+    purchaseCards
+        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
+
     var cardsToUpdate = upgradeScreenDeck.where(
       (card) =>
-          selectedCardsFromThirdRow.contains(card.imageUrl) &&
+          selectedCardsFromThirdRow.contains(addCopy(card.imageUrl)) &&
           card.isPurchased == true,
     );
 
     for (var card in cardsToUpdate) {
       card.isPurchased = false;
+    }
+    try {
+      upgradeScreenDeck = generateDeckForUpgrade(purchaseCards, purchaseJokers);
+    } catch (e) {
+      print(e);
     }
 
     selectedCards
