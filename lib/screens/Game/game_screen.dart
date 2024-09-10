@@ -1577,7 +1577,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         return Row(
                                           children: [
                                             InkWell(
-                                              onTap: () {
+                                              onTap: ()async{
+                                                 await player.play(AssetSource(
+                                                    'Music/Change card or take card.mp3'));
                                                 final selectedCard = counter
                                                     .selectedCards[index];
                                                 final cardsProvider = context
@@ -1747,6 +1749,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
+                            player.play(AssetSource('Music/Usejoker.mp3'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
