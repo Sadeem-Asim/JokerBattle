@@ -4,5 +4,7 @@
   <!--app_id-->
   <string name="app_id" translatable="false">71836138487</string>
   <!--package_name-->
-  <string name="package_name" translatable="false">com.example.android.joker_Battle</string>
+  <string name="package_name" translatable="false">com.example.android.joker_battle</string>
+  <!--achievement First Win-->
+  <string name="achievement_first_win" translatable="false">CgkI9_eRzosCEAIQAQ</string>
 </resources>
