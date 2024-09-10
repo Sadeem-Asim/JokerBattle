@@ -234,7 +234,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
 
     if (context.read<CardsProvider>().score) {
-      combos.add({"Score Joker Bonus Applied": 0});
+      combos.add({"Score Bonus Applied": 0});
     }
     if (context.read<CardsProvider>().emptyBonus) {
       int emptyBonus = 0;
@@ -1219,14 +1219,24 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           duration: const Duration(seconds: 3),
                                           builder: (BuildContext context,
                                               double value, Widget? child) {
-                                            return Text(
-                                                "Total:${combos[combos.length - 1][combos[combos.length - 1].entries.map((entry) => entry.key).toList()[0]]}",
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withOpacity(value),
-                                                  fontFamily: "BreatheFire",
-                                                  fontSize: 13,
-                                                ));
+                                            return context
+                                                        .read<CardsProvider>()
+                                                        .score ||
+                                                    context
+                                                        .read<CardsProvider>()
+                                                        .emptyBonus ||
+                                                    context
+                                                        .read<CardsProvider>()
+                                                        .handBonus
+                                                ? Text(
+                                                    "${combos[combos.length - 2].entries.map((entry) => entry.key).toList()[0]}:${combos[combos.length - 2][combos[combos.length - 2].entries.map((entry) => entry.key).toList()[0]]}",
+                                                    style: TextStyle(
+                                                      color: Colors.white
+                                                          .withOpacity(value),
+                                                      fontFamily: "BreatheFire",
+                                                      fontSize: 13,
+                                                    ))
+                                                : Text("");
                                           }),
                                       TweenAnimationBuilder(
                                           tween: Tween(begin: 0.0, end: 1.0),
