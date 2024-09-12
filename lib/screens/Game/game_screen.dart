@@ -1096,9 +1096,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
-        body: Container(
+        body: 
+        Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
+            // padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('assets/images/background.png'),
@@ -1106,6 +1109,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+
+                
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -1181,10 +1186,51 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       ),
                       const SizedBox(width: 13),
                     ]),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 SizedBox(height: MediaQuery.of(context).size.height * .04),
+
+
+                
+                
+                
+                
                 Container(
                   height: MediaQuery.of(context).size.height * .70,
-                  child: Stack(children: [
+                  child: 
+                  Stack(fit: StackFit.expand,
+                    children: [
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -1264,12 +1310,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 ],
                               )
                             : const Text(""),
+
+
+
+
+
                         Column(
                           children: [
-                            Positioned(
-                              right: 145,
-                              top: 0,
-                              child: SvgPicture.asset(
+                            Container(
+                              // right: 145,
+                              // top: 0,
+                              child: 
+                              SvgPicture.asset(
                                 'assets/images/kadoo-head.svg',
                                 fit: BoxFit.cover,
                                 width: 100,
@@ -1277,6 +1329,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             ),
                           ],
                         ),
+
+
+
+
                         showWhiteText
                             ? Column(
                                 children: [
@@ -1327,8 +1383,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             : const Text(""),
                       ],
                     ),
+
+
+
                     Positioned(
-                      bottom: MediaQuery.of(context).size.height * 0.027,
+                      bottom: MediaQuery.of(context).size.height * 0.05,
                       right: MediaQuery.of(context).size.width * 0.38,
                       child: SvgPicture.asset(
                         'assets/images/kadoo-tail.svg',
@@ -1338,7 +1397,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     //orange_circle
                     Positioned(
                       top: 70,
-                      right: -4,
+                      // right: -4,
                       child: Container(
                           height: MediaQuery.of(context).size.height * 0.467,
                           width: MediaQuery.of(context).size.width * 0.99,
@@ -1508,7 +1567,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                   fontSize: 23)));
                                     }),
                                     const SizedBox(
-                                      width: 10,
+                                      width: 15,
                                     ),
 
                                     //second-card-row
@@ -1584,7 +1643,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         return Row(
                                           children: [
                                             InkWell(
-                                              onTap: () {
+                                              onTap: ()async{
+                                                 await player.play(AssetSource(
+                                                    'Music/Change card or take card.mp3'));
                                                 final selectedCard = counter
                                                     .selectedCards[index];
                                                 final cardsProvider = context
@@ -1653,6 +1714,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     ),
                   ]),
                 ),
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                // izedBox(height:50),
                 Container(
                   // padding: EdgeInsets.fromLTRB(3, 15, 7, 15),
                   decoration: BoxDecoration(
@@ -1687,6 +1758,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           return ElevatedButton(
                             onPressed: isButtonEnabled
                                 ? () async {
+                                  print({"height-kol":MediaQuery.of(context).size.height});
                                     calculateScores();
                                     context.read<CardsProvider>().putCards();
                                     setState(() {
@@ -1714,6 +1786,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           .removeCards();
 
                                       Navigator.of(context).pushNamed('/game');
+
                                     }
                                   }
                                 : null,
@@ -1754,6 +1827,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fit: BoxFit.fill)),
                         child: ElevatedButton(
                           onPressed: () {
+                            player.play(AssetSource('Music/Usejoker.mp3'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
