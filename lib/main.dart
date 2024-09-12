@@ -150,11 +150,11 @@ Future<void> main() async {
   // final appDocumentDirectory = await getApplicationDocumentsDirectory();
   // Hive.init(appDocumentDirectory.path);
   await Hive.initFlutter();
-  try {
-    await GamesServices.signIn();
-  } catch (e) {
-    print({"error": e});
-  }
+  // try {
+  //   await GamesServices.signIn();
+  // } catch (e) {
+  //   print({"error": e});
+  // }
 
   // var box = await Hive.openBox('testBox');
   // Bloc.observer = SimpleBlocObserver();

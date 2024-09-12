@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -53,8 +55,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     var box = await Hive.openBox("myBox");
     var b = Hive.box("myBox");
     // print(b.get("noOfChips"));
-    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
-        b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+    if (b.get("noOfChips") != null ||
+        b.get("level") != null ||
+        b.get("purchaseJokers") != null ||
+        b.get("purchaseCards") != null) {
+      context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
+          b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+    }
   }
 
   List<Map<String, dynamic>> combos = [];
@@ -207,10 +214,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       });
     } else {
       baseScore = rankValues.reduce((a, b) => a > b ? a : b);
-      combinationScore = baseScore;
       combos.add({
         "Base Score": baseScore,
-        "High Card Bonus": combinationScore,
+        "High Card Bonus": "X1",
       });
     }
     int total = baseScore + combinationScore;
@@ -255,7 +261,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   int calculateScoreAi(List<String> combo) {
     int baseScore = 0;
-
+    print(combo);
     Map<String, int> rankCounts = {};
     Map<String, int> suitCounts = {};
     List<int> rankValues = [];
@@ -277,6 +283,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       cardPoints[rank] = points;
     }
 
+    print(baseScore);
+
     bool isFlush = suitCounts.containsValue(5);
     bool isStraight = isStraightHand(rankValues);
 
@@ -284,9 +292,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     // Apply scoring based on hand type
     if (isFlush && isStraight) {
-      for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Straight Flush
-      }
+      // for (var points in rankValues) {
+      //   baseScore += points; // Add points of all cards for Straight Flush
+      // }
       combinationScore = baseScore * 7;
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -294,11 +302,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore
       });
     } else if (rankCounts.containsValue(4)) {
-      for (var rank in rankCounts.keys) {
-        if (rankCounts[rank] == 4) {
-          baseScore += cardPoints[rank]! * 4; // Add points for Four of a Kind
-        }
-      }
+      // for (var rank in rankCounts.keys) {
+      //   if (rankCounts[rank] == 4) {
+      //     baseScore += cardPoints[rank]! * 4; // Add points for Four of a Kind
+      //   }
+      // }
       combinationScore = baseScore * 5;
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -306,13 +314,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore
       });
     } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
-      for (var rank in rankCounts.keys) {
-        if (rankCounts[rank] == 3) {
-          baseScore += cardPoints[rank]! * 3;
-        } else if (rankCounts[rank] == 2) {
-          baseScore += cardPoints[rank]! * 2;
-        }
-      }
+      // for (var rank in rankCounts.keys) {
+      //   if (rankCounts[rank] == 3) {
+      //     baseScore += cardPoints[rank]! * 3;
+      //   } else if (rankCounts[rank] == 2) {
+      //     baseScore += cardPoints[rank]! * 2;
+      //   }
+      // }
       combinationScore = baseScore * 4;
 
       combosAi.add({
@@ -321,9 +329,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore
       });
     } else if (isFlush) {
-      for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Flush
-      }
+      // for (var points in rankValues) {
+      //   baseScore += points; // Add points of all cards for Flush
+      // }
       combinationScore = baseScore * 3;
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -331,9 +339,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore,
       });
     } else if (isStraight) {
-      for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Straight
-      }
+      // for (var points in rankValues) {
+      //   baseScore += points; // Add points of all cards for Straight
+      // }
       combinationScore = baseScore * 2;
 
       combosAi.add({
@@ -342,11 +350,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore,
       });
     } else if (rankCounts.values.where((v) => v == 2).length == 2) {
-      for (var rank in rankCounts.keys) {
-        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
-          baseScore += cardPoints[rank]! * 2; // Add points of both pairs
-        }
-      }
+      // for (var rank in rankCounts.keys) {
+      //   if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+      //     baseScore += cardPoints[rank]! * 2; // Add points of both pairs
+      //   }
+      // }
       combinationScore = 10;
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -356,12 +364,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     } else if (rankCounts.containsValue(2)) {
       // One Pair
 
-      for (var rank in rankCounts.keys) {
-        if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
-          baseScore += cardPoints[rank]! * 2; // Add points of the pair
-          break;
-        }
-      }
+      // for (var rank in rankCounts.keys) {
+      //   if (rankCounts[rank] == 2 && cardPoints[rank] != null) {
+      //     baseScore += cardPoints[rank]! * 2; // Add points of the pair
+      //     break;
+      //   }
+      // }
       combinationScore = 5;
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -370,10 +378,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       });
     } else {
       baseScore = rankValues.reduce((a, b) => a > b ? a : b);
-      combinationScore = baseScore;
       combosAi.add({
         "Opponent Base Score": baseScore,
-        "High Card Bonus": combinationScore,
+        "High Card Bonus": "x1",
         "Total": baseScore + combinationScore
       });
     }
@@ -2749,7 +2756,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           Consumer<CardsProvider>(
                               builder: (context, counter, child) {
                             return Text(
-                                '${counter.remainingDeckElements.length}/${counter.remainingDeckElements.length + counter.discardedDeckElements.length + counter.selectedCards.length}');
+                                '${counter.discardedDeckElements.length}/${counter.remainingDeckElements.length + counter.selectedCards.length}');
                           })
                         ],
                       ),
@@ -2846,8 +2853,13 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
   var b = Hive.box("myBox");
   void openBox() async {
     var box = await Hive.openBox("myBox");
-    context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
-        b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+    if (b.get("noOfChips") != null ||
+        b.get("level") != null ||
+        b.get("purchaseJokers") != null ||
+        b.get("purchaseCards") != null) {
+      context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
+          b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+    }
   }
 
   @override

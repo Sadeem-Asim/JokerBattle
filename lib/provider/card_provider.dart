@@ -1,9 +1,7 @@
-import 'package:hive/hive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math';
-import 'package:hive_flutter/hive_flutter.dart';
 
 String removeCopy(String card) {
   card = '${card.split("-")[0]}.png';
@@ -12,7 +10,6 @@ String removeCopy(String card) {
 
 String addCopy(String card) {
   card = '${card.split(".")[0]}-Copy.png';
-  print(card);
   return card;
 }
 
@@ -130,13 +127,14 @@ List<UpgradeClass> generateDeckForUpgrade(
         cost: cost,
         isPurchased: false));
   }
-  print(purchaseCards);
-  purchaseCards = purchaseCards.map((card) => removeCopy(card)).toList();
-  List<String> cards = purchaseCards + purchaseJokers;
-  print(cards);
-  for (var purchase in cards) {
-    var cardToUpdate = deck.firstWhere((card) => card.imageUrl == purchase);
-    cardToUpdate.isPurchased = true;
+  if (purchaseCards.length >= 1 || purchaseJokers.length >= 1) {
+    purchaseCards = purchaseCards.map((card) => removeCopy(card)).toList();
+    List<String> cards = purchaseCards + purchaseJokers;
+    // print(cards);
+    for (var purchase in cards) {
+      var cardToUpdate = deck.firstWhere((card) => card.imageUrl == purchase);
+      cardToUpdate.isPurchased = true;
+    }
   }
 
   return deck;
@@ -263,7 +261,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets(
   List<Map<String, dynamic>> result = allAssets
       .where((asset) => purchaseJokers.contains(asset["imageUrl"]))
       .toList();
-  print(result);
+  // print(result);
   return result;
 }
 

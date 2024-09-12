@@ -36,16 +36,26 @@ class _MyHomePageState extends State<HomeScreen> {
   }
 
   void _playBackgroundMusic() async {
-    player.play(AssetSource('Music/BG.mp3'));
-    var box = await Hive.openBox("myBox");
-    var b = Hive.box("myBox");
-    int currentLevel = b.get("level");
-    if (currentLevel > 1) {
-      setState(() {
-        isContinue = true;
-      });
-      context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
-          b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+    try {
+      player.play(AssetSource('Music/BG.mp3'));
+      var box = await Hive.openBox("myBox");
+      var b = Hive.box("myBox");
+      if (b.get("level") != null) {
+        var currentLevel = b.get("level");
+        if (currentLevel > 1) {
+          setState(() {
+            isContinue = true;
+          });
+          context.read<CardsProvider>().updateChipsInProvider(
+              b.get("noOfChips"),
+              b.get("level"),
+              b.get("purchaseJokers"),
+              b.get("purchaseCards"));
+        }
+      }
+    } catch (e) {
+      print("Print error in here");
+      print(e);
     }
   }
 
