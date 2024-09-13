@@ -377,10 +377,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore
       });
     } else {
-      baseScore = rankValues.reduce((a, b) => a > b ? a : b);
+      combinationScore = rankValues.reduce((a, b) => a > b ? a : b);
       combosAi.add({
         "Opponent Base Score": baseScore,
-        "High Card Bonus": "x1",
+        "High Card Bonus": combinationScore,
         "Total": baseScore + combinationScore
       });
     }
@@ -413,15 +413,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .read<CardsProvider>()
         .setAiScore((context.read<CardsProvider>().aiScore) + aiScore);
     setState(() {
-      aiScore = aiScore;
-      playerScore = playerScore;
+      aiScore = context.read<CardsProvider>().aiScore;
+      playerScore = context.read<CardsProvider>().playerScore;
     });
   }
 
   Future _calculateScores() async {
-    bool winStatus = playerScore > aiScore ? true : true;
+    int playerS = context.read<CardsProvider>().playerScore;
+    int aiS = context.read<CardsProvider>().aiScore;
+
+    bool winStatus = playerS > aiS ? true : true;
     if (Provider.of<CardsProvider>(context, listen: false).currentRound == 6) {
-      winStatus = playerScore > aiScore ? true : false;
+      winStatus = playerS > aiS ? true : false;
     }
 
     if (winStatus == true) {
@@ -431,7 +434,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 if (winStatus == true &&
                     Provider.of<CardsProvider>(context, listen: false)
                             .currentRound ==
-                        6)
+                        6 &&
+                    playerS > aiS)
                   {
                     showDialog(
                         context: context,
@@ -593,46 +597,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             MainAxisAlignment
                                                                 .spaceAround,
                                                         children: [
-                                                          // ElevatedButton(
-                                                          //   onPressed: () {
-                                                          //     Navigator.pop(
-                                                          //         context);
-                                                          //   },
-                                                          //   style:
-                                                          //       ElevatedButton
-                                                          //           .styleFrom(
-                                                          //     minimumSize:
-                                                          //         const Size(
-                                                          //             6, 30),
-                                                          //     backgroundColor:
-                                                          //         const Color(
-                                                          //             0xFF838796),
-                                                          //     foregroundColor:
-                                                          //         Colors.white,
-                                                          //     // elevation: 10,
-                                                          //     shape:
-                                                          //         RoundedRectangleBorder(
-                                                          //       borderRadius:
-                                                          //           BorderRadius
-                                                          //               .circular(
-                                                          //                   2),
-                                                          //     ),
-                                                          //     padding:
-                                                          //         const EdgeInsets
-                                                          //             .symmetric(
-                                                          //             horizontal:
-                                                          //                 8,
-                                                          //             vertical:
-                                                          //                 8),
-                                                          //   ),
-                                                          //   child: SvgPicture
-                                                          //       .asset(
-                                                          //     'assets/images/backbutton.svg',
-                                                          //     fit: BoxFit.cover,
-                                                          //     // width: 49,
-                                                          //   ),
-                                                          //   // ),
-                                                          // ),
                                                           const SizedBox(
                                                               width: 45),
                                                           ElevatedButton(
@@ -899,150 +863,172 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           // );
                         })
                   }
+                else if (Provider.of<CardsProvider>(context, listen: false)
+                            .currentRound ==
+                        6 &&
+                    playerS < aiS)
+                  {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return PopScope(
+                            canPop: false,
+                            child: Scaffold(
+                              backgroundColor: Colors.black.withOpacity(0.8),
+                              body: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: const AssetImage(
+                                          'assets/images/background.png'),
+                                      fit: BoxFit.fill,
+                                      colorFilter: ColorFilter.mode(
+                                          Colors.black.withOpacity(0.8),
+                                          BlendMode.darken)),
+                                ),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(children: [
+                                        const SizedBox(width: 120),
+                                        Column(
+                                          children: [
+                                            const Text(
+                                              "AI",
+                                              style: TextStyle(
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 30,
+                                                  color: Color(0xFFF7A74F)),
+                                            ),
+                                            SizedBox(
+                                              height: 18,
+                                              child: ElevatedButton(
+                                                  onPressed: () {},
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              const Color(
+                                                                  0xFF88E060),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 0,
+                                                                  horizontal:
+                                                                      23)),
+                                                  child: Text("$aiS",
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              "BreatheFire",
+                                                          fontSize: 14))),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          width: 16,
+                                        ),
+                                        Column(
+                                          children: [
+                                            const Text(
+                                              "You",
+                                              style: TextStyle(
+                                                  fontFamily: "BreatheFire",
+                                                  color: Color(0xFFF7A74F),
+                                                  fontSize: 32),
+                                            ),
+                                            SizedBox(
+                                              height: 18,
+                                              child: ElevatedButton(
+                                                  onPressed: () {},
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              const Color(
+                                                                  0xFF88E060),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 0,
+                                                                  horizontal:
+                                                                      23)),
+                                                  child: Text("$playerS",
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              "BreatheFire",
+                                                          fontSize: 14))),
+                                            ),
+                                          ],
+                                        )
+                                      ]),
+                                      const SizedBox(height: 7),
+                                      const Text(
+                                        "You Lose",
+                                        style: TextStyle(
+                                            fontFamily: "BreatheFire",
+                                            fontSize: 40,
+                                            color: Color(0xFFF7A74F)),
+                                      ),
+
+                                      ElevatedButton(
+                                          onPressed: () async {
+                                            context
+                                                .read<CardsProvider>()
+                                                .lose();
+                                            var box =
+                                                await Hive.openBox("myBox");
+                                            var b = Hive.box("myBox");
+
+                                            b.put(
+                                                "noOfChips",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .noOfChips);
+                                            b.put(
+                                                "level",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .currentLevel);
+                                            b.put(
+                                                "purchaseJokers",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .purchaseJokers);
+                                            b.put(
+                                                "purchaseCards",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .purchaseCards);
+                                            Navigator.pushNamed(
+                                                context, '/home');
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              elevation: 30,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 168, 168, 168),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 80)),
+                                          child: const Text("MENU",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "BreatheFire",
+                                                  fontSize: 30))),
+                                      // ),
+                                    ]),
+                              ),
+                            ),
+                          );
+                        })
+                  }
               });
       return true;
-    } else {
-      player.play(AssetSource('Music/Round-over.mp3'));
-      Future.delayed(
-          const Duration(seconds: 0, milliseconds: 70),
-          () => {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return PopScope(
-                        canPop: false,
-                        child: Scaffold(
-                          backgroundColor: Colors.black.withOpacity(0.8),
-                          body: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: const AssetImage(
-                                      'assets/images/background.png'),
-                                  fit: BoxFit.fill,
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.black.withOpacity(0.8),
-                                      BlendMode.darken)),
-                            ),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(children: [
-                                    const SizedBox(width: 120),
-                                    Column(
-                                      children: [
-                                        const Text(
-                                          "AI",
-                                          style: TextStyle(
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 30,
-                                              color: Color(0xFFF7A74F)),
-                                        ),
-                                        SizedBox(
-                                          height: 18,
-                                          child: ElevatedButton(
-                                              onPressed: () {
-                                                // Handle button 1 press
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                  // elevation: 30,
-
-                                                  //                 horizontal: 5, vertical: 12),
-                                                  backgroundColor:
-                                                      const Color(0xFF88E060),
-
-                                                  // padding: EdgeInsets.zero,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 0,
-                                                      horizontal: 23)),
-                                              child: Text("$aiScore",
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "BreatheFire",
-                                                      fontSize: 14))),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      width: 16,
-                                    ),
-                                    Column(
-                                      children: [
-                                        const Text(
-                                          "You",
-                                          style: TextStyle(
-                                              fontFamily: "BreatheFire",
-                                              color: Color(0xFFF7A74F),
-                                              fontSize: 32),
-                                        ),
-                                        SizedBox(
-                                          height: 18,
-                                          child: ElevatedButton(
-                                              onPressed: () {
-                                                // Handle button 1 press
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                  // elevation: 30,
-
-                                                  //                 horizontal: 5, vertical: 12),
-                                                  backgroundColor:
-                                                      const Color(0xFF88E060),
-
-                                                  // padding: EdgeInsets.zero,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 0,
-                                                      horizontal: 23)),
-                                              child: Text("$playerScore",
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "BreatheFire",
-                                                      fontSize: 14))),
-                                        ),
-                                      ],
-                                    )
-                                  ]),
-                                  const SizedBox(height: 7),
-                                  const Text(
-                                    "You Lose",
-                                    style: TextStyle(
-                                        fontFamily: "BreatheFire",
-                                        fontSize: 40,
-                                        color: Color(0xFFF7A74F)),
-                                  ),
-
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, '/home');
-                                        // Handle button 1 press
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          elevation: 30,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-
-                                          //                 horizontal: 5, vertical: 12),
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 168, 168, 168),
-
-                                          // padding: EdgeInsets.zero,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 80)),
-                                      child: const Text("MENU",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "BreatheFire",
-                                              fontSize: 30))),
-                                  // ),
-                                ]),
-                          ),
-                        ),
-                      );
-                    })
-              });
-
+    } else if (playerScore < aiScore) {
       return false;
     }
   }
@@ -1506,7 +1492,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           margin: const EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 10),
                                           child: Text(
-                                              "  ${counter.currentRound}\nRound",
+                                              "${counter.currentRound}\nRound",
                                               style: const TextStyle(
                                                   color: Color(0xFFF7A74F),
                                                   fontFamily: "BreatheFire",

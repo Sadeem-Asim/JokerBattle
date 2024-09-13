@@ -468,7 +468,6 @@ class CardsProvider with ChangeNotifier {
           .removeWhere((card) => selectedCardsForAi.contains(card));
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
       remainingDeckView = 3;
-
       currentRound++;
     }
     visor = false;
@@ -621,5 +620,13 @@ class CardsProvider with ChangeNotifier {
     purchaseJokers = jokers;
   }
 
-  void setJokerFunctionality(String joker) {}
+  void lose() {
+    currentRound = 1;
+    currentLevel = 1;
+    playerScore = 0;
+    aiScore = 0;
+    noOfChips = 0;
+    purchaseCards = [];
+    purchaseJokers = [];
+  }
 }
