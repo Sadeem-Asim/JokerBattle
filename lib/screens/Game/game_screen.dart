@@ -137,6 +137,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         baseScore += points; // Add points of all cards for Straight Flush
       }
       combinationScore = baseScore * 7;
+      combinationScore = combinationScore - baseScore;
+
       combos.add({
         "Base Score": baseScore,
         "Straight Flush : ": combinationScore,
@@ -144,10 +146,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     } else if (rankCounts.containsValue(4)) {
       for (var rank in rankCounts.keys) {
         if (rankCounts[rank] == 4) {
-          baseScore += cardPoints[rank]! * 4; // Add points for Four of a Kind
+          baseScore += cardPoints[rank]!;
         }
       }
       combinationScore = baseScore * 5;
+      combinationScore = combinationScore - baseScore;
+
       combos.add({
         "Base Score": baseScore,
         "Four of a Kind": combinationScore,
@@ -155,13 +159,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
       for (var rank in rankCounts.keys) {
         if (rankCounts[rank] == 3) {
-          baseScore += cardPoints[rank]! * 3;
+          baseScore += cardPoints[rank]!;
         } else if (rankCounts[rank] == 2) {
-          baseScore += cardPoints[rank]! * 2;
+          baseScore += cardPoints[rank]!;
         }
       }
       combinationScore = baseScore * 4;
-
+      combinationScore = combinationScore - baseScore;
       combos.add({
         "Base Score": baseScore,
         "Full House": combinationScore,
@@ -270,14 +274,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       String rank = card.split('_')[2].substring(0, 2);
       String suit = card.split('_')[1];
       int points = getCardPoints(rank);
-
+      print(points);
       baseScore += points;
       rankValues.add(points);
-
       rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
       suitCounts[suit] = (suitCounts[suit] ?? 0) + 1;
-
-      // Keep track of points for each rank
       cardPoints[rank] = points;
     }
 
@@ -375,10 +376,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Total": baseScore + combinationScore
       });
     } else {
-      combinationScore = rankValues.reduce((a, b) => a > b ? a : b);
+      // combinationScore = rankValues.reduce((a, b) => a > b ? a : b);
       combosAi.add({
         "Opponent Base Score": baseScore,
-        "High Card Bonus": combinationScore,
+        "High Card Bonus": "X1",
         "Total": baseScore + combinationScore
       });
     }
@@ -672,7 +673,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             onPressed: () {
                                                               _onButtonPressed(
                                                                   2);
-                                                              Navigator.pushNamed(context, '/info');
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                      context,
+                                                                      '/info');
                                                             },
                                                             style:
                                                                 ElevatedButton
@@ -1092,8 +1096,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-
-                
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -1683,10 +1685,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           return ElevatedButton(
                             onPressed: isButtonEnabled
                                 ? () async {
-                                    print({
-                                      "height-kol":
-                                          MediaQuery.of(context).size.height
-                                    });
                                     calculateScores();
                                     context.read<CardsProvider>().putCards();
                                     setState(() {
@@ -1744,888 +1742,855 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         }),
                       ),
                       Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.transparent,
-                            ),
-                            image: const DecorationImage(
-                                image: const AssetImage(
-                                    'assets/images/button_border.png'),
-                                fit: BoxFit.fill)),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            player.play(AssetSource('Music/Usejoker.mp3'));
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.transparent,
+                              ),
+                              image: const DecorationImage(
+                                  image: const AssetImage(
+                                      'assets/images/button_border.png'),
+                                  fit: BoxFit.fill)),
+                          child: Consumer<CardsProvider>(
+                              builder: (context, counter, child) {
+                            final bool isButtonEnabled =
+                                counter.purchaseJokers.isNotEmpty;
 
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Scaffold(
-                                  backgroundColor:
-                                      Colors.black.withOpacity(0.8),
-                                  body: Container(
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: const AssetImage(
-                                                'assets/images/background.png'),
-                                            fit: BoxFit.fill,
-                                            colorFilter: ColorFilter.mode(
+                            return ElevatedButton(
+                              onPressed: isButtonEnabled
+                                  ? () {
+                                      player.play(
+                                          AssetSource('Music/Usejoker.mp3'));
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Scaffold(
+                                            backgroundColor:
                                                 Colors.black.withOpacity(0.8),
-                                                BlendMode.darken)),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                              height: 20,
-                                              child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(),
-                                                  child: const Text(""))),
-
-                                          //joker-grid
-                                          SizedBox(
-                                            height: 400,
-                                            width: 270,
-                                            child: Container(
-                                              child: GridView.builder(
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 2,
-                                                  mainAxisSpacing: 1,
-                                                  crossAxisSpacing: 1,
+                                            body: Container(
+                                                height: double.infinity,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: const AssetImage(
+                                                          'assets/images/background.png'),
+                                                      fit: BoxFit.fill,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                              Colors.black
+                                                                  .withOpacity(
+                                                                      0.8),
+                                                              BlendMode
+                                                                  .darken)),
                                                 ),
-                                                itemCount: context
-                                                    .read<CardsProvider>()
-                                                    .jokerFirstScreenAssets
-                                                    .length,
-                                                // shuffleDeck(deck).length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Column(
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          var jokerName = context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .jokerFirstScreenAssets[
-                                                              index]["text"];
-                                                          if (jokerName ==
-                                                              "VISOR") {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/game');
-
-                                                            context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .visorShow();
-                                                          } else if (jokerName ==
-                                                              "HANDBONUS") {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/game');
-
-                                                            context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .handBonusShow();
-                                                          } else if (jokerName ==
-                                                              "EMPTYBONUS") {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/game');
-
-                                                            context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .emptyBonusShow();
-                                                          } else if (jokerName ==
-                                                              "SCORE") {
-                                                            context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .scoreX2();
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/game');
-                                                          } else if (jokerName ==
-                                                              "FAKE") {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return Scaffold(
-                                                                  backgroundColor: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  body: Container(
-                                                                      height: double.infinity,
-                                                                      width: double.infinity,
-                                                                      decoration: BoxDecoration(
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                const AssetImage('assets/images/background.png'),
-                                                                            fit: BoxFit.cover,
-                                                                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                      ),
-                                                                      child: Column(
-                                                                        // MainAxisAlignment.spaceAround,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          SizedBox(
-                                                                              height: 50,
-                                                                              child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                400,
-                                                                            width:
-                                                                                330,
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: const BoxDecoration(),
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                  const SizedBox(height: 27),
-                                                                                  Container(
-                                                                                    height: 240,
-                                                                                    width: double.infinity,
-                                                                                    child: GridView.builder(
-                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                        crossAxisCount: 4,
-                                                                                        mainAxisSpacing: 7,
-                                                                                        crossAxisSpacing: 11,
-                                                                                      ),
-                                                                                      itemCount: context.read<CardsProvider>().selectedCards.length,
-                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                        return GestureDetector(
-                                                                                          onTap: () {
-                                                                                            var selectedCardToFake = context.read<CardsProvider>().selectedCards[index];
-                                                                                            List<String> selectedCardsToCopy = context.read<CardsProvider>().selectedCards.where((card) => card != selectedCardToFake).toList();
-
-                                                                                            showDialog(
-                                                                                              context: context,
-                                                                                              builder: (BuildContext context) {
-                                                                                                return Scaffold(
-                                                                                                  backgroundColor: Colors.black.withOpacity(0.8),
-                                                                                                  body: Container(
-                                                                                                      height: double.infinity,
-                                                                                                      width: double.infinity,
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                                                      ),
-                                                                                                      child: Column(
-                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                        children: [
-                                                                                                          SizedBox(
-                                                                                                            height: 700,
-                                                                                                            width: 330,
-                                                                                                            child: Container(
-                                                                                                              decoration: const BoxDecoration(),
-                                                                                                              child: Column(
-                                                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                                children: [
-                                                                                                                  const Text("Select A Card To Copy", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                  const SizedBox(height: 27),
-                                                                                                                  Container(
-                                                                                                                    height: 240,
-                                                                                                                    width: double.infinity,
-                                                                                                                    child: GridView.builder(
-                                                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                                                        crossAxisCount: 3,
-                                                                                                                        mainAxisSpacing: 7,
-                                                                                                                        crossAxisSpacing: 11,
-                                                                                                                      ),
-                                                                                                                      itemCount: selectedCardsToCopy.length,
-                                                                                                                      // shuffleDeck(deck).length,
-                                                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                                                        return GestureDetector(
-                                                                                                                          onTap: () {
-                                                                                                                            var selectedCardToCopy = selectedCardsToCopy[index];
-                                                                                                                            context.read<CardsProvider>().jokerFake(selectedCardToFake, selectedCardToCopy);
-                                                                                                                            Navigator.pushNamed(context, '/game');
-                                                                                                                          },
-                                                                                                                          child: Container(
-                                                                                                                            width: 5,
-                                                                                                                            height: 5,
-                                                                                                                            decoration: const BoxDecoration(
-                                                                                                                              color: Color(0xFF838796),
-                                                                                                                            ),
-                                                                                                                            child: Container(
-                                                                                                                                decoration: BoxDecoration(
-                                                                                                                                    border: Border.all(
-                                                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                                                    ),
-                                                                                                                                    image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
-                                                                                                                          ),
-                                                                                                                        );
-                                                                                                                      },
-                                                                                                                    ),
-                                                                                                                  ),
-                                                                                                                  const SizedBox(height: 13),
-                                                                                                                  GestureDetector(
-                                                                                                                      onTap: () {
-                                                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                                                      },
-                                                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                                                ],
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
-                                                                                                      )),
-                                                                                                );
-                                                                                              },
-                                                                                            );
-                                                                                          },
-                                                                                          child: Container(
-                                                                                            width: 5,
-                                                                                            height: 5,
-                                                                                            decoration: const BoxDecoration(
-                                                                                              color: Color(0xFF838796),
-                                                                                              // border: Border.all(
-                                                                                              //   color: Colors.white,
-                                                                                              // ),
-                                                                                            ),
-                                                                                            child: Container(
-                                                                                                decoration: BoxDecoration(
-                                                                                                    border: Border.all(
-                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                    ),
-                                                                                                    image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
-                                                                                          ),
-                                                                                        );
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(height: 13),
-                                                                                  GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                      },
-                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )),
-                                                                );
-                                                              },
-                                                            );
-                                                          } else if (jokerName ==
-                                                              "SUIT") {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return Scaffold(
-                                                                  backgroundColor: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  body: Container(
-                                                                      height: double.infinity,
-                                                                      width: double.infinity,
-                                                                      decoration: BoxDecoration(
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                const AssetImage('assets/images/background.png'),
-                                                                            fit: BoxFit.fill,
-                                                                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                      ),
-                                                                      child: Column(
-                                                                        // MainAxisAlignment.spaceAround,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          SizedBox(
-                                                                              height: 50,
-                                                                              child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                400,
-                                                                            width:
-                                                                                330,
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: const BoxDecoration(),
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                  const SizedBox(height: 27),
-                                                                                  Container(
-                                                                                    height: 240,
-                                                                                    width: double.infinity,
-                                                                                    child: GridView.builder(
-                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                        crossAxisCount: 4,
-                                                                                        mainAxisSpacing: 7,
-                                                                                        crossAxisSpacing: 11,
-                                                                                      ),
-                                                                                      itemCount: context.read<CardsProvider>().selectedCards.length,
-                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                        return GestureDetector(
-                                                                                          onTap: () {
-                                                                                            var selectedCardToSuit = context.read<CardsProvider>().selectedCards[index];
-                                                                                            List<String> selectedCardsToCopy = generateSuits(selectedCardToSuit);
-                                                                                            showDialog(
-                                                                                              context: context,
-                                                                                              builder: (BuildContext context) {
-                                                                                                return Scaffold(
-                                                                                                  backgroundColor: Colors.black.withOpacity(0.8),
-                                                                                                  body: Container(
-                                                                                                      height: double.infinity,
-                                                                                                      width: double.infinity,
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                                                      ),
-                                                                                                      child: Column(
-                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                        children: [
-                                                                                                          SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
-                                                                                                          SizedBox(
-                                                                                                            height: 700,
-                                                                                                            width: 330,
-                                                                                                            child: Container(
-                                                                                                              decoration: const BoxDecoration(),
-                                                                                                              child: Column(
-                                                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                                children: [
-                                                                                                                  const Text("Select New Suit", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                  const SizedBox(height: 27),
-                                                                                                                  Container(
-                                                                                                                    height: 240,
-                                                                                                                    width: double.infinity,
-                                                                                                                    child: GridView.builder(
-                                                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                                                        crossAxisCount: 3,
-                                                                                                                        mainAxisSpacing: 7,
-                                                                                                                        crossAxisSpacing: 11,
-                                                                                                                      ),
-                                                                                                                      itemCount: selectedCardsToCopy.length,
-                                                                                                                      // shuffleDeck(deck).length,
-                                                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                                                        return GestureDetector(
-                                                                                                                          onTap: () {
-                                                                                                                            var selectedCardToCopy = selectedCardsToCopy[index];
-                                                                                                                            context.read<CardsProvider>().jokerSuit(selectedCardToSuit, selectedCardToCopy);
-                                                                                                                            Navigator.pushNamed(context, '/game');
-                                                                                                                          },
-                                                                                                                          child: Container(
-                                                                                                                            width: 5,
-                                                                                                                            height: 5,
-                                                                                                                            decoration: const BoxDecoration(
-                                                                                                                              color: Color(0xFF838796),
-                                                                                                                            ),
-                                                                                                                            child: Container(
-                                                                                                                                decoration: BoxDecoration(
-                                                                                                                                    border: Border.all(
-                                                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                                                    ),
-                                                                                                                                    image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
-                                                                                                                          ),
-                                                                                                                        );
-                                                                                                                      },
-                                                                                                                    ),
-                                                                                                                  ),
-                                                                                                                  const SizedBox(height: 13),
-                                                                                                                  GestureDetector(
-                                                                                                                      onTap: () {
-                                                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                                                      },
-                                                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                                                ],
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
-                                                                                                      )),
-                                                                                                );
-                                                                                              },
-                                                                                            );
-                                                                                          },
-                                                                                          child: Container(
-                                                                                            width: 5,
-                                                                                            height: 5,
-                                                                                            decoration: const BoxDecoration(
-                                                                                              color: Color(0xFF838796),
-                                                                                              // border: Border.all(
-                                                                                              //   color: Colors.white,
-                                                                                              // ),
-                                                                                            ),
-                                                                                            child: Container(
-                                                                                                decoration: BoxDecoration(
-                                                                                                    border: Border.all(
-                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                    ),
-                                                                                                    image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
-                                                                                          ),
-                                                                                        );
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(height: 13),
-                                                                                  GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                      },
-                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )),
-                                                                );
-                                                              },
-                                                            );
-                                                          } else if (jokerName ==
-                                                              "EXTRACHANGE") {
-                                                            context
-                                                                .read<
-                                                                    CardsProvider>()
-                                                                .extraChanges();
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/game');
-                                                          } else if (jokerName ==
-                                                              "TRUMP") {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return Scaffold(
-                                                                  backgroundColor: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  body: Container(
-                                                                      height: double.infinity,
-                                                                      width: double.infinity,
-                                                                      decoration: BoxDecoration(
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                const AssetImage('assets/images/background.png'),
-                                                                            fit: BoxFit.fill,
-                                                                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                      ),
-                                                                      child: Column(
-                                                                        // MainAxisAlignment.spaceAround,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          SizedBox(
-                                                                              height: 50,
-                                                                              child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                400,
-                                                                            width:
-                                                                                330,
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: const BoxDecoration(),
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                  const SizedBox(height: 27),
-                                                                                  Container(
-                                                                                    height: 240,
-                                                                                    width: double.infinity,
-                                                                                    child: GridView.builder(
-                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                        crossAxisCount: 4,
-                                                                                        mainAxisSpacing: 7,
-                                                                                        crossAxisSpacing: 11,
-                                                                                      ),
-                                                                                      itemCount: context.read<CardsProvider>().selectedCards.length,
-                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                        return GestureDetector(
-                                                                                          onTap: () {
-                                                                                            var selectedCardToSwap = context.read<CardsProvider>().selectedCards[index];
-                                                                                            List<String> selectedCardsToCopy = context.read<CardsProvider>().remainingDeckElements;
-                                                                                            showDialog(
-                                                                                              context: context,
-                                                                                              builder: (BuildContext context) {
-                                                                                                return Scaffold(
-                                                                                                  backgroundColor: Colors.black.withOpacity(0.8),
-                                                                                                  body: Container(
-                                                                                                      height: double.infinity,
-                                                                                                      width: double.infinity,
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                                                      ),
-                                                                                                      child: Column(
-                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                        children: [
-                                                                                                          SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
-                                                                                                          SizedBox(
-                                                                                                            height: 700,
-                                                                                                            width: 330,
-                                                                                                            child: Container(
-                                                                                                              decoration: const BoxDecoration(),
-                                                                                                              child: Column(
-                                                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                                children: [
-                                                                                                                  const Text("Select A Card To Copy", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                  const SizedBox(height: 27),
-                                                                                                                  Container(
-                                                                                                                    height: 240,
-                                                                                                                    width: double.infinity,
-                                                                                                                    child: GridView.builder(
-                                                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                                                        crossAxisCount: 3,
-                                                                                                                        mainAxisSpacing: 7,
-                                                                                                                        crossAxisSpacing: 11,
-                                                                                                                      ),
-                                                                                                                      itemCount: selectedCardsToCopy.length,
-                                                                                                                      // shuffleDeck(deck).length,
-                                                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                                                        return GestureDetector(
-                                                                                                                          onTap: () {
-                                                                                                                            var selectedCardToCopy = selectedCardsToCopy[index];
-                                                                                                                            context.read<CardsProvider>().trump(selectedCardToSwap, selectedCardToCopy);
-                                                                                                                            Navigator.pushNamed(context, '/game');
-                                                                                                                          },
-                                                                                                                          child: Container(
-                                                                                                                            width: 5,
-                                                                                                                            height: 5,
-                                                                                                                            decoration: const BoxDecoration(
-                                                                                                                              color: Color(0xFF838796),
-                                                                                                                            ),
-                                                                                                                            child: Container(
-                                                                                                                                decoration: BoxDecoration(
-                                                                                                                                    border: Border.all(
-                                                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                                                    ),
-                                                                                                                                    image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
-                                                                                                                          ),
-                                                                                                                        );
-                                                                                                                      },
-                                                                                                                    ),
-                                                                                                                  ),
-                                                                                                                  const SizedBox(height: 13),
-                                                                                                                  GestureDetector(
-                                                                                                                      onTap: () {
-                                                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                                                      },
-                                                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                                                ],
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
-                                                                                                      )),
-                                                                                                );
-                                                                                              },
-                                                                                            );
-                                                                                          },
-                                                                                          child: Container(
-                                                                                            width: 5,
-                                                                                            height: 5,
-                                                                                            decoration: const BoxDecoration(
-                                                                                              color: Color(0xFF838796),
-                                                                                            ),
-                                                                                            child: Container(
-                                                                                                decoration: BoxDecoration(
-                                                                                                    border: Border.all(
-                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                    ),
-                                                                                                    image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
-                                                                                          ),
-                                                                                        );
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(height: 13),
-                                                                                  GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                      },
-                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )),
-                                                                );
-                                                              },
-                                                            );
-                                                          } else if (jokerName ==
-                                                              "TRANSFORMER") {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return Scaffold(
-                                                                  backgroundColor: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  body: Container(
-                                                                      height: double.infinity,
-                                                                      width: double.infinity,
-                                                                      decoration: BoxDecoration(
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                const AssetImage('assets/images/background.png'),
-                                                                            fit: BoxFit.fill,
-                                                                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                      ),
-                                                                      child: Column(
-                                                                        // MainAxisAlignment.spaceAround,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          SizedBox(
-                                                                              height: 50,
-                                                                              child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                400,
-                                                                            width:
-                                                                                330,
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: const BoxDecoration(),
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                  const SizedBox(height: 27),
-                                                                                  Container(
-                                                                                    height: 240,
-                                                                                    width: double.infinity,
-                                                                                    child: GridView.builder(
-                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                        crossAxisCount: 4,
-                                                                                        mainAxisSpacing: 7,
-                                                                                        crossAxisSpacing: 11,
-                                                                                      ),
-                                                                                      itemCount: context.read<CardsProvider>().selectedCards.length,
-                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                        return GestureDetector(
-                                                                                          onTap: () {
-                                                                                            var selectedCardToSwap = context.read<CardsProvider>().selectedCards[index];
-                                                                                            List<String> selectedCardsToCopy = generateDeck();
-                                                                                            showDialog(
-                                                                                              context: context,
-                                                                                              builder: (BuildContext context) {
-                                                                                                return Scaffold(
-                                                                                                  backgroundColor: Colors.black.withOpacity(0.8),
-                                                                                                  body: Container(
-                                                                                                      height: double.infinity,
-                                                                                                      width: double.infinity,
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
-                                                                                                      ),
-                                                                                                      child: Column(
-                                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                        children: [
-                                                                                                          SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
-                                                                                                          SizedBox(
-                                                                                                            height: 700,
-                                                                                                            width: 330,
-                                                                                                            child: Container(
-                                                                                                              decoration: const BoxDecoration(),
-                                                                                                              child: Column(
-                                                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                                children: [
-                                                                                                                  const Text("Select A Card To Transform into", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
-                                                                                                                  const SizedBox(height: 27),
-                                                                                                                  Container(
-                                                                                                                    height: 240,
-                                                                                                                    width: double.infinity,
-                                                                                                                    child: GridView.builder(
-                                                                                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                                                        crossAxisCount: 3,
-                                                                                                                        mainAxisSpacing: 7,
-                                                                                                                        crossAxisSpacing: 11,
-                                                                                                                      ),
-                                                                                                                      itemCount: selectedCardsToCopy.length,
-                                                                                                                      // shuffleDeck(deck).length,
-                                                                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                                                                        return GestureDetector(
-                                                                                                                          onTap: () {
-                                                                                                                            var selectedCardToCopy = selectedCardsToCopy[index];
-                                                                                                                            context.read<CardsProvider>().transform(selectedCardToSwap, selectedCardToCopy);
-                                                                                                                            Navigator.pushNamed(context, '/game');
-                                                                                                                          },
-                                                                                                                          child: Container(
-                                                                                                                            width: 5,
-                                                                                                                            height: 5,
-                                                                                                                            decoration: const BoxDecoration(
-                                                                                                                              color: Color(0xFF838796),
-                                                                                                                            ),
-                                                                                                                            child: Container(
-                                                                                                                                decoration: BoxDecoration(
-                                                                                                                                    border: Border.all(
-                                                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                                                    ),
-                                                                                                                                    image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
-                                                                                                                          ),
-                                                                                                                        );
-                                                                                                                      },
-                                                                                                                    ),
-                                                                                                                  ),
-                                                                                                                  const SizedBox(height: 13),
-                                                                                                                  GestureDetector(
-                                                                                                                      onTap: () {
-                                                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                                                      },
-                                                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                                                ],
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ),
-                                                                                                        ],
-                                                                                                      )),
-                                                                                                );
-                                                                                              },
-                                                                                            );
-                                                                                          },
-                                                                                          child: Container(
-                                                                                            width: 5,
-                                                                                            height: 5,
-                                                                                            decoration: const BoxDecoration(
-                                                                                              color: Color(0xFF838796),
-                                                                                            ),
-                                                                                            child: Container(
-                                                                                                decoration: BoxDecoration(
-                                                                                                    border: Border.all(
-                                                                                                      color: const Color.fromARGB(0, 0, 0, 0),
-                                                                                                    ),
-                                                                                                    image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
-                                                                                          ),
-                                                                                        );
-                                                                                      },
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(height: 13),
-                                                                                  GestureDetector(
-                                                                                      onTap: () {
-                                                                                        Navigator.pushNamed(context, '/game');
-                                                                                      },
-                                                                                      child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )),
-                                                                );
-                                                              },
-                                                            );
-                                                          }
-                                                          var box = await Hive
-                                                              .openBox("myBox");
-                                                          var b =
-                                                              Hive.box("myBox");
-
-                                                          b.put(
-                                                              "noOfChips",
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .noOfChips);
-                                                          b.put(
-                                                              "level",
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .currentLevel);
-                                                          b.put(
-                                                              "purchaseJokers",
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .purchaseJokers);
-                                                          b.put(
-                                                              "purchaseCards",
-                                                              context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .purchaseCards);
-                                                        },
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                        height: 20,
                                                         child: Container(
-                                                            height: 70,
-                                                            width: 70,
-                                                            decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                    image: AssetImage(context
-                                                                            .read<
-                                                                                CardsProvider>()
-                                                                            .jokerFirstScreenAssets[index]
-                                                                        [
-                                                                        "imageUrl"]),
-                                                                    fit: BoxFit
-                                                                        .fill))),
-                                                      ),
-                                                      Text(
-                                                          context
-                                                                  .read<
-                                                                      CardsProvider>()
-                                                                  .jokerFirstScreenAssets[
-                                                              index]["text"],
-                                                          style: const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontFamily:
-                                                                  "BreatheFire",
-                                                              fontSize: 18)),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                );
-                              },
-                            );
-                          },
+                                                            decoration:
+                                                                const BoxDecoration(),
+                                                            child: const Text(
+                                                                ""))),
 
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(6, 30),
-                            backgroundColor: const Color(0xFFD3BF8F),
-                            foregroundColor: Colors.white,
-                            // elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 12.2),
-                          ),
-                          child: const Text("Joker",
-                              style: TextStyle(
-                                  fontFamily: "BreatheFire",
-                                  fontSize: 20,
-                                  color: Color.fromARGB(255, 222, 225, 237))),
-                          // ),
-                        ),
-                      ),
+                                                    //joker-grid
+                                                    SizedBox(
+                                                      height: 400,
+                                                      width: 270,
+                                                      child: Container(
+                                                        child: GridView.builder(
+                                                          gridDelegate:
+                                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            mainAxisSpacing: 1,
+                                                            crossAxisSpacing: 1,
+                                                          ),
+                                                          itemCount: context
+                                                              .read<
+                                                                  CardsProvider>()
+                                                              .jokerFirstScreenAssets
+                                                              .length,
+                                                          // shuffleDeck(deck).length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
+                                                            return Column(
+                                                              children: [
+                                                                GestureDetector(
+                                                                  onTap:
+                                                                      () async {
+                                                                    var jokerName = context
+                                                                        .read<
+                                                                            CardsProvider>()
+                                                                        .jokerFirstScreenAssets[index]["text"];
+                                                                    if (jokerName ==
+                                                                        "VISOR") {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                              '/game');
+
+                                                                      context
+                                                                          .read<
+                                                                              CardsProvider>()
+                                                                          .visorShow();
+                                                                    } else if (jokerName ==
+                                                                        "HANDBONUS") {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                              '/game');
+
+                                                                      context
+                                                                          .read<
+                                                                              CardsProvider>()
+                                                                          .handBonusShow();
+                                                                    } else if (jokerName ==
+                                                                        "EMPTYBONUS") {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                              '/game');
+
+                                                                      context
+                                                                          .read<
+                                                                              CardsProvider>()
+                                                                          .emptyBonusShow();
+                                                                    } else if (jokerName ==
+                                                                        "SCORE") {
+                                                                      context
+                                                                          .read<
+                                                                              CardsProvider>()
+                                                                          .scoreX2();
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                              '/game');
+                                                                    } else if (jokerName ==
+                                                                        "FAKE") {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Scaffold(
+                                                                            backgroundColor:
+                                                                                Colors.black.withOpacity(0.8),
+                                                                            body: Container(
+                                                                                height: double.infinity,
+                                                                                width: double.infinity,
+                                                                                decoration: BoxDecoration(
+                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.cover, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                ),
+                                                                                child: Column(
+                                                                                  // MainAxisAlignment.spaceAround,
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
+                                                                                    SizedBox(
+                                                                                      height: 400,
+                                                                                      width: 330,
+                                                                                      child: Container(
+                                                                                        decoration: const BoxDecoration(),
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                            const SizedBox(height: 27),
+                                                                                            Container(
+                                                                                              height: 240,
+                                                                                              width: double.infinity,
+                                                                                              child: GridView.builder(
+                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                  crossAxisCount: 4,
+                                                                                                  mainAxisSpacing: 7,
+                                                                                                  crossAxisSpacing: 11,
+                                                                                                ),
+                                                                                                itemCount: context.read<CardsProvider>().selectedCards.length,
+                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      var selectedCardToFake = context.read<CardsProvider>().selectedCards[index];
+                                                                                                      List<String> selectedCardsToCopy = context.read<CardsProvider>().selectedCards.where((card) => card != selectedCardToFake).toList();
+
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return Scaffold(
+                                                                                                            backgroundColor: Colors.black.withOpacity(0.8),
+                                                                                                            body: Container(
+                                                                                                                height: double.infinity,
+                                                                                                                width: double.infinity,
+                                                                                                                decoration: BoxDecoration(
+                                                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                                ),
+                                                                                                                child: Column(
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                  children: [
+                                                                                                                    SizedBox(
+                                                                                                                      height: 700,
+                                                                                                                      width: 330,
+                                                                                                                      child: Container(
+                                                                                                                        decoration: const BoxDecoration(),
+                                                                                                                        child: Column(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                          children: [
+                                                                                                                            const Text("Select A Card To Copy", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                                                            const SizedBox(height: 27),
+                                                                                                                            Container(
+                                                                                                                              height: 240,
+                                                                                                                              width: double.infinity,
+                                                                                                                              child: GridView.builder(
+                                                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                                                  crossAxisCount: 3,
+                                                                                                                                  mainAxisSpacing: 7,
+                                                                                                                                  crossAxisSpacing: 11,
+                                                                                                                                ),
+                                                                                                                                itemCount: selectedCardsToCopy.length,
+                                                                                                                                // shuffleDeck(deck).length,
+                                                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                                                  return GestureDetector(
+                                                                                                                                    onTap: () {
+                                                                                                                                      var selectedCardToCopy = selectedCardsToCopy[index];
+                                                                                                                                      context.read<CardsProvider>().jokerFake(selectedCardToFake, selectedCardToCopy);
+                                                                                                                                      Navigator.pushNamed(context, '/game');
+                                                                                                                                    },
+                                                                                                                                    child: Container(
+                                                                                                                                      width: 5,
+                                                                                                                                      height: 5,
+                                                                                                                                      decoration: const BoxDecoration(
+                                                                                                                                        color: Color(0xFF838796),
+                                                                                                                                      ),
+                                                                                                                                      child: Container(
+                                                                                                                                          decoration: BoxDecoration(
+                                                                                                                                              border: Border.all(
+                                                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                                                              ),
+                                                                                                                                              image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
+                                                                                                                                    ),
+                                                                                                                                  );
+                                                                                                                                },
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            const SizedBox(height: 13),
+                                                                                                                            GestureDetector(
+                                                                                                                                onTap: () {
+                                                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                                                },
+                                                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                                                          ],
+                                                                                                                        ),
+                                                                                                                      ),
+                                                                                                                    ),
+                                                                                                                  ],
+                                                                                                                )),
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      width: 5,
+                                                                                                      height: 5,
+                                                                                                      decoration: const BoxDecoration(
+                                                                                                        color: Color(0xFF838796),
+                                                                                                        // border: Border.all(
+                                                                                                        //   color: Colors.white,
+                                                                                                        // ),
+                                                                                                      ),
+                                                                                                      child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                              border: Border.all(
+                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                              ),
+                                                                                                              image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            const SizedBox(height: 13),
+                                                                                            GestureDetector(
+                                                                                                onTap: () {
+                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                },
+                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                )),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    } else if (jokerName ==
+                                                                        "SUIT") {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Scaffold(
+                                                                            backgroundColor:
+                                                                                Colors.black.withOpacity(0.8),
+                                                                            body: Container(
+                                                                                height: double.infinity,
+                                                                                width: double.infinity,
+                                                                                decoration: BoxDecoration(
+                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                ),
+                                                                                child: Column(
+                                                                                  // MainAxisAlignment.spaceAround,
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
+                                                                                    SizedBox(
+                                                                                      height: 400,
+                                                                                      width: 330,
+                                                                                      child: Container(
+                                                                                        decoration: const BoxDecoration(),
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                            const SizedBox(height: 27),
+                                                                                            Container(
+                                                                                              height: 240,
+                                                                                              width: double.infinity,
+                                                                                              child: GridView.builder(
+                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                  crossAxisCount: 4,
+                                                                                                  mainAxisSpacing: 7,
+                                                                                                  crossAxisSpacing: 11,
+                                                                                                ),
+                                                                                                itemCount: context.read<CardsProvider>().selectedCards.length,
+                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      var selectedCardToSuit = context.read<CardsProvider>().selectedCards[index];
+                                                                                                      List<String> selectedCardsToCopy = generateSuits(selectedCardToSuit);
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return Scaffold(
+                                                                                                            backgroundColor: Colors.black.withOpacity(0.8),
+                                                                                                            body: Container(
+                                                                                                                height: double.infinity,
+                                                                                                                width: double.infinity,
+                                                                                                                decoration: BoxDecoration(
+                                                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                                ),
+                                                                                                                child: Column(
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                  children: [
+                                                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
+                                                                                                                    SizedBox(
+                                                                                                                      height: 700,
+                                                                                                                      width: 330,
+                                                                                                                      child: Container(
+                                                                                                                        decoration: const BoxDecoration(),
+                                                                                                                        child: Column(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                          children: [
+                                                                                                                            const Text("Select New Suit", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                                                            const SizedBox(height: 27),
+                                                                                                                            Container(
+                                                                                                                              height: 240,
+                                                                                                                              width: double.infinity,
+                                                                                                                              child: GridView.builder(
+                                                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                                                  crossAxisCount: 3,
+                                                                                                                                  mainAxisSpacing: 7,
+                                                                                                                                  crossAxisSpacing: 11,
+                                                                                                                                ),
+                                                                                                                                itemCount: selectedCardsToCopy.length,
+                                                                                                                                // shuffleDeck(deck).length,
+                                                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                                                  return GestureDetector(
+                                                                                                                                    onTap: () {
+                                                                                                                                      var selectedCardToCopy = selectedCardsToCopy[index];
+                                                                                                                                      context.read<CardsProvider>().jokerSuit(selectedCardToSuit, selectedCardToCopy);
+                                                                                                                                      Navigator.pushNamed(context, '/game');
+                                                                                                                                    },
+                                                                                                                                    child: Container(
+                                                                                                                                      width: 5,
+                                                                                                                                      height: 5,
+                                                                                                                                      decoration: const BoxDecoration(
+                                                                                                                                        color: Color(0xFF838796),
+                                                                                                                                      ),
+                                                                                                                                      child: Container(
+                                                                                                                                          decoration: BoxDecoration(
+                                                                                                                                              border: Border.all(
+                                                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                                                              ),
+                                                                                                                                              image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
+                                                                                                                                    ),
+                                                                                                                                  );
+                                                                                                                                },
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            const SizedBox(height: 13),
+                                                                                                                            GestureDetector(
+                                                                                                                                onTap: () {
+                                                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                                                },
+                                                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                                                          ],
+                                                                                                                        ),
+                                                                                                                      ),
+                                                                                                                    ),
+                                                                                                                  ],
+                                                                                                                )),
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      width: 5,
+                                                                                                      height: 5,
+                                                                                                      decoration: const BoxDecoration(
+                                                                                                        color: Color(0xFF838796),
+                                                                                                        // border: Border.all(
+                                                                                                        //   color: Colors.white,
+                                                                                                        // ),
+                                                                                                      ),
+                                                                                                      child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                              border: Border.all(
+                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                              ),
+                                                                                                              image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            const SizedBox(height: 13),
+                                                                                            GestureDetector(
+                                                                                                onTap: () {
+                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                },
+                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                )),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    } else if (jokerName ==
+                                                                        "EXTRACHANGE") {
+                                                                      context
+                                                                          .read<
+                                                                              CardsProvider>()
+                                                                          .extraChanges();
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                              '/game');
+                                                                    } else if (jokerName ==
+                                                                        "TRUMP") {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Scaffold(
+                                                                            backgroundColor:
+                                                                                Colors.black.withOpacity(0.8),
+                                                                            body: Container(
+                                                                                height: double.infinity,
+                                                                                width: double.infinity,
+                                                                                decoration: BoxDecoration(
+                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                ),
+                                                                                child: Column(
+                                                                                  // MainAxisAlignment.spaceAround,
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
+                                                                                    SizedBox(
+                                                                                      height: 400,
+                                                                                      width: 330,
+                                                                                      child: Container(
+                                                                                        decoration: const BoxDecoration(),
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                            const SizedBox(height: 27),
+                                                                                            Container(
+                                                                                              height: 240,
+                                                                                              width: double.infinity,
+                                                                                              child: GridView.builder(
+                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                  crossAxisCount: 4,
+                                                                                                  mainAxisSpacing: 7,
+                                                                                                  crossAxisSpacing: 11,
+                                                                                                ),
+                                                                                                itemCount: context.read<CardsProvider>().selectedCards.length,
+                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      var selectedCardToSwap = context.read<CardsProvider>().selectedCards[index];
+                                                                                                      List<String> selectedCardsToCopy = context.read<CardsProvider>().remainingDeckElements;
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return Scaffold(
+                                                                                                            backgroundColor: Colors.black.withOpacity(0.8),
+                                                                                                            body: Container(
+                                                                                                                height: double.infinity,
+                                                                                                                width: double.infinity,
+                                                                                                                decoration: BoxDecoration(
+                                                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                                ),
+                                                                                                                child: Column(
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                  children: [
+                                                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
+                                                                                                                    SizedBox(
+                                                                                                                      height: 700,
+                                                                                                                      width: 330,
+                                                                                                                      child: Container(
+                                                                                                                        decoration: const BoxDecoration(),
+                                                                                                                        child: Column(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                          children: [
+                                                                                                                            const Text("Select A Card To Copy", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                                                            const SizedBox(height: 27),
+                                                                                                                            Container(
+                                                                                                                              height: 240,
+                                                                                                                              width: double.infinity,
+                                                                                                                              child: GridView.builder(
+                                                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                                                  crossAxisCount: 3,
+                                                                                                                                  mainAxisSpacing: 7,
+                                                                                                                                  crossAxisSpacing: 11,
+                                                                                                                                ),
+                                                                                                                                itemCount: selectedCardsToCopy.length,
+                                                                                                                                // shuffleDeck(deck).length,
+                                                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                                                  return GestureDetector(
+                                                                                                                                    onTap: () {
+                                                                                                                                      var selectedCardToCopy = selectedCardsToCopy[index];
+                                                                                                                                      context.read<CardsProvider>().trump(selectedCardToSwap, selectedCardToCopy);
+                                                                                                                                      Navigator.pushNamed(context, '/game');
+                                                                                                                                    },
+                                                                                                                                    child: Container(
+                                                                                                                                      width: 5,
+                                                                                                                                      height: 5,
+                                                                                                                                      decoration: const BoxDecoration(
+                                                                                                                                        color: Color(0xFF838796),
+                                                                                                                                      ),
+                                                                                                                                      child: Container(
+                                                                                                                                          decoration: BoxDecoration(
+                                                                                                                                              border: Border.all(
+                                                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                                                              ),
+                                                                                                                                              image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
+                                                                                                                                    ),
+                                                                                                                                  );
+                                                                                                                                },
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            const SizedBox(height: 13),
+                                                                                                                            GestureDetector(
+                                                                                                                                onTap: () {
+                                                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                                                },
+                                                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                                                          ],
+                                                                                                                        ),
+                                                                                                                      ),
+                                                                                                                    ),
+                                                                                                                  ],
+                                                                                                                )),
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      width: 5,
+                                                                                                      height: 5,
+                                                                                                      decoration: const BoxDecoration(
+                                                                                                        color: Color(0xFF838796),
+                                                                                                      ),
+                                                                                                      child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                              border: Border.all(
+                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                              ),
+                                                                                                              image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            const SizedBox(height: 13),
+                                                                                            GestureDetector(
+                                                                                                onTap: () {
+                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                },
+                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                )),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    } else if (jokerName ==
+                                                                        "TRANSFORMER") {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Scaffold(
+                                                                            backgroundColor:
+                                                                                Colors.black.withOpacity(0.8),
+                                                                            body: Container(
+                                                                                height: double.infinity,
+                                                                                width: double.infinity,
+                                                                                decoration: BoxDecoration(
+                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                ),
+                                                                                child: Column(
+                                                                                  // MainAxisAlignment.spaceAround,
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"]))),
+                                                                                    SizedBox(
+                                                                                      height: 400,
+                                                                                      width: 330,
+                                                                                      child: Container(
+                                                                                        decoration: const BoxDecoration(),
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(context.read<CardsProvider>().jokerFirstScreenAssets[index]["additionalText"], style: const TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                            const SizedBox(height: 27),
+                                                                                            Container(
+                                                                                              height: 240,
+                                                                                              width: double.infinity,
+                                                                                              child: GridView.builder(
+                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                  crossAxisCount: 4,
+                                                                                                  mainAxisSpacing: 7,
+                                                                                                  crossAxisSpacing: 11,
+                                                                                                ),
+                                                                                                itemCount: context.read<CardsProvider>().selectedCards.length,
+                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      var selectedCardToSwap = context.read<CardsProvider>().selectedCards[index];
+                                                                                                      List<String> selectedCardsToCopy = generateDeck();
+                                                                                                      showDialog(
+                                                                                                        context: context,
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return Scaffold(
+                                                                                                            backgroundColor: Colors.black.withOpacity(0.8),
+                                                                                                            body: Container(
+                                                                                                                height: double.infinity,
+                                                                                                                width: double.infinity,
+                                                                                                                decoration: BoxDecoration(
+                                                                                                                  image: DecorationImage(image: const AssetImage('assets/images/background.png'), fit: BoxFit.fill, colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.darken)),
+                                                                                                                ),
+                                                                                                                child: Column(
+                                                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                  children: [
+                                                                                                                    SizedBox(height: 50, child: Container(decoration: const BoxDecoration(), child: const Text("Select a card to change suit"))),
+                                                                                                                    SizedBox(
+                                                                                                                      height: 700,
+                                                                                                                      width: 330,
+                                                                                                                      child: Container(
+                                                                                                                        decoration: const BoxDecoration(),
+                                                                                                                        child: Column(
+                                                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                                          children: [
+                                                                                                                            const Text("Select A Card To Transform into", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22)),
+                                                                                                                            const SizedBox(height: 27),
+                                                                                                                            Container(
+                                                                                                                              height: 240,
+                                                                                                                              width: double.infinity,
+                                                                                                                              child: GridView.builder(
+                                                                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                                                                  crossAxisCount: 3,
+                                                                                                                                  mainAxisSpacing: 7,
+                                                                                                                                  crossAxisSpacing: 11,
+                                                                                                                                ),
+                                                                                                                                itemCount: selectedCardsToCopy.length,
+                                                                                                                                // shuffleDeck(deck).length,
+                                                                                                                                itemBuilder: (BuildContext context, int index) {
+                                                                                                                                  return GestureDetector(
+                                                                                                                                    onTap: () {
+                                                                                                                                      var selectedCardToCopy = selectedCardsToCopy[index];
+                                                                                                                                      context.read<CardsProvider>().transform(selectedCardToSwap, selectedCardToCopy);
+                                                                                                                                      Navigator.pushNamed(context, '/game');
+                                                                                                                                    },
+                                                                                                                                    child: Container(
+                                                                                                                                      width: 5,
+                                                                                                                                      height: 5,
+                                                                                                                                      decoration: const BoxDecoration(
+                                                                                                                                        color: Color(0xFF838796),
+                                                                                                                                      ),
+                                                                                                                                      child: Container(
+                                                                                                                                          decoration: BoxDecoration(
+                                                                                                                                              border: Border.all(
+                                                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                                                              ),
+                                                                                                                                              image: DecorationImage(image: AssetImage(selectedCardsToCopy[index])))),
+                                                                                                                                    ),
+                                                                                                                                  );
+                                                                                                                                },
+                                                                                                                              ),
+                                                                                                                            ),
+                                                                                                                            const SizedBox(height: 13),
+                                                                                                                            GestureDetector(
+                                                                                                                                onTap: () {
+                                                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                                                },
+                                                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                                                          ],
+                                                                                                                        ),
+                                                                                                                      ),
+                                                                                                                    ),
+                                                                                                                  ],
+                                                                                                                )),
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      width: 5,
+                                                                                                      height: 5,
+                                                                                                      decoration: const BoxDecoration(
+                                                                                                        color: Color(0xFF838796),
+                                                                                                      ),
+                                                                                                      child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                              border: Border.all(
+                                                                                                                color: const Color.fromARGB(0, 0, 0, 0),
+                                                                                                              ),
+                                                                                                              image: DecorationImage(image: AssetImage(context.read<CardsProvider>().selectedCards[index])))),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                            const SizedBox(height: 13),
+                                                                                            GestureDetector(
+                                                                                                onTap: () {
+                                                                                                  Navigator.pushNamed(context, '/game');
+                                                                                                },
+                                                                                                child: const Text("Cancel", style: TextStyle(color: Colors.white, fontFamily: "BreatheFire", fontSize: 22))),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                )),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    }
+                                                                    var box = await Hive
+                                                                        .openBox(
+                                                                            "myBox");
+                                                                    var b = Hive
+                                                                        .box(
+                                                                            "myBox");
+
+                                                                    b.put(
+                                                                        "noOfChips",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .noOfChips);
+                                                                    b.put(
+                                                                        "level",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .currentLevel);
+                                                                    b.put(
+                                                                        "purchaseJokers",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .purchaseJokers);
+                                                                    b.put(
+                                                                        "purchaseCards",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .purchaseCards);
+                                                                  },
+                                                                  child: Container(
+                                                                      height:
+                                                                          70,
+                                                                      width: 70,
+                                                                      decoration: BoxDecoration(
+                                                                          image: DecorationImage(
+                                                                              image: AssetImage(context.read<CardsProvider>().jokerFirstScreenAssets[index]["imageUrl"]),
+                                                                              fit: BoxFit.fill))),
+                                                                ),
+                                                                Text(
+                                                                    context.read<CardsProvider>().jokerFirstScreenAssets[
+                                                                            index]
+                                                                        [
+                                                                        "text"],
+                                                                    style: const TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontFamily:
+                                                                            "BreatheFire",
+                                                                        fontSize:
+                                                                            18)),
+                                                              ],
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(6, 30),
+                                backgroundColor: isButtonEnabled
+                                    ? const Color(0xFFD3BF8F)
+                                    : Colors.grey,
+                                foregroundColor: Colors.white,
+                                // elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12.2),
+                              ),
+                              child: Text("Joker",
+                                  style: TextStyle(
+                                      fontFamily: "BreatheFire",
+                                      fontSize: 20,
+                                      color: isButtonEnabled
+                                          ? const Color.fromARGB(
+                                              255, 228, 231, 239)
+                                          : Colors.white.withOpacity(0.5))),
+                            );
+                          })),
                       Consumer<CardsProvider>(
                           builder: (context, counter, child) {
                         final bool isButtonEnabled =

@@ -285,7 +285,7 @@ class CardsProvider with ChangeNotifier {
   bool emptyBonus = false;
   bool? winStatus;
   int currentRound = 1;
-  int noOfChips = 0;
+  int noOfChips = 1000;
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
@@ -378,7 +378,6 @@ class CardsProvider with ChangeNotifier {
     return selectedCardsFromThirdRow.contains(path);
   }
 
-  // Function to unselect a card
   void unselectCard(String path) {
     if (selectedCardsFromThirdRow.contains(path)) {
       selectedCardsFromThirdRow.remove(path);
@@ -435,6 +434,8 @@ class CardsProvider with ChangeNotifier {
   }
 
   void swapFunctionality() {
+    remainingDeckElements
+        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
     for (int i = 0; i < selectedCardsFromThirdRow.length; i++) {
       var index = selectedCards.indexOf(selectedCardsFromThirdRow[i]);
       if (index != -1) {
@@ -442,7 +443,9 @@ class CardsProvider with ChangeNotifier {
         print(j);
         var temp = selectedCards[index];
         selectedCards[index] = remainingDeckElements[j];
-        remainingDeckElements[j] = temp;
+        discardedDeckElements += [temp];
+        remainingDeckElements
+            .removeWhere((card) => card == remainingDeckElements[j]);
       }
     }
     selectedCardsFromThirdRow = [];
@@ -461,13 +464,12 @@ class CardsProvider with ChangeNotifier {
 
   void incrementCurrentRound() {
     if (currentRound < 6) {
-      remainingDeckElements += selectedCards;
-      selectedCards = shuffleDeck(remainingDeckElements);
+      // remainingDeckElements += selectedCards;
+      selectedCards += shuffleDeck(remainingDeckElements).sublist(0, 5);
       selectedCardsForAi = shuffleAIDeck(remainingAiElements);
       remainingAiElements
           .removeWhere((card) => selectedCardsForAi.contains(card));
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
-      remainingDeckView = 3;
       currentRound++;
     }
     visor = false;
@@ -489,6 +491,8 @@ class CardsProvider with ChangeNotifier {
     selectedCardsForAi = shuffleAIDeck(remainingAiElements);
     remainingAiElements
         .removeWhere((card) => selectedCardsForAi.contains(card));
+    remainingDeckView = 3;
+
     aiScore = 0;
     playerScore = 0;
     visor = false;
@@ -571,6 +575,8 @@ class CardsProvider with ChangeNotifier {
     currentLevel = 1;
     playerScore = 0;
     aiScore = 0;
+    remainingDeckView = 3;
+
     discardedDeckElements = [];
     remainingDeckElements = generateDeck();
     remainingDeckElements += purchaseCards;
@@ -595,6 +601,7 @@ class CardsProvider with ChangeNotifier {
     selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
     currentRound = 1;
+    remainingDeckView = 3;
     // currentLevel = 1;
     playerScore = 0;
     aiScore = 0;
