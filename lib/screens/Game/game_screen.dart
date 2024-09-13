@@ -2715,7 +2715,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     ),
                                     image: const DecorationImage(
                                         image: const AssetImage(
-                                            'assets/images/card_hearts_10.png'),
+                                            'assets/images/card_back.png'),
                                         fit: BoxFit.fill)),
                                 width: 45,
                                 height: 50,
