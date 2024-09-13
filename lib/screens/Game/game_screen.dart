@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -674,7 +672,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                             onPressed: () {
                                                               _onButtonPressed(
                                                                   2);
-                                                              // Navigator.pushNamed(context, '/');
+                                                              Navigator.pushNamed(context, '/info');
                                                             },
                                                             style:
                                                                 ElevatedButton
@@ -1094,6 +1092,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+
+                
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
