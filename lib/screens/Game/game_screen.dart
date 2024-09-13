@@ -1092,6 +1092,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height * .026),
+                
 
                 
                 Row(
