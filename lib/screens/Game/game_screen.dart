@@ -36,7 +36,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   AnimationStatus _status = AnimationStatus.dismissed;
   void initState() {
     super.initState();
-    openBox();
+    // openBox();
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
@@ -52,13 +52,26 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void openBox() async {
     var box = await Hive.openBox("myBox");
     var b = Hive.box("myBox");
-    // print(b.get("noOfChips"));
     if (b.get("noOfChips") != null ||
         b.get("level") != null ||
         b.get("purchaseJokers") != null ||
         b.get("purchaseCards") != null) {
-      context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
-          b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+      context.read<CardsProvider>().updateChipsInProvider(
+          b.get("noOfChips"),
+          b.get("level"),
+          b.get("purchaseJokers"),
+          b.get("purchaseCards"),
+          b.get("round"),
+          b.get("remainingDeckElements"),
+          b.get("remainingAiElements"),
+          b.get("selectedCards"),
+          b.get("selectedCardsFromThirdRow"),
+          b.get("discardedDeckElements"),
+          b.get("selectedCardsForAi"),
+          b.get("playerScore"),
+          b.get("aiScore"),
+          b.get("remainingDeckView") // Ensure this exists in `b`
+          );
     }
   }
 
@@ -295,7 +308,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       String rank = card.split('_')[2].substring(0, 2);
       String suit = card.split('_')[1];
       int points = getCardPoints(rank);
-      print(points);
       baseScore += points;
       rankValues.add(points);
       rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
@@ -626,6 +638,56 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 context
                                                     .read<CardsProvider>()
                                                     .purchaseCards);
+                                            b.put(
+                                                "round",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .currentRound);
+                                            b.put(
+                                                "remainingDeckElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingDeckElements);
+                                            b.put(
+                                                "remainingAiElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingAiElements);
+                                            b.put(
+                                                "selectedCards",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCards);
+                                            b.put(
+                                                "selectedCardsFromThirdRow",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCardsFromThirdRow);
+                                            b.put(
+                                                "discardedDeckElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .discardedDeckElements);
+                                            b.put(
+                                                "selectedCardsForAi",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCardsForAi);
+                                            b.put(
+                                                "playerScore",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .playerScore);
+                                            b.put(
+                                                "aiScore",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .aiScore);
+                                            b.put(
+                                                "remainingDeckView",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingDeckView);
 
                                             showDialog(
                                               context: context,
@@ -844,6 +906,66 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                 .read<
                                                                     CardsProvider>()
                                                                 .purchaseCards);
+                                                        b.put(
+                                                            "round",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .currentRound);
+                                                        b.put(
+                                                            "remainingDeckElements",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .remainingDeckElements);
+                                                        b.put(
+                                                            "remainingAiElements",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .remainingAiElements);
+                                                        b.put(
+                                                            "selectedCards",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .selectedCards);
+                                                        b.put(
+                                                            "selectedCardsFromThirdRow",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .selectedCardsFromThirdRow);
+                                                        b.put(
+                                                            "discardedDeckElements",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .discardedDeckElements);
+                                                        b.put(
+                                                            "selectedCardsForAi",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .selectedCardsForAi);
+                                                        b.put(
+                                                            "playerScore",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .playerScore);
+                                                        b.put(
+                                                            "aiScore",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .aiScore);
+                                                        b.put(
+                                                            "remainingDeckView",
+                                                            context
+                                                                .read<
+                                                                    CardsProvider>()
+                                                                .remainingDeckView);
                                                       },
                                                       style: ElevatedButton
                                                           .styleFrom(
@@ -1044,6 +1166,57 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                 context
                                                     .read<CardsProvider>()
                                                     .purchaseCards);
+                                            b.put(
+                                                "round",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .currentRound);
+                                            b.put(
+                                                "remainingDeckElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingDeckElements);
+                                            b.put(
+                                                "remainingAiElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingAiElements);
+                                            b.put(
+                                                "selectedCards",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCards);
+                                            b.put(
+                                                "selectedCardsFromThirdRow",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCardsFromThirdRow);
+                                            b.put(
+                                                "discardedDeckElements",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .discardedDeckElements);
+                                            b.put(
+                                                "selectedCardsForAi",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .selectedCardsForAi);
+                                            b.put(
+                                                "playerScore",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .playerScore);
+                                            b.put(
+                                                "aiScore",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .aiScore);
+                                            b.put(
+                                                "remainingDeckView",
+                                                context
+                                                    .read<CardsProvider>()
+                                                    .remainingDeckView);
+
                                             Navigator.pushNamed(
                                                 context, '/home');
                                           },
@@ -2578,6 +2751,56 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                         context
                                                                             .read<CardsProvider>()
                                                                             .purchaseCards);
+                                                                    b.put(
+                                                                        "round",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .currentRound);
+                                                                    b.put(
+                                                                        "remainingDeckElements",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .remainingDeckElements);
+                                                                    b.put(
+                                                                        "remainingAiElements",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .remainingAiElements);
+                                                                    b.put(
+                                                                        "selectedCards",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .selectedCards);
+                                                                    b.put(
+                                                                        "selectedCardsFromThirdRow",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .selectedCardsFromThirdRow);
+                                                                    b.put(
+                                                                        "discardedDeckElements",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .discardedDeckElements);
+                                                                    b.put(
+                                                                        "selectedCardsForAi",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .selectedCardsForAi);
+                                                                    b.put(
+                                                                        "playerScore",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .playerScore);
+                                                                    b.put(
+                                                                        "aiScore",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .aiScore);
+                                                                    b.put(
+                                                                        "remainingDeckView",
+                                                                        context
+                                                                            .read<CardsProvider>()
+                                                                            .remainingDeckView);
                                                                   },
                                                                   child:
                                                                       Container(
@@ -2878,8 +3101,8 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
         b.get("level") != null ||
         b.get("purchaseJokers") != null ||
         b.get("purchaseCards") != null) {
-      context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
-          b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
+      // context.read<CardsProvider>().updateChipsInProvider(b.get("noOfChips"),
+      //     b.get("level"), b.get("purchaseJokers"), b.get("purchaseCards"));
     }
   }
 
@@ -3003,6 +3226,24 @@ class _SelectableCardForUpgradeState extends State<SelectableCardForUpgrade> {
                                             counter.purchaseJokers);
                                         b.put("purchaseCards",
                                             counter.purchaseCards);
+                                        b.put("round", counter.currentRound);
+                                        b.put("remainingDeckElements",
+                                            counter.remainingDeckElements);
+                                        b.put("remainingAiElements",
+                                            counter.remainingAiElements);
+                                        b.put("selectedCards",
+                                            counter.selectedCards);
+                                        b.put("selectedCardsFromThirdRow",
+                                            counter.selectedCardsFromThirdRow);
+                                        b.put("discardedDeckElements",
+                                            counter.discardedDeckElements);
+                                        b.put("selectedCardsForAi",
+                                            counter.selectedCardsForAi);
+                                        b.put(
+                                            "playerScore", counter.playerScore);
+                                        b.put("aiScore", counter.aiScore);
+                                        b.put("remainingDeckView",
+                                            counter.remainingDeckView);
                                       },
                                       child: const Text('Yes',
                                           style: TextStyle(

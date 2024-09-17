@@ -40,9 +40,10 @@ class _MyHomePageState extends State<HomeScreen> {
       player.play(AssetSource('Music/BG.mp3'));
       var box = await Hive.openBox("myBox");
       var b = Hive.box("myBox");
-      if (b.get("level") != null) {
+      if (b.get("level") != null && b.get("round") != null) {
         var currentLevel = b.get("level");
-        if (currentLevel > 1) {
+        var currentRound = b.get("round");
+        if (currentLevel > 1 && currentRound >= 1) {
           setState(() {
             isContinue = true;
           });
@@ -50,7 +51,18 @@ class _MyHomePageState extends State<HomeScreen> {
               b.get("noOfChips"),
               b.get("level"),
               b.get("purchaseJokers"),
-              b.get("purchaseCards"));
+              b.get("purchaseCards"),
+              b.get("round"),
+              b.get("remainingDeckElements"),
+              b.get("remainingAiElements"),
+              b.get("selectedCards"),
+              b.get("selectedCardsFromThirdRow"),
+              b.get("discardedDeckElements"),
+              b.get("selectedCardsForAi"),
+              b.get("playerScore"),
+              b.get("aiScore"),
+              b.get("remainingDeckView") // Ensure this exists in `b`
+              );
         }
       }
     } catch (e) {

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 String removeCopy(String card) {
   card = '${card.split("-")[0]}.png';
@@ -283,7 +285,7 @@ class CardsProvider with ChangeNotifier {
   bool emptyBonus = false;
   bool? winStatus;
   int currentRound = 1;
-  int noOfChips = 1000;
+  int noOfChips = 0;
   int currentLevel = 1;
   int playerScore = 0;
   int aiScore = 0;
@@ -460,7 +462,9 @@ class CardsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void incrementCurrentRound() {
+  void hey() async {}
+
+  void incrementCurrentRound() async {
     if (currentRound < 6) {
       // remainingDeckElements += selectedCards;
       selectedCards += shuffleDeck(remainingDeckElements).sublist(0, 5);
@@ -469,6 +473,15 @@ class CardsProvider with ChangeNotifier {
           .removeWhere((card) => selectedCardsForAi.contains(card));
       remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
       currentRound++;
+      var box = await Hive.openBox("myBox");
+      var b = Hive.box("myBox");
+      b.put("round", currentRound);
+      b.put("remainingDeckElements", remainingDeckElements);
+      b.put("selectedCards", selectedCards);
+      b.put("selectedCardsForAi", selectedCardsForAi);
+      b.put("remainingDeckView", remainingDeckView);
+      b.put("playerScore", "playerScore");
+      b.put("aiScore", "aiScore");
     }
     visor = false;
     handBonus = false;
@@ -595,34 +608,58 @@ class CardsProvider with ChangeNotifier {
     score = false;
     emptyBonus = false;
 
-    selectedCards = [];
-    selectedCardsFromThirdRow = [];
+    // selectedCards = [];
+    // selectedCardsFromThirdRow = [];
     selectedCardToSwap = [];
-    currentRound = 1;
-    remainingDeckView = 3;
+    // currentRound = 1;
+    // remainingDeckView = 3;
     // currentLevel = 1;
-    playerScore = 0;
-    aiScore = 0;
-    discardedDeckElements = [];
-    remainingDeckElements = generateDeck();
-    remainingDeckElements += purchaseCards;
-    remainingAiElements = generateDeckForAI();
-    selectedCards = shuffleDeck(remainingDeckElements);
-    remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
-    selectedCardsForAi = shuffleAIDeck(remainingAiElements);
-    remainingAiElements
-        .removeWhere((card) => selectedCardsForAi.contains(card));
+    // playerScore = 0;
+    // aiScore = 0;
+    // discardedDeckElements = [];
+    // remainingDeckElements = generateDeck();
+    // remainingDeckElements += purchaseCards;
+    // remainingAiElements = generateDeckForAI();
+    // selectedCards = shuffleDeck(remainingDeckElements);
+    // remainingDeckElements.removeWhere((card) => selectedCards.contains(card));
+    // selectedCardsForAi = shuffleAIDeck(remainingAiElements);
+    // remainingAiElements
+    //     .removeWhere((card) => selectedCardsForAi.contains(card));
     upgradeScreenDeck = generateDeckForUpgrade(purchaseCards, purchaseJokers);
     jokerFirstScreenAssets = setJokerFirstScreenAssets(purchaseJokers);
     notifyListeners();
   }
 
   void updateChipsInProvider(
-      int noOFChips, int level, List<String> jokers, List<String> cards) {
+      int noOFChips,
+      int level,
+      List<String> jokers,
+      List<String> cards,
+      int round,
+      List<String> remainingDeck,
+      List<String> remainingAi,
+      List<String> selected,
+      List<String> selectedCardsForThirdRow,
+      List<String> discardedDeck,
+      List<String> selectedCardsAi,
+      int pScore,
+      int aScore,
+      int remainingDeckV) {
     noOfChips = noOFChips;
     currentLevel = level;
     purchaseCards = cards;
     purchaseJokers = jokers;
+    currentRound = round;
+    remainingDeckElements = remainingDeck;
+    remainingAiElements = remainingAi;
+    selectedCards = selected;
+    selectedCardsFromThirdRow = selectedCardsForThirdRow;
+    discardedDeckElements = discardedDeck;
+    selectedCardsForAi = selectedCardsAi;
+    playerScore = pScore;
+    aiScore = aScore;
+    remainingDeckView = remainingDeckV;
+    notifyListeners();
   }
 
   void lose() {
