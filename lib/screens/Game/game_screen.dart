@@ -102,6 +102,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   bool isStraightHand(List<int> rankValues) {
     rankValues.sort();
+    print(rankValues);
     for (int i = 0; i < rankValues.length - 1; i++) {
       if (rankValues[i + 1] != rankValues[i] + 1) {
         return false;
@@ -121,7 +122,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       String suit = card.split('_')[1];
       int points = getCardPoints(rank);
       points = context.read<CardsProvider>().score ? points * 2 : points;
-      rankValues.add(points);
+      if (rank == 'A.') {
+        rankValues.add(1);
+      } else {
+        rankValues.add(points);
+      }
       rankCounts[rank] = (rankCounts[rank] ?? 0) + 1;
       suitCounts[suit] = (suitCounts[suit] ?? 0) + 1;
       cardPoints[rank] = points;
@@ -134,19 +139,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     // Apply scoring based on hand type
     if (isFlush && isStraight) {
       for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Straight Flush
+        baseScore += points;
       }
       combinationScore = baseScore * 7;
       combinationScore = combinationScore - baseScore;
 
       combos.add({
         "Base Score": baseScore,
-        "Straight Flush : ": combinationScore,
+        "Straight Flush : ": "X7",
       });
     } else if (rankCounts.containsValue(4)) {
+      // Four of a kind
       for (var rank in rankCounts.keys) {
         if (rankCounts[rank] == 4) {
-          baseScore += cardPoints[rank]!;
+          baseScore += cardPoints[rank]! * 4;
         }
       }
       combinationScore = baseScore * 5;
@@ -154,40 +160,55 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
       combos.add({
         "Base Score": baseScore,
-        "Four of a Kind": combinationScore,
+        "Four of a Kind": "x5",
       });
     } else if (rankCounts.containsValue(3) && rankCounts.containsValue(2)) {
+      // Full House
       for (var rank in rankCounts.keys) {
         if (rankCounts[rank] == 3) {
-          baseScore += cardPoints[rank]!;
+          baseScore += cardPoints[rank]! * 3;
         } else if (rankCounts[rank] == 2) {
-          baseScore += cardPoints[rank]!;
+          baseScore += cardPoints[rank]! * 2;
         }
       }
       combinationScore = baseScore * 4;
       combinationScore = combinationScore - baseScore;
       combos.add({
         "Base Score": baseScore,
-        "Full House": combinationScore,
+        "Full House": "X4",
+      });
+    } else if (rankCounts.containsValue(3)) {
+      // Three of a Kind
+      for (var rank in rankCounts.keys) {
+        if (rankCounts[rank] == 3) {
+          baseScore += cardPoints[rank]! * 3;
+        }
+      }
+      combinationScore = baseScore * 2;
+      combinationScore = combinationScore - baseScore;
+      combos.add({
+        "Base Score": baseScore,
+        "Three of a Kind": "x2",
       });
     } else if (isFlush) {
       for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Flush
+        baseScore += points;
       }
       combinationScore = baseScore * 3;
+      combinationScore = combinationScore - baseScore;
       combos.add({
         "Base Score": baseScore,
-        "Flush": combinationScore,
+        "Flush": "x3",
       });
     } else if (isStraight) {
       for (var points in rankValues) {
-        baseScore += points; // Add points of all cards for Straight
+        baseScore += points;
       }
       combinationScore = baseScore * 2;
-
+      combinationScore = combinationScore - baseScore;
       combos.add({
         "Base Score": baseScore,
-        "Straight": combinationScore,
+        "Straight": "X2",
       });
     } else if (rankCounts.values.where((v) => v == 2).length == 2) {
       for (var rank in rankCounts.keys) {
@@ -295,6 +316,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //   baseScore += points; // Add points of all cards for Straight Flush
       // }
       combinationScore = baseScore * 7;
+      combinationScore = combinationScore - baseScore;
       combosAi.add({
         "Opponent Base Score": baseScore,
         "Straight Flush : ": combinationScore,
@@ -307,6 +329,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //   }
       // }
       combinationScore = baseScore * 5;
+      combinationScore = combinationScore - baseScore;
+
       combosAi.add({
         "Opponent Base Score": baseScore,
         "Four of a Kind": combinationScore,
@@ -321,10 +345,27 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //   }
       // }
       combinationScore = baseScore * 4;
+      combinationScore = combinationScore - baseScore;
 
       combosAi.add({
         "Opponent Base Score": baseScore,
         "Full House": combinationScore,
+        "Total": baseScore + combinationScore
+      });
+    } else if (rankCounts.containsValue(3)) {
+      // for (var rank in rankCounts.keys) {
+      //   if (rankCounts[rank] == 3) {
+      //     baseScore += cardPoints[rank]! * 3;
+      //   } else if (rankCounts[rank] == 2) {
+      //     baseScore += cardPoints[rank]! * 2;
+      //   }
+      // }
+      combinationScore = baseScore * 2;
+      combinationScore = combinationScore - baseScore;
+
+      combosAi.add({
+        "Opponent Base Score": baseScore,
+        "Three of a kind": combinationScore,
         "Total": baseScore + combinationScore
       });
     } else if (isFlush) {
@@ -332,6 +373,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //   baseScore += points; // Add points of all cards for Flush
       // }
       combinationScore = baseScore * 3;
+      combinationScore = combinationScore - baseScore;
+
       combosAi.add({
         "Opponent Base Score": baseScore,
         "Flush": combinationScore,
@@ -342,6 +385,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //   baseScore += points; // Add points of all cards for Straight
       // }
       combinationScore = baseScore * 2;
+      combinationScore = combinationScore - baseScore;
 
       combosAi.add({
         "Opponent Base Score": baseScore,
@@ -2535,14 +2579,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                                                             .read<CardsProvider>()
                                                                             .purchaseCards);
                                                                   },
-                                                                  child: Container(
-                                                                      height:
-                                                                          70,
-                                                                      width: 70,
-                                                                      decoration: BoxDecoration(
-                                                                          image: DecorationImage(
-                                                                              image: AssetImage(context.read<CardsProvider>().jokerFirstScreenAssets[index]["imageUrl"]),
-                                                                              fit: BoxFit.fill))),
+                                                                  child:
+                                                                      Container(
+                                                                    height: 70,
+                                                                    width: 70,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    child: Container(
+                                                                        height:
+                                                                            70,
+                                                                        width:
+                                                                            70,
+                                                                        decoration:
+                                                                            BoxDecoration(image: DecorationImage(image: AssetImage(context.read<CardsProvider>().jokerFirstScreenAssets[index]["imageUrl"]), fit: BoxFit.fill))),
+                                                                  ),
                                                                 ),
                                                                 Text(
                                                                     context.read<CardsProvider>().jokerFirstScreenAssets[

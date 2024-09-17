@@ -43,8 +43,8 @@ class _InfoScreenState extends State<InfoScreen> {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
         body: Container(
-          height:MediaQuery.of(context).size.height,
-          width:MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           alignment: Alignment.center,
           padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
           decoration: BoxDecoration(
@@ -53,6 +53,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   fit: BoxFit.cover)),
           child: Column(
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height * .05),
               Row(children: [
                 ElevatedButton(
                   onPressed: () {

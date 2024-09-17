@@ -169,9 +169,6 @@ List<String> generateDeckForAI() {
     }
   }
   deck.add("assets/images/card_joker_red.png");
-  // print({
-  //   "hijra:": deck,
-  // });
   return deck;
 }
 
@@ -258,6 +255,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets(
       'additionalText': "Select a card to transform"
     },
   ];
+
   List<Map<String, dynamic>> result = allAssets
       .where((asset) => purchaseJokers.contains(asset["imageUrl"]))
       .toList();
