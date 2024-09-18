@@ -43,7 +43,7 @@ class _MyHomePageState extends State<HomeScreen> {
       if (b.get("level") != null && b.get("round") != null) {
         var currentLevel = b.get("level");
         var currentRound = b.get("round");
-        if (currentLevel > 1 && currentRound >= 1) {
+        if (currentLevel > 1) {
           setState(() {
             isContinue = true;
           });
@@ -61,8 +61,7 @@ class _MyHomePageState extends State<HomeScreen> {
               b.get("selectedCardsForAi"),
               b.get("playerScore"),
               b.get("aiScore"),
-              b.get("remainingDeckView") // Ensure this exists in `b`
-              );
+              b.get("remainingDeckView"));
         }
       }
     } catch (e) {

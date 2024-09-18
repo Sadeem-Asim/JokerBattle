@@ -480,8 +480,8 @@ class CardsProvider with ChangeNotifier {
       b.put("selectedCards", selectedCards);
       b.put("selectedCardsForAi", selectedCardsForAi);
       b.put("remainingDeckView", remainingDeckView);
-      b.put("playerScore", "playerScore");
-      b.put("aiScore", "aiScore");
+      b.put("playerScore", playerScore);
+      b.put("aiScore", aiScore);
     }
     visor = false;
     handBonus = false;
@@ -522,18 +522,18 @@ class CardsProvider with ChangeNotifier {
     visor = false;
 
     discardedDeckElements += selectedCardsFromThirdRow;
-    purchaseCards
-        .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
+    // purchaseCards
+    //     .removeWhere((card) => selectedCardsFromThirdRow.contains(card));
 
-    var cardsToUpdate = upgradeScreenDeck.where(
-      (card) =>
-          selectedCardsFromThirdRow.contains(addCopy(card.imageUrl)) &&
-          card.isPurchased == true,
-    );
+    // var cardsToUpdate = upgradeScreenDeck.where(
+    //   (card) =>
+    //       selectedCardsFromThirdRow.contains(addCopy(card.imageUrl)) &&
+    //       card.isPurchased == true,
+    // );
 
-    for (var card in cardsToUpdate) {
-      card.isPurchased = false;
-    }
+    // for (var card in cardsToUpdate) {
+    //   card.isPurchased = false;
+    // }
     try {
       upgradeScreenDeck = generateDeckForUpgrade(purchaseCards, purchaseJokers);
     } catch (e) {

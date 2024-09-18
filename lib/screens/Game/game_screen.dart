@@ -135,7 +135,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       String suit = card.split('_')[1];
       int points = getCardPoints(rank);
       points = context.read<CardsProvider>().score ? points * 2 : points;
-      if (rank == 'A.') {
+      if (rank == 'A.' && combo[0] == card) {
         rankValues.add(1);
       } else {
         rankValues.add(points);
@@ -151,9 +151,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     // Apply scoring based on hand type
     if (isFlush && isStraight) {
-      for (var points in rankValues) {
-        baseScore += points;
+      for (var rank in rankCounts.keys) {
+        baseScore += cardPoints[rank]!;
       }
+      // for (var points in rankValues) {
+      //   baseScore += points;
+      // }
       combinationScore = baseScore * 7;
       combinationScore = combinationScore - baseScore;
 
@@ -204,8 +207,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Three of a Kind": "x2",
       });
     } else if (isFlush) {
-      for (var points in rankValues) {
-        baseScore += points;
+      for (var rank in rankCounts.keys) {
+        baseScore += cardPoints[rank]!;
       }
       combinationScore = baseScore * 3;
       combinationScore = combinationScore - baseScore;
@@ -214,8 +217,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         "Flush": "x3",
       });
     } else if (isStraight) {
-      for (var points in rankValues) {
-        baseScore += points;
+      for (var rank in rankCounts.keys) {
+        baseScore += cardPoints[rank]!;
       }
       combinationScore = baseScore * 2;
       combinationScore = combinationScore - baseScore;
