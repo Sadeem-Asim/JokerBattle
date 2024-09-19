@@ -224,14 +224,14 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets(
       'additionalText': "Select A Card To Replace"
     },
     {
-      "imageUrl": "assets/images/empty-bonus.png",
+      "imageUrl": "assets/images/emptybonus.png",
       'text': 'EMPTYBONUS',
       'cost': 15,
       'additionalText':
           "adds to the result of your combo the amount of points for cards that were not in your combo."
     },
     {
-      "imageUrl": "assets/images/hand-bonus.png",
+      "imageUrl": "assets/images/handbonus.png",
       'text': 'HANDBONUS',
       'cost': 15,
       'additionalText':
@@ -262,7 +262,7 @@ List<Map<String, dynamic>> setJokerFirstScreenAssets(
       .where((asset) => purchaseJokers.contains(asset["imageUrl"]))
       .toList();
   // print(result);
-  return result;
+  return allAssets;
 }
 
 class CardsProvider with ChangeNotifier {
@@ -461,8 +461,6 @@ class CardsProvider with ChangeNotifier {
     // incrementCurrentLevel();
     notifyListeners();
   }
-
-  void hey() async {}
 
   void incrementCurrentRound() async {
     if (currentRound < 6) {
