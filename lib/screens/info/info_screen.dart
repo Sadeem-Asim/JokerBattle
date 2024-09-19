@@ -153,9 +153,15 @@ class _InfoScreenState extends State<InfoScreen> {
               ]),
               const SizedBox(height: 30),
 
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(15),
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height * 0.776,
+              //   width: MediaQuery.of(context).size.width * 0.985,
+              //   child:
+                     Expanded(
+
+                     child:
+                    Container(
+                  // padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: Color(0xFF5C5E68),
                     border: Border.all(
@@ -169,7 +175,11 @@ class _InfoScreenState extends State<InfoScreen> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  child: content,
+                  child: _selectedButtonIndex == 1 ? content :
+                  SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                          child: content, margin: EdgeInsets.all(10))),
                 ),
               ),
               // )
@@ -185,30 +195,45 @@ class PlayContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset('assets/images/Game4.png'),
-        const SizedBox(
-          height: 5,
-        ),
-        Image.asset('assets/images/Game5.png'),
-        const SizedBox(
-          height: 5,
-        ),
-        Image.asset('assets/images/Game1.png'),
-        const SizedBox(
-          height: 5,
-        ),
+        // Container(color: Colors.white,
+        //   child:
+        //  SvgPicture.asset(
+        //   'assets/images/play.svg',
+        // //   fit: BoxFit.contain,
+        // //   width: 49,
+        // //  height: MediaQuery.of(context).size.height * 0.70,
+        // ),),
+
+
+        Image.asset('assets/images/play.png'),
+        // SizedBox(
+        //   height:( MediaQuery.of(context).size.height * 0.52),
+        // ),
+
+
+
+        // Image.asset('assets/images/Game5.png'),
+        // const SizedBox(
+        //   height: 5,
+        // ),
+        // Image.asset('assets/images/Game1.png'),
+        // const SizedBox(
+        //   height: 5,
+        // ),
         const SizedBox(
           height: 2,
         ),
-        Expanded(
-            child: Container(
+        // Expanded(
+        //     child: 
+            Container(
           child: Text(
               "1.Opponent's cards. They will be visible to you after you lay out the combination.\n2. The field where you will lay out your combination.\n3. Your cards. You can choose 1 or more of them to perform an action with.\n4. The sum of the players' scores. \n5. Info button. \n6. This is information about your deck, where the first number shows the discarded cards and the second number shows the remaining cards in the deck.\n7. A button that opens a menu with your jokers.\n8. Place the selected cards on the field.\n9. Reset and replace the selected cards.\n10. Current level.\n11. Current round.",
               style: TextStyle(
                   fontFamily: "BreatheFire",
-                  fontSize: 11.3,
+                  fontSize: 16.3,
                   color: Colors.white)),
-        ))
+        // )
+        )
       ],
       // mainAxisAlignment: MainAxisAlignment.spaceAround,
     );

@@ -1306,7 +1306,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         backgroundColor: const Color.fromARGB(255, 0, 207, 149),
         body: Container(
             height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             // padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
             decoration: const BoxDecoration(
@@ -1317,8 +1317,41 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * .026),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
                         onPressed: () {
@@ -1342,7 +1375,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         ),
                         // ),
                       ),
-                      const SizedBox(width: 45),
+                      // const SizedBox(width: 45),
+
+
+
+
+
+
+
+
+
+
                       ElevatedButton(
                         onPressed: () {
                           // Handle button 1 press
@@ -1367,7 +1410,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 fontSize: 25,
                                 color: Colors.white)),
                       ),
-                      const SizedBox(width: 27),
+                      // const SizedBox(width: 27),
+
+
+
+
+
                       ElevatedButton(
                         onPressed: () {
                           // _onButtonPressed(2);
@@ -1390,8 +1438,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           // width: 49,
                         ),
                       ),
-                      const SizedBox(width: 13),
+                      // const SizedBox(width: 13),
                     ]),
+
+
+
+
+
+
+
+
 
                 SizedBox(height: MediaQuery.of(context).size.height * .04),
 
@@ -1570,11 +1626,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 const SizedBox(
-                                  height: 10,
+                                  height: 06,
                                 ),
                                 SvgPicture.asset(
                                   'assets/images/AI.svg',
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                   width: 30,
                                 ),
 
@@ -1704,7 +1760,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                               fontSize: 14))),
                                 ),
                                 Row(
-                                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     const SizedBox(
                                       width: 7,
@@ -1715,7 +1771,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                           margin: const EdgeInsets.symmetric(
                                               vertical: 0, horizontal: 10),
                                           child: Text(
-                                              "${counter.currentRound}\nRound",
+                                              "   ${counter.currentRound}\nRound",
                                               style: const TextStyle(
                                                   color: Color(0xFFF7A74F),
                                                   fontFamily: "BreatheFire",
@@ -1723,7 +1779,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     }),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          0.09,
+                                          0.063,
                                     ),
 
                                     //second-card-row
