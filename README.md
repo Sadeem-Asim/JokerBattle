@@ -178,11 +178,6 @@ Contact me for any Feedback or questions
       </a>
     </td>
     <td align="center" width="500px">
-      <a href="https://www.fiverr.com/" title="View my Fiverr profile">
-        <img src="https://ml.globenewswire.com/Resource/Download/dcc91863-eeb0-4879-a556-9f7608b19744" alt="Fiverr Icon" width="60" height="60"/>
-      </a>
-    </td>
-    <td align="center" width="500px">
       <a href="mailto:sadeemasim@gmail.com" title="Send me an email">
         <img src="https://www.svgrepo.com/show/452213/gmail.svg" alt="Gmail Icon" height="60" width="60"/>
       </a>
@@ -205,19 +200,16 @@ Contact me for any Feedback or questions
   </tr>
   <tr>
     <td align="center" width="500px">
-      <a href="https://www.upwork.com/freelancers/">Upwork</a>
+      <a href="https://www.upwork.com/freelancers/~010bdb33a74a05b764">Upwork</a>
     </td>
     <td align="center" width="500px">
-      <a href="https://www.fiverr.com/">Fiverr</a>
-    </td>
-    <td align="center" width="500px">
-      <a href="mailto:sadeemasim3803@gmail.com">Gmail<br>sadeemasim1234@outlook.com</a>
+      <a href="mailto:sadeemasim3803@gmail.com">Gmail<br>sadeemasim3803@gmail.com</a>
     </td>
     <td align="center" width="500px">
       <a href="https://wa.me/923494965651">WhatsApp<br>+923494965651</a>
     </td>
     <td align="center" width="500px">
-      <a href="https://linkedin.com/in/sadeem-asim">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/sadeem-asim-59439933b/">LinkedIn</a>
     </td>
     <td align="center" width="500px">
       <a href="https://instagram.com/sadeem_ch">Instagram</a>
